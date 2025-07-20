@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive JavaScript Fundamentals</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #007bff;
+            --header-color: #f7df1e; /* JavaScript Yellow */
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #f7df1e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--header-color);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        header .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+
+        /* Module Cards */
+        main section {
+            background-color: var(--bg-color-light);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border-right: 4px solid var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        main section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0; /* Adjusted for card layout */
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 2rem;
+        }
+
+        /* Code Blocks & Text */
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 3px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 100%;
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s, background-color 0.2s;
+        }
+
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        blockquote {
+            border-right: 4px solid var(--quote-border);
+            padding-right: 1rem;
+            margin-right: 0;
+            font-style: italic;
+            color: #ccc;
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        strong {
+            color: var(--header-color);
+        }
+
+        .dom-demo {
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            margin-bottom: 1em;
+            border-radius: 8px;
+            background-color: var(--bg-color-offset);
+        }
+
+        .card-demo {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-demo button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .special-note {
+            font-style: italic;
+            padding: 8px;
+            background-color: var(--bg-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+            list-style: none;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 18px; /* Adjusted for RTL */
+            height: 100%;
+            width: 4px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+            padding-right: 60px; /* Space for icon */
+        }
+
+        .timeline-icon {
+            position: absolute;
+            right: -25px; /* Adjust for RTL */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--bg-color);
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-icon {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .timeline-icon .material-icons {
+            font-size: 28px;
+        }
+
+        .timeline-content {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            text-align: right;
+        }
+
+        th {
+            background-color: var(--bg-color-light);
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Comprehensive JavaScript Fundamentals Lecture</h1>
+            <p class="subtitle">
+                <strong>Audience</strong>: Beginners — هنشرح من الصفر لحد ما تبقى مرتاح مع الأساسيات.<br>
+                <strong>Format</strong>: Modules. كل Module فيه شرح، أمثلة Code، وتمارين. الشرح بالعربي (لهجة مصرية بسيطة) مع الحفاظ على الكلمات التقنية و Keywords بالإنجليزي عشان المعنى مايضيعش.
+            </p>
+        </header>
+
+        <main>
+            <section id="module0">
+                <h2>Module 0: قصة JavaScript</h2>
+                <p><strong>الهدف:</strong> نفهم JavaScript جت منين، موجودة ليه، وإزاي كبرت وبقت اللغة اللي بنستخدمها النهاردة.</p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">rocket_launch</span></div>
+                        <div class="timeline-content">
+                            <h3>البداية: ويب ثابت (أوائل التسعينات)</h3>
+                            <p>تخيل الويب من غير أي حركة، من غير ما الفورم تديك رد فعل فوري، مجرد نصوص وصور. ده كان الواقع. عشان نخلي صفحات الويب تفاعلية، كان لازم لغة من نوع جديد، لغة تقدر تشتغل جوه المتصفح نفسه.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">lightbulb</span></div>
+                        <div class="timeline-content">
+                            <h3>الميلاد: 10 أيام في 1995</h3>
+                            <p>شركة Netscape، اللي كانت من أكبر شركات المتصفحات، وظفت <strong>Brendan Eich</strong> عشان يعمل اللغة دي. في 10 أيام بس، بنى أول نسخة، اللي كان اسمها في الأول Mocha، بعدين LiveScript، وأخيرًا <strong>JavaScript</strong> (لأسباب تسويقية، ملهاش علاقة قوية بـ Java).</p>
+                            <blockquote>الهدف كان بسيط: نسمح للمطورين يضيفوا تفاعل لصفحات الويب بسهولة.</blockquote>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">compare_arrows</span></div>
+                        <div class="timeline-content">
+                            <h3>الفوضى: حرب المتصفحات</h3>
+                            <p>Microsoft شافت الإمكانيات وعملت نسختها الخاصة اللي اسمها <strong>JScript</strong> لمتصفح Internet Explorer. الاتنين كانوا شبه بعض بس مختلفين كفاية عشان يسببوا صداع للمطورين، اللي كانوا مضطرين يكتبوا كود يشتغل على المتصفحين.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">gavel</span></div>
+                        <div class="timeline-content">
+                            <h3>الحل: التوحيد القياسي (1997)</h3>
+                            <p>عشان ننهي الفوضى، JavaScript اتقدمت لمنظمة <strong>ECMA International</strong>، وهي منظمة للمعايير. ده أدى لإنشاء معيار <strong>ECMAScript</strong>. فكر في ECMAScript على إنه المواصفات الرسمية، و JavaScript هي أشهر تطبيق للمواصفات دي.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">foundation</span></div>
+                        <div class="timeline-content">
+                            <h3>الأساس: ES3 (1999)</h3>
+                            <p>دي كانت أول نسخة كبيرة ومستقرة تم اعتمادها على نطاق واسع. ضافت خصائص أساسية زي الـ Regular Expressions ومعالجة الأخطاء بـ <code>try/catch</code>. لسنين طويلة، ES3 كان هو الأساس لكل تطوير الويب.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">auto_awesome</span></div>
+                        <div class="timeline-content">
+                            <h3>التحديث: ES5 (2009)</h3>
+                            <p>بعد فترة توقف طويلة، ES5 وصل عشان ينضف اللغة. قدم وضع <code>\"use strict\";</code> عشان يمنع الأخطاء الشائعة، ودعم أصلي لـ <code>JSON</code>، و array methods قوية زي <code>.map()</code> و <code>.filter()</code> و <code>.forEach()</code>.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">bolt</span></div>
+                        <div class="timeline-content">
+                            <h3>الثورة: ES6/ES2015 (2015)</h3>
+                            <p>ده كان أكبر تحديث في تاريخ JavaScript، ضاف خصائص ضرورية للتطوير الحديث:</p>
+                            <ul>
+                                <li><code>let</code> و <code>const</code> لتحكم أفضل في المتغيرات.</li>
+                                <li><strong>Arrow Functions</strong> لكتابة دوال أقصر وأنضف.</li>
+                                <li><strong>Promises</strong> للتعامل مع العمليات الغير متزامنة.</li>
+                                <li><strong>Classes</strong> و <strong>Modules</strong> وحاجات تانية كتير.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><span class="material-icons">update</span></div>
+                        <div class="timeline-content">
+                            <h3>النهاردة: تحديثات سنوية</h3>
+                            <p>من 2015، JavaScript بتتحدث كل سنة بخصائص جديدة أصغر (ES2016, ES2017، ...). التطور المستمر ده بيخلي اللغة حديثة وقوية. لما الناس بتقول \"JavaScript الحديثة\"، غالبًا بيقصدوا ES6 وكل اللي جه بعدها.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>0.6 Execution Context & Event Loop (مختصر)</h3>
+                <ul>
+                    <li>JavaScript Single Thread: Stack واحد. الAsync بيتحط في Queues.</li>
+                    <li>Microtasks (Promises) بتتصفّى قبل الـ macrotasks (زي <code>setTimeout</code>).</li>
+                </ul>
+                <p><strong>Demo</strong>:</p>
+                <pre><button class="copy-btn">Copy</button><code>&lt;script&gt;
+console.log('A');
+setTimeout(()=&gt; console.log('C (timeout callback)'),0);
+Promise.resolve().then(()=&gt; console.log('B (promise microtask'));
+console.log('D');
+&lt;/script&gt;</code></pre>
+                <p>الترتيب: A ثم D ثم B بعدين C.</p>
+
+                <h3>0.7 ليه نبدأ بـ ES5 Concepts؟</h3>
+                <p>لأن فهم <code>var</code> و Hoisting و Function Scope بيسهّل عليك ليه <code>let</code> و <code>const</code> اتعملوا. هنعمل الأساس بالطريقة "القديمة" وبعدين نطوّر بالحديث.</p>
+
+                <h3>0.8 Minimal HTML Starter</h3>
+                <pre><button class="copy-btn">Copy</button><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;JS Intro&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1 id="greet"&gt;Hello&lt;/h1&gt;
+    &lt;script&gt;
+      console.log("Hello JS");
+      document.getElementById('greet').textContent = 'Hello JavaScript!';
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                <p><strong>تمرين سريع</strong>: زوّد Paragrah فيها السنة الحالية.</p>
+            </section>
+
+            <hr>
+
+            <section id="module1">
+                <h2>Module 1. Fundamental Types & Values</h2>
+                <p>هنتعامل مع الأنواع الأساسية. مهم تفهم الفرق بين Primitive و Object.</p>
+
+                <h3>Numbers</h3>
+                <ul>
+                    <li>كل الأرقام Double Precision (مفيش نوع int منفصل).</li>
+                    <li>قيم خاصة: <code>NaN</code>, <code>Infinity</code>, <code>-Infinity</code>.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>console.log(3/0);        // Infinity
+console.log("abc"/2);    // NaN
+console.log(Number.MAX_VALUE);</code></pre>
+                <p><strong>ملحوظة</strong>: <code>NaN === NaN</code> بيرجع false. استخدم <code>Number.isNaN()</code>.</p>
+
+                <h3>Strings</h3>
+                <ul>
+                    <li>Immutable: لما "تغير" String انت فعليًا بتعمل واحد جديد.</li>
+                    <li>تقدر تستخدم "" أو '' أو Template Literal.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>let phrase = "JavaScript";
+console.log(phrase.charAt(4)); // S
+console.log(phrase.slice(4,10)); // Script
+console.log(phrase.split('a')); // [ 'J','v','Script' ]</code></pre>
+                <p><strong>تمرين</strong>: Function ترجع نفس الـ string بس أول حرف Capital.</p>
+
+                <h3>Booleans و Truthiness</h3>
+                <p>القيم اللي تعتبر false: <code>""</code>, <code>0</code>, <code>NaN</code>, <code>null</code>, <code>undefined</code>, <code>false</code>. أي حاجة تانية true.</p>
+
+                <h3><code>null</code> vs <code>undefined</code>: الفرق الجوهري</h3>
+                <p>الاتنين معناهم "مفيش قيمة"، بس الفرق في "مين اللي قرر ده".</p>
+                <ul>
+                    <li>
+                        <strong><code>undefined</code> (غير مُعرَّف): دي حالة افتراضية من النظام.</strong>
+                        <p>معناها إن JavaScript نفسها بتقولك "أنا دورت على قيمة هنا وملقتش". بتحصل تلقائيًا.</p>
+                        <p><strong>مثال بسيط:</strong> تخيل صندوق بريد لسه جديد، محدش حط فيه جوابات. الصندوق موجود، بس حالته "غير مُعرَّف" المحتوى.</p>
+                        <pre><button class="copy-btn">Copy</button><code>let user; // عرّفنا متغير بس محطناش فيه قيمة
+console.log(user); // Output: undefined
+
+const car = { model: 'Tesla' };
+console.log(car.year); // Output: undefined (بنطلب خاصية مش موجودة)</code></pre>
+                    </li>
+                    <li>
+                        <strong><code>null</code> (فارغ): دي قيمة أنت كـ مبرمج بتحطها بنفسك.</strong>
+                        <p>معناها إنك بتقول بشكل صريح "أنا قاصد إن المكان ده يكون فاضي دلوقتي".</p>
+                        <p><strong>مثال بسيط:</strong> نفس صندوق البريد، بس أنت فتحته بنفسك و فضّيته من كل الجوابات. أنت اللي خليته "فارغ" عن قصد.</p>
+                        <pre><button class="copy-btn">Copy</button><code>let loggedInUser = { name: 'Ahmed' }; // كان فيه مستخدم مسجل دخوله
+// ... المستخدم عمل تسجيل خروج
+loggedInUser = null; // إحنا اللي فضّينا المتغير عن قصد
+console.log(loggedInUser); // Output: null</code></pre>
+                    </li>
+                </ul>
+                <p><strong>الخلاصة:</strong> <code>undefined</code> هي "لسه مفيش قيمة"، أما <code>null</code> هي "القيمة اللي فيه هي 'فارغ'".</p>
+
+                <h3>typeof Quick Check</h3>
+                <pre><button class="copy-btn">Copy</button><code>typeof 42;        // 'number'
+typeof null;      // 'object' (quirk)
+typeof undefined; // 'undefined'
+typeof {};        // 'object'
+typeof function(){}; // 'function'</code></pre>
+
+                <h3>Conversions</h3>
+                <pre><button class="copy-btn">Copy</button><code>Number("42"); // 42
+String(123);   // '123'
+Boolean(0);    // false
+"5" + 3;      // '53' (Concatenate)
+"5" - 3;      // 2 (Arithmetic coercion)</code></pre>
+                <h3>شرح الدمج والإجبار الحسابي (Concatenation & Coercion)</h3>
+                <p>دي من أكتر النقط اللي بتلخبط في JavaScript، خصوصًا مع عامل الـ <code>+</code>.</p>
+                <ul>
+                    <li>
+                        <strong>String Concatenation (الدمج)</strong>:
+                        <p>لما عامل الـ <code>+</code> بيلاقي <code>string</code> في أي طرف من أطراف العملية، بيقرر إنه مش هيجمع أرقام، وهيحول الطرف التاني لـ <code>string</code> هو كمان و"يلزقهم" في بعض. العملية دي اسمها "دمج" أو Concatenation.</p>
+                        <pre><button class="copy-btn">Copy</button><code>'Hello' + ' ' + 'World' // 'Hello World'
+'5' + 3 // '53' (الرقم 3 اتحول لـ string)
+1 + 2 + '3' // '33' (جمع 1+2 الأول، بعدين الناتج '3' ادمج مع '3')</code></pre>
+                    </li>
+                    <li>
+                        <strong>Arithmetic Coercion (الإجبار الحسابي)</strong>:
+                        <p>لما بتستخدم عوامل حسابية تانية زي (<code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>)، JavaScript بتفترض إنك عايز تعمل عملية حسابية. فبتحاول "تجبر" الأطراف اللي مش أرقام إنها تبقى أرقام.</p>
+                        <pre><button class="copy-btn">Copy</button><code>'10' - 5 // 5 (الـ string '10' اتحول للرقم 10)
+'10' * 2 // 20
+'10' / 2 // 5
+'a' - 1 // NaN (مش عارف يحول 'a' لرقم)</code></pre>
+                    </li>
+                </ul>
+                <p><strong>الخلاصة</strong>: الـ <code>+</code> حساس للـ strings، باقي العوامل الحسابية حساسة للـ numbers.</p>
+
+                <p><strong>جرب بنفسك</strong>: <code>Number("")</code>, <code>Boolean("0")</code>.</p>
+            </section>
+
+            <hr>
+
+            <section id="module2">
+                <h2>Module 2. Variables & Scope (Pre-ES6 Focus)</h2>
+                <p>هنبدأ بـ <code>var</code> عشان نفهم Hoisting وبعدين نقارن مع <code>let</code> / <code>const</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>var a; a = 10;
+var b = 20, c = 30;
+function demo(){
+  x = 5; // عمل Global بالخطأ
+}
+demo();
+console.log(window.x); // 5</code></pre>
+
+                <h3>Hoisting (الرفع)</h3>
+                <p>مع <code>var</code>، محرك JavaScript "بيرفع" التصريح عن المتغير لأول الـ scope بتاعه قبل ما ينفذ الكود، وبيديله قيمة مبدئية <code>undefined</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>console.log(age); // Output: undefined (مش error!)
+var age = 18;</code></pre>
+                <p><strong>لكن مع <code>let</code> و <code>const</code>، الوضع مختلف وأكثر أمانًا:</strong></p>
+                <p>بيحصلهم Hoisting برضه، لكن مش بياخدوا قيمة ابتدائية. بيفضلوا في حالة اسمها "Temporal Dead Zone" (TDZ) لحد ما الكود يوصل لسطر الإعلان عنهم. أي محاولة لاستخدامهم قبل السطر ده بتسبب خطأ واضح وصريح.</p>
+                <pre><button class="copy-btn">Copy</button><code>console.log(name); // Throws ReferenceError: Cannot access 'name' before initialization
+let name = 'Ali';</code></pre>
+                <p>ده بيمنع أخطاء كتير كانت بتحصل بسبب السلوك غير المتوقع بتاع <code>var</code>.</p>
+
+                <h3>Re-declaration (إعادة التصريح)</h3>
+                <p><code>var</code> بتسمحلك تعيد التصريح عن نفس المتغير في نفس الـ scope، وده ممكن يسبب مشاكل لو عملته بالغلط.</p>
+                <pre><button class="copy-btn">Copy</button><code>var value = 10;
+var value = "ten"; // مسموح، والقيمة القديمة اتمسحت
+console.log(value); // Output: "ten"</code></pre>
+                <p><strong><code>let</code> و <code>const</code> بيمنعوا السلوك ده تمامًا:</strong></p>
+                <p>لو حاولت تعيد التصريح عن متغير بنفس الاسم باستخدام <code>let</code> أو <code>const</code>، هتاخد خطأ مباشر وقت كتابة الكود، وده بيحمي متغيراتك.</p>
+                <pre><button class="copy-btn">Copy</button><code>let color = 'blue';
+let color = 'red'; // Throws SyntaxError: 'color' has already been declared</code></pre>
+            </section>
+
+            <hr>
+
+            <section id="module3">
+                <h2>Module 3. Operators</h2>
+                <p>الموديول ده كان ناقص الشرح التفصيلي. هنا هنغطي الأنواع الأساسية من الـ Operators مع أمثلة و Output.</p>
+
+                <h3>3.1 Arithmetic Operators</h3>
+                <p>تستخدم للجمع والطرح والضرب والقسمة وباقي القسمة.</p>
+                <pre><button class="copy-btn">Copy</button><code>let a = 10, b = 3;
+console.log(a + b);   // Output: 13
+console.log(a - b);   // Output: 7
+console.log(a * b);   // Output: 30
+console.log(a / b);   // Output: 3.3333333333333335
+console.log(a % b);   // Output: 1 (باقي القسمة)</code></pre>
+                <p><strong>نقطة</strong>: <code>%</code> مش نسبة مئوية، ده باقي.</p>
+
+                <h3>3.2 Increment / Decrement</h3>
+                <pre><button class="copy-btn">Copy</button><code>let n = 5;
+console.log(++n); // Output: 6 (يزود وبعدين يرجع)
+console.log(n++); // Output: 6 (يرجع القديم ثم يزود -&gt; n دلوقتي 7)
+console.log(n);   // Output: 7</code></pre>
+
+                <h3>3.3 Assignment & Compound</h3>
+                <p>بدل ما تكتب <code>x = x + 2</code> تكتب <code>x += 2</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>let x = 4;
+x += 6;      // x = 10
+x *= 2;      // x = 20
+x &lt;&lt;= 1;     // Bitwise shift: x = 40
+console.log(x); // Output: 40</code></pre>
+
+                <h3>3.4 Comparison</h3>
+                <p>عوامل المقارنة بترجع قيمة منطقية (<code>true</code> أو <code>false</code>). الفرق الأساسي بين <code>==</code> (المساواة المجردة) و <code>===</code> (المساواة الصارمة) هو أن <code>==</code> يقوم بعملية الإجبار (coercion)، أي أنه يحاول تحويل أنواع البيانات لتكون متطابقة قبل المقارنة. بينما <code>===</code> يقارن القيمة والنوع معًا بدون تحويل، مما يجعله أكثر دقة وأمانًا.</p>
+                <pre><button class="copy-btn">Copy</button><code>console.log(5 == '5');  // Output: true
+console.log(5 === '5'); // Output: false
+console.log(null == undefined);  // Output: true
+console.log(null === undefined); // Output: false</code></pre>
+
+                <h3>3.5 Logical (<code>&&</code>, <code>||</code>, <code>!</code>)</h3>
+                <p>بترجع آخر قيمة اتقيّمت (مش لازم Boolean) — ده اسمه <em>short-circuit evaluation</em>.</p>
+                <pre><button class="copy-btn">Copy</button><code>console.log('hi' && 0 && 42);   // Output: 0
+console.log(null || 'fallback'); // Output: 'fallback'
+console.log(!0); // Output: true</code></pre>
+                <p><strong>استخدام عملي</strong>: قيم افتراضية:</p>
+                <pre><button class="copy-btn">Copy</button><code>let userInput = '';
+let name = userInput || 'Anonymous';
+console.log(name); // Output: 'Anonymous'</code></pre>
+
+                <h3>3.6 Ternary Operator</h3>
+                <p>اختصار لـ if بسيط.</p>
+                <pre><button class="copy-btn">Copy</button><code>let age = 17;
+let statusMsg = age &gt;= 18 ? 'Adult' : 'Minor';
+console.log(statusMsg); // Output: 'Minor'</code></pre>
+
+                <h3>3.7 Bitwise لمحة</h3>
+                <p>تشتغل على 32‑bit signed integers.</p>
+                <pre><button class="copy-btn">Copy</button><code>console.log(5 & 3); // 0101 & 0011 = 0001 =&gt; Output: 1
+console.log(5 | 3); // 0101 | 0011 = 0111 =&gt; Output: 7
+console.log(5 ^ 3); // 0101 ^ 0011 = 0110 =&gt; Output: 6</code></pre>
+
+                <h3>3.8 الـ <code>+</code> المزدوج</h3>
+                <pre><button class="copy-btn">Copy</button><code>console.log(1 + 2);        // Output: 3 (عدد + عدد)
+console.log('1' + 2);      // Output: '12' (String Concat)
+console.log(1 + '2' + 3);  // Output: '123'
+console.log(1 + 2 + '3');  // Output: '33'</code></pre>
+                <p><strong>ملحوظة</strong>: أول ما يقابل String يكمل Concat.</p>
+
+                <h3>3.9 تحويل صريح لتفادي اللبس</h3>
+                <pre><button class="copy-btn">Copy</button><code>console.log(Number('5') + 3); // Output: 8
+console.log(+ '5' + 3);       // Output: 8 (Unary plus)</code></pre>
+
+                <h3>3.10 شرح سلوك المعاملات المنطقية (Short-Circuiting)</h3>
+                <p>المعاملات المنطقية <code>&&</code> (AND) و <code>||</code> (OR) لا ترجع دائمًا <code>true</code> أو <code>false</code>. يمكنها أن ترجع أحد القيم الأصلية، وهي ميزة قوية جدًا.</p>
+                <ul>
+                    <li><strong><code>&&</code> (AND):</strong> تبحث عن <strong>أول قيمة falsy</strong> في السلسلة. إذا لم تجد أي قيمة falsy، فإنها ترجع آخر قيمة truthy.</li>
+                    <li><strong><code>||</code> (OR):</strong> تبحث عن <strong>أول قيمة truthy</strong> في السلسلة. إذا لم تجد أي قيمة truthy، فإنها ترجع آخر قيمة falsy.</li>
+                </ul>
+
+                <h4>مثال على <code>&&</code> (البحث عن أول Falsy)</h4>
+                <pre><button class="copy-btn">Copy</button><code>// يتوقف عند الصفر لأنه أول قيمة falsy
+let v = 'start' && 0 && 'next';
+console.log(v); // Output: 0</code></pre>
+
+                <h4>مثال على <code>||</code> (البحث عن أول Truthy)</h4>
+                <pre><button class="copy-btn">Copy</button><code>// يتوقف عند 'default' لأنه أول قيمة truthy
+let user = null || 'default' || 'guest';
+console.log(user); // Output: 'default'</code></pre>
+
+                <h3>3.11 تدريبات مع شرح</h3>
+                <ol>
+                    <li><em>أول قيمة Falsy</em>: استخدم <code>&&</code> أو <code>||</code> لتكتشف قيمة مفقودة.</li>
+                </ol>
+                <pre><button class="copy-btn">Copy</button><code>let v = 'start' && 0 && 'next';
+console.log(v); // Output: 0 (أول Falsy وقف السلسلة)</code></pre>
+                <ol start="2">
+                    <li><em>تحويل String لرقم</em>:</li>
+                </ol>
+                <pre><button class="copy-btn">Copy</button><code>let s = '08';
+console.log(Number(s));    // Output: 8
+console.log(parseInt(s,10)); // Output: 8
+console.log(+s);           // Output: 8</code></pre>
+            </section>
+
+            <hr>
+
+            <section id="module4">
+                <h2>Module 4. Statements & Literals</h2>
+                <p>هنا بنبص على البِنْية العامة للكود.</p>
+
+                <h3>4.1 Statements</h3>
+                <p>كل سطر (أو Block) بيعمل Action: إعلان متغير، if، loop...</p>
+
+                <h3>4.2 Automatic Semicolon Insertion (ASI)</h3>
+                <p>المحرك ساعات بيحط <code>;</code> لو مش موجود — بس ممكن يغلط.</p>
+                <pre><button class="copy-btn">Copy</button><code>function returns(){
+  return
+  { answer: 42 }
+}
+console.log(returns()); // Output: undefined</code></pre>
+                <p>التفسير: حط <code>;</code> بعد <code>return</code> فـ الـ object ما اتقراش.</p>
+                <p><strong>أمثلة أماكن خطيرة</strong>:</p>
+                <ol>
+                    <li>سطر يبدأ بـ <code>(</code> بعد سطر قبلها من غير <code>;</code>.</li>
+                    <li>سطر يبدأ بـ <code>[</code> لنفس السبب.</li>
+                    <li>استخدام <code>return</code> وبعدين Newline.</li>
+                </ol>
+
+                <h3>4.3 Comments</h3>
+                <p>تساعد توثّق الكود وما تتنفّذش.</p>
+                <pre><button class="copy-btn">Copy</button><code>// ده تعليق سطر واحد
+/* ده تعليق
+متعدد السطور */</code></pre>
+
+                <h3>4.4 Literals</h3>
+                <p>قيم بتكتبها زي ما هي: <code>123</code>, <code>'text'</code>, <code>`template`</code>, <code>true</code>, <code>null</code>, <code>/ab+c/i</code>.</p>
+
+                <h3>4.5 أمثلة قصيرة</h3>
+                <pre><button class="copy-btn">Copy</button><code>let year = 2025; // Number literal
+let msg = 'Hello'; // String literal
+let pattern = /js/i; // Regex literal
+console.log(pattern.test('I love JS')); // Output: true</code></pre>
+
+                <h3>4.6 تمرين ASI مع شرح</h3>
+                <p>اكتب 3 أمثلة وبيّن ليه محتاج تحط <code>;</code> عشان ما يندمجوش مع السطر اللي بعده (مثلاً استدعاء Function راجع Object literal).</p>
+            </section>
+
+            <hr>
+
+            <section id="module5">
+                <h2>Module 5. Functions</h2>
+                <p>الدوال (Functions) وحدات منطق تعيد استخدامها.</p>
+
+                <h3>5.1 Declaration vs Expression</h3>
+                <pre><button class="copy-btn">Copy</button><code>function add(x,y){ return x + y; }
+console.log(add(2,3)); // Output: 5
+
+const multiply = function(x,y){ return x * y; };
+console.log(multiply(2,3)); // Output: 6
+
+const divide = function divide(x,y){ return x / y; };
+console.log(divide(6,3)); // Output: 2</code></pre>
+
+                <h3>5.2 المعاملات الافتراضية (قبل ES6)</h3>
+                <pre><button class="copy-btn">Copy</button><code>function greet(name){
+  name = (typeof name === 'undefined') ? 'Anonymous' : name;
+  console.log('Hello ' + name);
+}
+greet();        // Output: Hello Anonymous
+greet('Sara');  // Output: Hello Sara</code></pre>
+
+                <h3>5.3 arguments Object</h3>
+                <pre><button class="copy-btn">Copy</button><code>function sum(){
+  let total = 0;
+  for(let i=0;i&lt;arguments.length;i++) total += arguments[i];
+  return total;
+}
+console.log(sum(2,3,4)); // Output: 9</code></pre>
+
+                <h3>5.4 Scope و Globals خطأ</h3>
+                <pre><button class="copy-btn">Copy</button><code>function bad(){ hidden = 10; }
+bad();
+console.log(hidden); // Output: 10 (Global بالخطأ)</code></pre>
+                <p>أضف <code>"use strict";</code> داخل أو فوق هيطلع Error لو عملت كده.</p>
+
+                <h3>5.5 مثال countVowels</h3>
+                <pre><button class="copy-btn">Copy</button><code>function countVowels(str){
+  let vowels='aeiouAEIOU', c=0;
+  for(let i=0;i&lt;str.length;i++) if(vowels.indexOf(str[i])!==-1) c++;
+  return c;
+}
+console.log(countVowels('Hello World')); // Output: 3</code></pre>
+
+                <h3>5.6 reverseString تمرين + حل</h3>
+                <p><strong>حل ممكن</strong>:</p>
+                <pre><button class="copy-btn">Copy</button><code>function reverseString(s){
+  let out='';
+  for(let i=s.length-1;i&gt;=0;i--) out += s[i];
+  return out;
+}
+console.log(reverseString('abc')); // Output: 'cba'</code></pre>
+
+                <h3>5.7 أخطاء شائعة</h3>
+                <ul>
+                    <li>نسيان <code>return</code>.</li>
+                    <li>استخدام متغير غير معرّف داخل function.</li>
+                </ul>
+
+                <h3>5.8 Tips</h3>
+                <ul>
+                    <li>اقرأ Stack Trace: بيقولك السطر.</li>
+                    <li>جرّب تحول Declaration لـ Expression وتشوف Scope.</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <section id="module6">
+                <h2>Module 6. Control Flow</h2>
+                <p>التحكم في مسار التنفيذ.</p>
+
+                <h3>6.1 if / else</h3>
+                <p>تُستخدم لتنفيذ كود معين بناءً على شرط. يتم فحص الشروط بالترتيب:</p>
+                <ul>
+                    <li><strong><code>if</code></strong>: الشرط الأول الذي يتم التحقق منه. إذا كان صحيحًا، يتم تنفيذ الكود الخاص به ويتوقف التدفق.</li>
+                    <li><strong><code>else if</code></strong>: إذا كان شرط <code>if</code> الأول خاطئًا، يتم التحقق من هذا الشرط. يمكن أن يكون هناك عدة <code>else if</code>.</li>
+                    <li><strong><code>else</code></strong>: إذا كانت جميع الشروط السابقة خاطئة، يتم تنفيذ الكود الموجود في هذا الجزء.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>let score = 85;
+if (score >= 90) {
+    console.log('A'); // لم يتحقق لأن 85 ليست أكبر من أو تساوي 90
+} else if (score >= 80) {
+    console.log('B'); // تحقق! 85 أكبر من 80، يتم طباعة 'B' ويتوقف
+} else {
+    console.log('C or below'); // لن يتم الوصول إليه
+}
+// Output: B</code></pre>
+
+                <h3>6.2 Automatic Semicolon Insertion (ASI)</h3>
+                <p>يقوم محرك JavaScript تلقائيًا بإضافة الفاصلة المنقوطة (<code>;</code>) في نهاية بعض الأسطر إذا لم تكن موجودة. هذه الميزة قد تسبب أخطاء غير متوقعة، خاصة مع جملة <code>return</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>function getObject() {
+  return; // <-- ASI تضيف فاصلة منقوطة هنا تلقائيًا
+  {
+    message: 'Hello'
+  }
+}
+console.log(getObject()); // Output: undefined (وليس الكائن الذي تتوقعه)</code></pre>
+
+                <h3>6.3 for Loop</h3>
+                <p>تُستخدم لتكرار الكود عددًا محددًا من المرات. تتكون من ثلاثة أجزاء:</p>
+                <ul>
+                    <li><strong>Initialization:</strong> <code>let i=0</code> - تُنفذ مرة واحدة في البداية.</li>
+                    <li><strong>Condition:</strong> <code>i&lt;3</code> - يتم التحقق منها قبل كل تكرار.</li>
+                    <li><strong>Final Expression:</strong> <code>i++</code> - تُنفذ بعد كل تكرار.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>for (let i = 0; i < 3; i++) {
+  console.log(i);
+}
+// Output:
+// 0
+// 1
+// 2</code></pre>
+
+                <h3>6.4 while Loop</h3>
+                <p>تستمر في تكرار الكود طالما أن الشرط المحدد صحيح. يتم التحقق من الشرط <strong>قبل</strong> كل تكرار.</p>
+                <pre><button class="copy-btn">Copy</button><code>let total = 0, i = 1;
+while (i <= 5) {
+  total += i; // يضيف قيمة i إلى المجموع
+  i++;      // يزيد العداد لتجنب حلقة لا نهائية
+}
+console.log(total); // Output: 15 (مجموع 1+2+3+4+5)</code></pre>
+
+                <h3>6.5 تمرين: البحث عن أول رقم زوجي</h3>
+                <p>هذه الدالة تبحث في مصفوفة عن أول رقم زوجي وترجع موضعه (index). إذا لم تجد أي رقم زوجي، ترجع <code>-1</code>.</p>
+                <ul>
+                    <li>تستخدم <code>for</code> للمرور على كل عنصر.</li>
+                    <li>تستخدم معامل باقي القسمة (<code>%</code>) للتحقق إذا كان الرقم زوجيًا (<code>arr[i] % 2 === 0</code>).</li>
+                    <li><code>return i;</code> توقف الدالة فورًا وترجع الموضع عند العثور على أول تطابق.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>function firstEvenIndex(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] % 2 === 0) {
+      return i; // وجدنا أول رقم زوجي، أرجع موضعه
+    }
+  }
+  return -1; // لم نجد أي رقم زوجي في المصفوفة كلها
+}
+console.log(firstEvenIndex([1, 5, 7, 4, 9])); // Output: 3</code></pre>
+
+                <h3>6.6 تحويل while إلى for(;;)</h3>
+                <p>يمكن كتابة أي حلقة <code>while</code> باستخدام <code>for</code> مع ترك أجزاء فارغة. هذا يوضح أن بنية <code>for</code> مرنة جدًا.</p>
+                <pre><button class="copy-btn">Copy</button><code>let i = 0;
+// While loop version
+while (i < 3) {
+  console.log(i);
+  i++;
+}
+
+// for(;;) loop equivalent
+let j = 0;
+for (;;) { // حلقة لا نهائية ظاهريًا
+  if (j >= 3) break; // شرط الخروج يدويًا
+  console.log(j);
+  j++;
+}</code></pre>
+            </section>
+
+            <hr>
+
+            <section id="module7">
+                <h2>Module 7. Arrays & Basic Data Manipulation</h2>
+
+                <h3>7.1 إنشاء Array وإدخال قيم</h3>
+                <pre><button class="copy-btn">Copy</button><code>let nums = [];
+nums.push(4); // طول = 1
+nums.push(7); // طول = 2
+console.log(nums); // Output: [4, 7]</code></pre>
+
+                <h3>7.2 Loop للتعديل</h3>
+                <pre><button class="copy-btn">Copy</button><code>for(let i=0;i&lt;nums.length;i++) nums[i]*=2;
+console.log(nums); // Output: [8, 14]</code></pre>
+
+                <h3>7.3 حساب المجموع والمتوسط</h3>
+                <pre><button class="copy-btn">Copy</button><code>let sum = 0;
+for(let i=0;i&lt;nums.length;i++) sum += nums[i];
+let avg = sum / nums.length;
+console.log(sum, avg); // Output: 22 11</code></pre>
+
+                <h3>7.4 إيجاد Max / Min يدوي</h3>
+                <pre><button class="copy-btn">Copy</button><code>let max = nums[0], min = nums[0];
+for(let i=1;i&lt;nums.length;i++){
+  if(nums[i] &gt; max) max = nums[i];
+  if(nums[i] &lt; min) min = nums[i];
+}
+console.log(max, min); // Output: 14 8</code></pre>
+
+                <h3>7.5 توليد Array جديدة من التربيعات (من غير map)</h3>
+                <pre><button class="copy-btn">Copy</button><code>function squares(arr){
+  let out=[];
+  for(let i=0;i&lt;arr.length;i++) out.push(arr[i]*arr[i]);
+  return out;
+}
+console.log(squares([2,3,5])); // Output: [4, 9, 25]</code></pre>
+            </section>
+
+            <hr>
+
+            <section id="module8">
+                <h2>Module 8. DOM Interaction & Simple UI</h2>
+
+                <h3>8.1 الوصول للعناصر وتعديل النص</h3>
+                <pre><button class="copy-btn">Copy</button><code>&lt;p id="msg"&gt;Old&lt;/p&gt;
+&lt;script&gt;
+  const el = document.getElementById('msg');
+  el.textContent = 'New Text';
+  console.log(el.textContent); // Output: New Text
+&lt;/script&gt;</code></pre>
+                <p><em>ليه <strong><code>textContent</code></strong>؟</em> أسرع وأأمن (ما ينفّذش HTML) مقارنة بـ <code>innerHTML</code>.</p>
+
+                <h3>8.2 مثال Input</h3>
+                <pre><button class="copy-btn">Copy</button><code>&lt;input id="userText" /&gt;
+&lt;button id="showBtn"&gt;Show&lt;/button&gt;
+&lt;p id="output"&gt;&lt;/p&gt;
+&lt;script&gt;
+  document.getElementById('showBtn').onclick = function(){
+    let text = document.getElementById('userText').value;
+    document.getElementById('output').textContent = text.toUpperCase();
+  };
+&lt;/script&gt;</code></pre>
+                <p><strong>نتيجة متوقعة</strong>: أي كتابة تتحول Capital.</p>
+
+                <h3>8.3 تغيير حجم صورة</h3>
+                <pre><button class="copy-btn">Copy</button><code>&lt;img id="pic" src="image1.jpg" width="200" /&gt;
+&lt;button id="grow"&gt;Grow&lt;/button&gt;
+&lt;script&gt;
+  document.getElementById('grow').onclick = function(){
+    const img = document.getElementById('pic');
+    img.width += 20;
+    console.log(img.width); // Output: 220 أول ضغطة
+  };
+&lt;/script&gt;</code></pre>
+
+                <h3>8.4 تمرين تبديل صورة (Hint)</h3>
+                <p>احفظ Array للصور واستخدم Index يزيد ويتلف.</p>
+            </section>
+
+            <hr>
+
+            <section id="module9">
+                <h2>Module 9. Putting It Together – Mini Lab</h2>
+
+                <h3>9.1 الهدف</h3>
+                <p>جمع أرقام + إحصائيات + تحليل حروف متحركة.</p>
+
+                <h3>9.2 إضافة Validation</h3>
+                <pre><button class="copy-btn">Copy</button><code>function safeParseNumber(str){
+  if(str.trim()==='') return { ok:false, msg:'Empty input' };
+  let n = Number(str);
+  if(Number.isNaN(n)) return { ok:false, msg:'Not a number' };
+  return { ok:true, value:n };
+}
+console.log(safeParseNumber('5'));   // Output: { ok:true, value:5 }
+console.log(safeParseNumber('abc')); // Output: { ok:false, msg:'Not a number' }</code></pre>
+
+                <h3>9.3 مثال رسالة خطأ في DOM (فكرة)</h3>
+                <p>اعرض <code>&lt;span class="error"&gt;</code> تحت الـ input لو parsing فشل.</p>
+
+                <h3>9.4 تحسين التمرين</h3>
+                <ul>
+                    <li>استبدل <code>prompt</code> بـ form و Event <code>submit</code>.</li>
+                    <li>أضف زر Reset.</li>
+                    <li>اعمل تحديث مباشر للمتوسط بعد كل إدخال.</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <section id="module10">
+                <h2>Module 10. Debugging Essentials</h2>
+
+                <h3>10.1 قراءة رسائل الأخطاء (Reading Errors)</h3>
+                <p>عندما يحدث خطأ، يعرض المتصفح <strong>Stack Trace</strong>. هذا التقرير يوضح سلسلة استدعاءات الدوال التي أدت إلى الخطأ. ابدأ دائمًا من الأعلى، وركز على أول سطر يشير إلى ملف الكود الخاص بك، فهو غالبًا ما يكون مصدر المشكلة.</p>
+
+                <h3>10.2 إستراتيجية عزل المشكلة (Isolate and Reduce)</h3>
+                <p>إذا كان لديك كود معقد، حاول عزل مصدر المشكلة. قم بتعليق (comment out) أجزاء من الكود بشكل منهجي حتى يختفي الخطأ. هذه الطريقة تساعدك على تحديد الجزء الذي يسبب المشكلة بدقة.</p>
+
+                <h3>10.3 أدوات الـ <code>console</code></h3>
+                <p>الـ <code>console</code> ليس فقط للـ <code>log</code>. استخدم هذه الأدوات للحصول على رؤية أفضل:</p>
+                <pre><button class="copy-btn">Copy</button><code>const arr = [{n:1},{n:2}];
+console.log(arr);          // Output: Array كامل
+console.table(arr);        // Output: جدول بالقيم
+console.time('loop');
+for(let i=0;i&lt;100000;i++){}
+console.timeEnd('loop');   // Output: loop: X ms</code></pre>
+
+                <h3>10.4 الوضع الصارم (Strict Mode)</h3>
+                <p>بإضافة <code>'use strict';</code> في بداية ملفك أو دالتك، فإنك تطلب من محرك JavaScript تطبيق قواعد أكثر صرامة. هذا يساعد على كشف أخطاء شائعة، مثل استخدام متغير قبل إعلانه، ويمنع بعض الممارسات غير الآمنة.</p>
+                <pre><button class="copy-btn">Copy</button><code>'use strict';
+function f(){ x = 5; }
+// f(); // ReferenceError لو شغّلتها</code></pre>
+
+                <h3>10.5 أنماط أخطاء شائعة (Common Patterns)</h3>
+                <p>بعض الأخطاء تتكرر كثيرًا. إليك أشهرها وكيفية تجنبها:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>النوع</th>
+                            <th>المثال</th>
+                            <th>الحل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Off-by-one</td><td><code>for(i=0;i&lt;=arr.length;i++)</code></td><td>استخدم <code>&lt;</code></td></tr>
+                        <tr><td>Global بدون قصد</td><td><code>x = 3;</code></td><td><code>let x = 3;</code> أو strict</td></tr>
+                        <tr><td>== بدل ===</td><td><code>if(id == 0)</code></td><td>استخدم ===</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>10.6 خطوات سريعة عندما تكون عالقًا</h3>
+                <p>إذا واجهت خطأ ولم تعرف من أين تبدأ، اتبع هذه القائمة العملية:</p>
+                <ol>
+                    <li>اطبع المتغيرات الأساسية.</li>
+                    <li>تأكد من الأنواع (<code>typeof</code>).</li>
+                    <li>اعزل الدالة المكسورة في ملف صغير.</li>
+                </ol>
+            </section>
+
+            </section>
+
+            <hr>
+
+            <section id="module11">
+                <h2>Module 11: إضافة عناصر للصفحة (DOM Manipulation)</h2>
+                <p>واحدة من أقوى ميزات JavaScript هي قدرتها على تعديل محتوى صفحة الويب مباشرة. هذا ما يسمى بـ <strong>DOM Manipulation</strong>. أسهل طريقة لإضافة HTML هي باستخدام خاصية <code>innerHTML</code>.</p>
+
+                <h3>11.1 استخدام السلاسل النصية العادية (Strings)</h3>
+                <p>يمكنك بناء سلسلة نصية تحتوي على وسوم HTML وإضافتها إلى عنصر موجود في الصفحة. هذه الطريقة تعمل بشكل جيد للإضافات البسيطة.</p>
+                <div id="container-demo1" class="dom-demo"></div>
+                <pre><button class="copy-btn">Copy</button><code>// 1. نحدد العنصر الحاوي في الـ HTML
+const container = document.getElementById('container-demo1');
+
+// 2. ننشئ سلسلة نصية تحتوي على كود HTML
+const simpleHTML = "<h4>عنوان بسيط</h4><p>هذه فقرة تمت إضافتها بواسطة JavaScript.</p>";
+
+// 3. نستخدم innerHTML لوضع الكود داخل العنصر
+container.innerHTML = simpleHTML;</code></pre>
+
+                <h3>11.2 استخدام القوالب النصية (Template Literals)</h3>
+                <p>عندما يكون لديك HTML معقد أو متعدد الأسطر، استخدام القوالب النصية (المعروفة بـ backticks `` ` ``) يجعل الكود أكثر وضوحًا وسهولة في القراءة والكتابة.</p>
+                <div id="container-demo2" class="dom-demo"></div>
+                <pre><button class="copy-btn">Copy</button><code>// 1. نحدد العنصر الحاوي الثاني
+const templateContainer = document.getElementById('container-demo2');
+
+// 2. نستخدم backticks لإنشاء HTML متعدد الأسطر بسهولة
+const complexHTML = `
+  <div class="card-demo">
+    <h4>بطاقة منتج</h4>
+    <p>هذه بطاقة تم إنشاؤها ديناميكيًا.</p>
+    <button>شراء الآن</button>
+  </div>
+`;
+
+// 3. نضيف الكود المعقد باستخدام innerHTML
+templateContainer.innerHTML = complexHTML;</code></pre>
+                <p>لاحظ كيف أن القوالب النصية تحافظ على التنسيق والمسافات، مما يجعل قراءة كود الـ HTML داخل JavaScript أسهل بكثير.</p>
+
+                <h3>11.3 كلمة تحذير: <code>document.write()</code></h3>
+                <p>قد تصادف في بعض الأكواد القديمة دالة <code>document.write()</code>. هذه الدالة تكتب الـ HTML مباشرة في مستند الصفحة أثناء تحميله، ويمكنك استخدامها لدمج متغيرات JavaScript مع HTML.</p>
+
+                <h4>مثال بسلسلة نصية (Concatenation)</h4>
+                <p>هنا ندمج متغيرًا مع نص HTML منسق مباشرةً. لاحظ استخدام علامات الاقتباس المختلفة (<code>"</code> و <code>'</code>) لتجنب الأخطاء.</p>
+                <pre><button class="copy-btn">Copy</button><code>let firstName2 = "علي";
+document.writeln("<h1 style='color:blue;'>مرحباً، " + firstName2 + "!</h1>");</code></pre>
+
+                <h4>مثال بالقوالب النصية (Template Literals) لأسطر متعددة</h4>
+                <p>إذا كان لديك كود HTML متعدد الأسطر، فإن القوالب النصية (`` ` ``) هي الطريقة الأسهل لكتابته.</p>
+                <pre><button class="copy-btn">Copy</button><code>const multiLineContent = `
+  <div style="border: 1px solid green; padding: 10px;">
+    <h2>تقرير اليوم</h2>
+    <p>هذا المحتوى متعدد الأسطر.</p>
+  </div>
+`;
+document.write(multiLineContent);</code></pre>
+                <blockquote>
+                    <strong>تحذير خطير:</strong> إذا تم استدعاء <code>document.write()</code> <strong>بعد</strong> اكتمال تحميل الصفحة (على سبيل المثال، داخل دالة مرتبطة بحدث click)، فسيقوم بمسح محتوى الصفحة بالكامل واستبداله بالنص الجديد. لهذا السبب، يُعتبر استخدامها ممارسة سيئة في التطبيقات الحديثة. استخدم دائمًا <code>innerHTML</code> أو دوال DOM الأخرى (مثل <code>createElement</code>) لتعديل المحتوى بأمان بعد تحميل الصفحة.
+                </blockquote>
+
+                <h3>11.4 الطريقة الاحترافية: <code>createElement</code></h3>
+                <p>الطريقة الأكثر أمانًا ومرونة لتعديل الـ DOM هي إنشاء العناصر ككائنات (objects) ثم إضافتها للصفحة. هذه الطريقة تمنع أخطاء حقن الكود (code injection) وتمنحك تحكمًا كاملاً في كل عنصر.</p>
+                <div id="container-demo3" class="dom-demo"></div>
+                <pre><button class="copy-btn">Copy</button><code>// 1. نحدد العنصر الحاوي
+const professionalContainer = document.getElementById('container-demo3');
+
+// 2. ننشئ عنصرًا جديدًا (فقرة نصية)
+const newParagraph = document.createElement('p');
+
+// 3. نضبط خصائصه
+newParagraph.textContent = 'هذه الفقرة تم إنشاؤها باستخدام createElement.';
+newParagraph.style.color = 'var(--accent-color)';
+newParagraph.className = 'special-note'; // يمكن إضافة كلاس للتنسيق
+
+// 4. نضيف العنصر الجديد إلى الحاوي
+professionalContainer.appendChild(newParagraph);</code></pre>
+                <p>هذه الطريقة هي المعيار في بناء التطبيقات المعقدة والمكتبات مثل React و Vue، لأنها تفصل بين بنية العنصر ومحتواه بشكل نظيف وآمن.</p>
+
+                <h3>11.5 مثال عملي: إنشاء وتنسيق <code>&lt;h1&gt;</code></h3>
+                <p>لنجمع كل شيء معًا. هذا مثال يوضح كيفية إنشاء عنصر <code>&lt;h1&gt;</code>، وتحديد محتواه، وتغيير لونه ومحاذاته، ثم إضافته إلى الصفحة.</p>
+                <div id="container-demo4" class="dom-demo"></div>
+                <pre><button class="copy-btn">Copy</button><code>// 1. نحدد العنصر الحاوي
+const headerContainer = document.getElementById('container-demo4');
+
+// 2. ننشئ عنصر h1
+const myHeader = document.createElement('h1');
+
+// 3. نضيف المحتوى النصي
+myHeader.textContent = 'تم إنشاؤه بواسطة JavaScript!';
+
+// 4. نعدل على التنسيق مباشرة
+myHeader.style.color = '#d9534f'; // اللون الأحمر
+myHeader.style.textAlign = 'center'; // محاذاة للنص
+myHeader.style.borderBottom = '2px solid #d9534f';
+
+// 5. نضيف العنوان الجديد إلى الحاوي
+headerContainer.appendChild(myHeader);</code></pre>
+            </section>
+
+            <hr>
+
+            <section id="module12">
+                <h2>Module 12: ES6+ Features</h2>
+                <p>من أول إصدار ES6 (ECMAScript 2015)، JavaScript بقى بينزلها تحديثات سنوية بتضيف مميزات قوية بتخلي كتابة الكود أسهل وأوضح.</p>
+
+                <h3>12.1 Arrow Functions</h3>
+                <p>طريقة مختصرة لكتابة الدوال. الفرق الجوهري إنها مبتعملش <code>this</code> binding خاص بيها، بتاخد الـ <code>this</code> من الـ scope اللي هي فيه (Lexical <code>this</code>).</p>
+                <pre><button class="copy-btn">Copy</button><code>// Traditional Function
+function add(a, b) {
+  return a + b;
+}
+
+// Arrow Function
+const addArrow = (a, b) => a + b;
+
+// Arrow function with one argument
+const square = x => x * x;</code></pre>
+
+                <h3>12.2 let/const</h3>
+                <p>بدائل <code>var</code>. الاتنين <strong>Block-scoped</strong>، يعني بيتعرفوا جوه الـ block <code>{...}</code> اللي هما فيه بس.</p>
+                <ul>
+                    <li><code>let</code>: متغير قيمته ممكن تتغير.</li>
+                    <li><code>const</code>: ثابت، لازم ياخد قيمة عند التصريح ومينفعش تعمل re-assign لقيمته. (لو القيمة object أو array، محتواهم الداخلي ممكن يتغير).</li>
+                </ul>
+
+                <h3>12.3 Template Literals</h3>
+                <p>طريقة محسنة للتعامل مع الـ strings باستخدام الـ backticks (<code>`</code>). بتدعم متغيرات جوه الـ string (interpolation) وكتابة الـ string على كذا سطر.</p>
+                <pre><button class="copy-btn">Copy</button><code>const name = 'Ali';
+const message = `Hello, ${name}!
+Welcome to the lecture.`;
+console.log(message);</code></pre>
+
+                <h3>12.4 Destructuring</h3>
+                <p>طريقة سهلة لاستخراج قيم من الـ Arrays أو خصائص من الـ Objects.</p>
+                <pre><button class="copy-btn">Copy</button><code>// Array Destructuring
+const [first, second] = ['Apple', 'Banana'];
+console.log(first); // 'Apple'
+
+// Object Destructuring
+const person = { name: 'Hassan', age: 30 };
+const { name, age } = person;
+console.log(name); // 'Hassan'</code></pre>
+
+                <h3>12.5 Default Parameters</h3>
+                <p>تقدر تحط قيم افتراضية للـ parameters في الدوال، هتستخدم لو الـ argument متمررش.</p>
+                <pre><button class="copy-btn">Copy</button><code>function greet(name = 'Guest') {
+  console.log(`Hello, ${name}`);
+}
+greet(); // Hello, Guest
+greet('Fatma'); // Hello, Fatma</code></pre>
+
+                <h3>12.6 Rest/Spread Operators (<code>...</code>)</h3>
+                <ul>
+                    <li><strong>Spread Operator</strong>: بيفرد عناصر Array أو خصائص Object. مفيد في نسخ أو دمج الـ arrays/objects.</li>
+                    <li><strong>Rest Operator</strong>: بيلم باقي الـ arguments في دالة ويحطهم في array.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>// Spread
+const arr1 = [1, 2];
+const arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]
+
+// Rest
+function sum(...numbers) {
+  return numbers.reduce((total, num) => total + num, 0);
+}
+console.log(sum(1, 2, 3, 4)); // 10</code></pre>
+
+                <h3>12.7 Modules</h3>
+                <p>طريقة لتقسيم الكود لملفات منفصلة (modules) عشان التنظيم وإعادة الاستخدام. بتستخدم <code>import</code> و <code>export</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>// In math.js
+export const PI = 3.14;
+export default function multiply(a, b) {
+  return a * b;
+}
+
+// In main.js
+import multiply, { PI } from './math.js';
+console.log(PI); // 3.14
+console.log(multiply(2, 5)); // 10</code></pre>
+            </section>
+
+            <hr>
+
+            <section id="summary">
+                <h2>Summary Cheat Sheet</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>Key Takeaway (ملخص)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Primitive Types</td><td>قيم ثابتة بالذاكرة، التعديل = إنشاء قيمة جديدة</td></tr>
+                        <tr><td><code>var</code> Hoisting</td><td>التصريح يطلع لفوق؛ القيمة تبقى <code>undefined</code> لحد الإسناد</td></tr>
+                        <tr><td><code>==</code> vs <code>===</code></td><td>الأول Coercion، التاني Strict</td></tr>
+                        <tr><td>Truthy/Falsy</td><td>شوية قيم قليلة Falsy: <code>0,"/",NaN,null,undefined,false</code></td></tr>
+                        <tr><td>Functions</td><td>Declaration Hoisted؛ Expression القيمة تتحدد وقت التنفيذ</td></tr>
+                        <tr><td>Arrays</td><td>Loop يدوي أو Methods (ES5) زي <code>map</code>, <code>filter</code></td></tr>
+                        <tr><td>DOM Access</td><td><code>document.getElementById</code> وتعديل <code>.textContent</code></td></tr>
+                        <tr><td>User Input</td><td><code>prompt()</code> بيرجع String أو <code>null</code></td></tr>
+                        <tr><td>Debugging</td><td>قسم المشكلة + اطبع + اقرأ Stack</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <section id="practice">
+                <h2>Suggested Practice Set</h2>
+                <ol>
+                    <li><code>isPrime(n)</code> واطبع كل Prime أقل من 100.</li>
+                    <li>Function ترجع Object بعدد تكرار الحروف المتحركة <code>{a:?, e:? ...}</code>.</li>
+                    <li>Function تقص String لو أطول من n وتحط <code>...</code>.</li>
+                    <li>Array جديدة من Squares بدون <code>map</code>.</li>
+                    <li>Page بتكبر Font Size لكل Click لحد حد معين وبعدين Reset.</li>
+                </ol>
+            </section>
+
+            <hr>
+
+            <section id="next-steps">
+                <h2>Next Steps</h2>
+                <ul>
+                    <li>ادخل على ES6+ Features (Arrow Functions, Destructuring, Modules).</li>
+                    <li>جرّب تستخدم Babel + Bundler بسيط.</li>
+                    <li>اقرأ MDN لأي Method جديدة.</li>
+                </ul>
+            </section>
+
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => {
+                            button.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        button.textContent = 'Error';
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
