@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive JavaScript Fundamentals</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #007bff;
+            --header-color: #f7df1e; /* JavaScript Yellow */
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #f7df1e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--header-color);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        header .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+
+        /* Module Cards */
+        main section {
+            background-color: var(--bg-color-light);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border-right: 4px solid var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        main section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0; /* Adjusted for card layout */
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 2rem;
+        }
+
+        /* Code Blocks & Text */
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 3px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 100%;
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s, background-color 0.2s;
+        }
+
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        blockquote {
+            border-right: 4px solid var(--quote-border);
+            padding-right: 1rem;
+            margin-right: 0;
+            font-style: italic;
+            color: #ccc;
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        strong {
+            color: var(--header-color);
+        }
+
+        .dom-demo {
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            margin-bottom: 1em;
+            border-radius: 8px;
+            background-color: var(--bg-color-offset);
+        }
+
+        .card-demo {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-demo button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .special-note {
+            font-style: italic;
+            padding: 8px;
+            background-color: var(--bg-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+            list-style: none;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 18px; /* Adjusted for RTL */
+            height: 100%;
+            width: 4px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+            padding-right: 60px; /* Space for icon */
+        }
+
+        .timeline-icon {
+            position: absolute;
+            right: -25px; /* Adjust for RTL */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--bg-color);
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-icon {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .timeline-icon .material-icons {
+            font-size: 28px;
+        }
+
+        .timeline-content {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            text-align: right;
+        }
+
+        th {
+            background-color: var(--bg-color-light);
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 3rem 0;
+        }
+
+        /* Comic Conversation Styles */
+        .comic-conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .convo-turn {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            max-width: 85%;
+        }
+
+        .convo-turn.gomaa {
+            align-self: flex-start;
+        }
+
+        .convo-turn.sawy {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .convo-turn img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-top: 10px;
+        }
+
+        .bubble {
+            background-color: var(--bg-color-offset);
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .convo-turn.gomaa .bubble {
+            border-top-left-radius: 0;
+        }
+
+        .convo-turn.sawy .bubble {
+            border-top-right-radius: 0;
+            background-color: var(--primary-color-light);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Comprehensive JavaScript Fundamentals Lecture</h1>
+            <p class="subtitle">
+                <strong>Audience</strong>: Beginners — هنشرح من الصفر لحد ما تبقى مرتاح مع الأساسيات.<br>
+                <strong>Format</strong>: Modules. كل Module فيه شرح، أمثلة Code، وتمارين. الشرح بالعربي (لهجة مصرية بسيطة) مع الحفاظ على الكلمات التقنية و Keywords بالإنجليزي عشان المعنى مايضيعش.
+            </p>
+        </header>
+
+        <main>
+            <section id="module0">
+                <h2>Module 0: قصة JavaScript</h2>
+                <div class="comic-conversation">
+                    <!-- Turn 1: Gomaa asks -->
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>إيه يا صااااوى! أنا بسمع عن حاجة اسمها JavaScript في كل حتة، إيه قصتها دي؟ هي بتاعة القهوة؟</p>
+                        </div>
+                    </div>
+
+                    <!-- Turn 2: Sawy answers -->
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>يا جمعة، قهوة إيه بس! دي لغة برمجة، بس سهلة. زمان، كانت صفحات النت عاملة زي الجرايد، كلام وصور وبس. مملة يعني.</p>
+                        </div>
+                    </div>
+
+                    <!-- Turn 3: Gomaa is curious -->
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>جرايد؟ وبعدين؟</p>
+                        </div>
+                    </div>
+
+                    <!-- Turn 4: Sawy explains -->
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>جه واحد فنان اسمه "برندان آيك"، في 10 أيام بس، عمل لغة تخلي الصفحات دي تتكلم وتتحرك. يعني لما تدوس على زرار، حاجة تحصل. فهمت؟</p>
+                        </div>
+                    </div>
+
+                     <!-- Turn 5: Gomaa gets it -->
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>اااه، يعني هي اللي خلت النت فيه أكشن؟ طب ليه اسمها "جافا" سكريبت؟ ليها علاقة بلغة جافا؟</p>
+                        </div>
+                    </div>
+
+                    <!-- Turn 6: Sawy clarifies -->
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>لا خالص، دي حركة تسويق عشان كانت "جافا" مشهورة وقتها. زي ما تسمي ابنك "ميسي" عشان الناس تحبه. مالهمش علاقة ببعض.</p>
+                        </div>
+                    </div>
+
+                    <!-- Turn 7: Gomaa asks about the code -->
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب وريني كود بسيط كده أشوف شكله إزاي.</p>
+                        </div>
+                    </div>
+
+                    <!-- Turn 8: Sawy shows code -->
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>بص يا سيدي، ده كود بيغير كلمة "Hello" في الصفحة يخليها "Hello JavaScript!".</p>
+                            <pre><button class="copy-btn">Copy</button><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1 id="greet"&gt;Hello&lt;/h1&gt;
+    &lt;script&gt;
+      document.getElementById('greet').textContent = 'Hello JavaScript!';
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module1">
+                <h2>Module 1: أنواع البيانات الأساسية</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، إيه حوار أنواع البيانات ده؟ أنا كل اللي أعرفه الأرقام والحروف.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>بالظبط كده! دي بنسميها <strong>Primitive Types</strong>. نبدأ بالـ <strong>Numbers</strong>. في الجافاسكريبت، مفيش فرق بين رقم صحيح ورقم عشري، كلهم واحد.</p>
+                            <pre><button class="copy-btn">Copy</button><code>console.log(3/0);          // Infinity (لا نهاية)
+console.log("abc"/2);        // NaN (Not a Number)
+console.log(Number.MAX_VALUE); // أكبر رقم ممكن</code></pre>
+                            <p>وخلي بالك، لو حاولت تقارن <code>NaN == NaN</code> هتديك <code>false</code>! استخدم <code>Number.isNaN()</code> عشان تتأكد.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>تمام، والنوع التاني هو الـ <strong>Strings</strong> أو النصوص. دي سهلة.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>سهلة بس فيها خدعة. الـ Strings في الجافاسكريبت <strong>Immutable</strong>، يعني غير قابلة للتغيير. لو حاولت تغير حرف فيها، أنت في الحقيقة بتعمل string جديد خالص.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let phrase = "JavaScript";
+console.log(phrase.charAt(4)); // S
+console.log(phrase.slice(4,10)); // Script
+console.log(phrase.split('a')); // [ 'J', 'v', 'Script' ]</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>أها! فهمت. طب وإيه موضوع الصح والغلط ده؟ الـ Booleans؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ممتاز. في الجافاسكريبت، مش بس <code>true</code> و <code>false</code> هما اللي بيعبروا عن الصح والغلط. فيه قيم بنعتبرها "falsy" يعني بتدي معنى الـ false.</p>
+                            <p>القيم الـ <strong>Falsy</strong> هي: <code>false</code>, <code>0</code>, <code>""</code> (نص فاضي), <code>null</code>, <code>undefined</code>, و <code>NaN</code>.</p>
+                            <p>أي حاجة غير دول بنعتبرها <strong>Truthy</strong>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>if ("hello") { // truthy
+  console.log('This will run');
+}
+if (0) { // falsy
+  console.log('This will NOT run');
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module2">
+                <h2>Module 2: Null vs Undefined و Coercion</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صااااوى، أنا هتجنن! إيه الفرق بين <code>null</code> و <code>undefined</code>؟ الاتنين شكلهم زي بعض، معناهم "فاضي" وخلاص!</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>اهدأ يا جمعة، الموضوع بسيط. بص، <strong><code>undefined</code></strong> دي بتاعت النظام. معناها "أنا معرفش فيه إيه". زي صندوق بريد جديد لسه محدش حط فيه جوابات. هو موجود، بس حالته <strong>غير مُعرَّفة</strong>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let user;
+console.log(user); // Output: undefined</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>آه... يعني النظام هو اللي بيقول معرفش. طب و <strong><code>null</code></strong>؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p><strong><code>null</code></strong> دي بقى بتاعتك أنت كمبرمج. أنت اللي بتروح للصندوق ده وتفضّيه وتقول "أنا عايزه يبقى فاضي عن قصد". أنت اللي بتدي له القيمة دي بنفسك.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let loggedInUser = { name: 'Ahmed' };
+// المستخدم عمل تسجيل خروج
+loggedInUser = null; // أنت اللي خليته فاضي
+console.log(loggedInUser); // Output: null</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>فهمت! يبقى <code>undefined</code> دي "معرفش"، لكن <code>null</code> دي "فاضي بإيدي". تسلم يا صاوي!</p>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>الخلاصة:</strong> <code>undefined</code> هي "لسه مفيش قيمة"، أما <code>null</code> هي "القيمة اللي فيه هي 'فارغ'".</p>
+
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>صاااوى، الحقني! بص الكود ده، ليه لما بسأل عن نوع <code>null</code> بيقولي <code>'object'</code>؟ مش المفروض يبقى <code>'null'</code>؟</p>
+                            <pre><button class="copy-btn">Copy</button><code>typeof null; // 'object' (WTF?!)</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ههههه، دي غلطة قديمة في اللغة نفسها وفضلت موجودة عشان مايكسروش الكود القديم. اعتبرها علامة مميزة كده، الكل عارفها. فكك منها.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>ماشي هعديها... طب بص المصيبة دي! ليه <code>'5' + 3</code> بتطلع <code>'53'</code>، لكن <code>'5' - 3</code> بتطلع <code>2</code>؟ ده تهريج!</p>
+                             <pre><button class="copy-btn">Copy</button><code>'5' + 3; // '53'
+'5' - 3; // 2</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ده مش تهريج، ده اسمه <strong>Coercion</strong>. بص، علامة الزائد <code>+</code> ليها شخصيتين: جامعة أرقام، و لازقة كلام (strings).</p>
+                            <p>لو شافت <code>string</code> في أي حتة، بتتحول للازقة على طول وتلزق كله في بعض. دي اسمها <strong>Concatenation</strong>.</p>
+                             <pre><button class="copy-btn">Copy</button><code>'5' + 3 // '53' (الـ + شاف الـ string فقال: أنا لازقة)</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>لكن باقي العمليات (<code>-</code>, <code>*</code>, <code>/</code>) ملهاش غير شخصية واحدة: بتاعت حساب. فبتحاول تجبر أي حاجة مش رقم إنها تبقى رقم عشان تحسبها. ده اسمه <strong>Arithmetic Coercion</strong>.</p>
+                             <pre><button class="copy-btn">Copy</button><code>'5' - 3 // 2 (الـ - معندهاش غير شخصية واحدة: الحساب)</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>آهااا! يعني الزائد هو بس اللي بيستهبل، الباقي محترمين! وصلت يا كبير!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p><strong>الخلاصة</strong>: الـ <code>+</code> حساس للـ strings، باقي العوامل الحسابية حساسة للـ numbers.</p>
+
+                <p><strong>جرب بنفسك</strong>: <code>Number("")</code>, <code>Boolean("0")</code>.</p>
+            </section>
+
+            <hr>
+
+            <section id="module3">
+                <h2>Module 3: ليه الصاوى زعلان من var؟</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>صاوى، أنا كتبت كود أهو، بس مش فاهم ليه لما بطلب سنّي قبل ما أقوله، بيقولي <code>undefined</code> ومش بيزعقلي؟</p>
+                            <pre><button class="copy-btn">Copy</button><code>console.log(age); // طلع لي: undefined
+var age = 30;</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>عشان دي حركة <code>var</code> الصايعة اللي اسمها <strong>Hoisting</strong>. بتخلي جافاسكريبت تاخد إعلان المتغير بتاعك ترفعه فوق خالص قبل ما تشغل الكود، وتديله قيمة <code>undefined</code> مؤقتًا. كأنك بتقول "فيه متغير اسمه age جاي في السكة".</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب والمصيبة التانية دي؟ إزاي أقدر أعمل متغير بنفس الاسم مرتين؟ ده لخبطة!</p>
+                            <pre><button class="copy-btn">Copy</button><code>var myVar = 'الأول';
+var myVar = 'التاني'; // عادي؟!
+console.log(myVar); // طلع لي: التاني</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>بالظبط! عشان كده بنستخدم <code>let</code> و <code>const</code>. دول أولاد ناس ومبيسمحوش بالعبط ده.</p>
+                            <p>مع <code>let</code>، لو حاولت تستخدم المتغير قبل ما تعلنه، هتاخد <strong>Error</strong> في وشك على طول. مفيش هزار. المنطقة دي اسمها Temporal Dead Zone، يعني منطقة الموت المؤقتة، ممنوع اللمس.</p>
+                            <pre><button class="copy-btn">Copy</button><code>console.log(name); // ERROR! Cannot access 'name'
+let name = 'Sawy';</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>وكمان بيمنعوا إنك تعرف نفس المتغير مرتين. أمان ليك وللكود بتاعك.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let color = 'blue';
+let color = 'red'; // ERROR! 'color' has already been declared</code></pre>
+                            <p><strong>الخلاصة:</strong> خليك في المضمون واستخدم <code>let</code> و <code>const</code>، وسيبك من <code>var</code> ومشاكله.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module4">
+                <h2>Module 4: الصاوى وجمعة في جولة سريعة على الـ Operators</h2>
+                <div class="comic-conversation">
+
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، عايز أعرف الـ Operators دي بتعمل إيه بسرعة. نبدأ بالـ Arithmetic؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي بتاعة الحسابات الأساسية: جمع، طرح، ضرب، قسمة، وباقي القسمة (<code>%</code>).</p>
+                            <pre><button class="copy-btn">Copy</button><code>console.log(10 + 3); // 13
+console.log(10 % 3); // 1 (عشان 10/3 فيها 3 والباقي 1)</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب والـ <code>++</code> والـ <code>--</code>؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي بتزود أو تنقص واحد. بس خد بالك، مكانها بيفرق. قبل المتغير (<code>++n</code>) يزوّد الأول، بعده (<code>n++</code>) يستخدم القيمة القديمة الأول بعدين يزوّد.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let n = 5;
+console.log(++n); // 6
+console.log(n++); // 6 برضه (بس n بقت 7)
+console.log(n);   // 7</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>والـ Assignment اللي هي <code>+=</code> و <code>*=</code>؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي اختصارات. بدل ما تقول <code>x = x + 5</code>، بتقول <code>x += 5</code>. أسهل وأسرع.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let x = 10;
+x -= 3; // x بقت 7
+x *= 2; // x بقت 14</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>أهم سؤال: إيه الفرق بين <code>==</code> و <code>===</code>؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p><code>===</code> (3 يساووا) صارمة وبتقارن القيمة والنوع. <code>==</code> (2 يساووا) متساهلة وبتحاول تغير النوع قبل ما تقارن، وده بيعمل مشاكل. خليك دايماً في <code>===</code>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>console.log(5 == '5');  // true (متساهلة)
+console.log(5 === '5'); // false (صارمة)</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>والـ Logical (<code>&&</code>, <code>||</code>)؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي بتعمل حاجة اسمها Short-Circuit. <code>||</code> بتدور على أول قيمة حقيقية (truthy) وتقف. <code>&&</code> بتدور على أول قيمة مزيفة (falsy) وتقف. مفيدة جداً في تحديد قيم افتراضية.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let username = null || 'Guest'; // username = 'Guest'
+let data = 'Data' && 0 && 'More'; // data = 0</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>آخر حاجة، الـ Ternary Operator اللي شكلها غريب دي؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي اختصار لجملة if/else. صيغتها: <code>(الشرط) ? (لو صح) : (لو غلط)</code>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let age = 20;
+let message = age >= 18 ? 'أهلاً بيك' : 'ممنوع الدخول';
+// message = 'أهلاً بيك'</code></pre>
+                            <p>وبكده يا جمعة لمينا معظم الـ Operators المهمة!</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module5">
+                <h2>Module 5: الفاصلة المنقوطة الشبح (ASI)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى الحقني! الكود ده المفروض يرجع object، ليه بيرجع <code>undefined</code>؟ أنا هتجنن!</p>
+                            <pre><button class="copy-btn">Copy</button><code>function giveMeObject() {
+  return
+  { key: 'value' }
+}
+
+giveMeObject(); // undefined ؟!</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>أهلاً بيك في عالم الـ <strong>Automatic Semicolon Insertion (ASI)</strong>. جافاسكريبت شافت كلمة <code>return</code> لوحدها في سطر، راحت حاطة بعدها فاصلة منقوطة (<code>;</code>) من نفسها عشان تخدمك. بكده، الـ function بتاعتك عملت <code>return;</code> والـ object اللي تحت ده بقى كود ملوش لازمة.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا نهار أبيض! يعني هي بتحط فواصل من عندها؟ طب والحل إيه؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>الحل بسيط، متفصلش بين <code>return</code> والقيمة اللي بترجعها. خلي القوس أو القيمة في نفس السطر. القاعدة الذهبية: <strong>Never put a newline after `return`</strong>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>function giveMeObject() {
+  return { // خليها جنبها كده
+    key: 'value'
+  }
+}
+
+giveMeObject(); // { key: 'value' }</code></pre>
+                            <p>ده بيخلي نيتك واضحة للكود وبيمنع الـ ASI من التدخل بشكل غلط.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module6">
+                <h2>Module 6: مصنع الأكواد (Functions)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، أنا بكتب كود كتير بيتكرر. عايز أعمل حاجة زي "مصنع" صغير، أديله شوية حاجات ويطلعلي نتيجة. إيه الحل؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>الحل هو الـ <strong>Functions</strong> يا جمعة. دي عبارة عن بلوكات كود بتديها اسم، وتقدر تنادي عليها في أي وقت. فيه طريقتين مشهورين عشان تعملها.</p>
+                            <p><strong>1. Function Declaration (الإعلان الصريح):</strong></p>
+                            <pre><button class="copy-btn">Copy</button><code>// بنعلن عن مصنع اسمه add
+function add(x, y) {
+  return x + y;
+}
+
+add(5, 3); // 8</code></pre>
+                            <p>الميزة هنا إنها بيحصلها Hoisting، يعني تقدر تنادي عليها حتى لو كتبتها قبل ما تعرفها.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p><strong>2. Function Expression (التعبير الوظيفي):</strong></p>
+                            <pre><button class="copy-btn">Copy</button><code>// بنخزن المصنع في متغير
+const multiply = function(x, y) {
+  return x * y;
+};
+
+multiply(5, 3); // 15</code></pre>
+                            <p>دي مبتعملش Hoisting، وده بيخلي الكود منظم أكتر. أغلب الناس بتفضل الطريقة دي مع <code>const</code>.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>حلو أوي. طب لو عايز أعمل function تجمع أي عدد من الأرقام أديهولها؟ مش لازم أحدد <code>x</code> و <code>y</code> بس؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>سؤال ممتاز! هنا بنستخدم حاجة اسمها <code>arguments</code>. ده object شبه الـ array، بيلملك كل الحاجات اللي بعتها للـ function.</p>
+                            <pre><button class="copy-btn">Copy</button><code>function sumEverything() {
+  let total = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    total += arguments[i];
+  }
+  return total;
+}
+
+sumEverything(1, 2, 3, 4); // 10</code></pre>
+                            <p>ملحوظة: في الجافاسكريبت الحديثة (ES6+)، فيه طريقة أحسن اسمها Rest Parameters، بس خليك عارف دي عشان لو شفتها في كود قديم.</p>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب افرض عملت متغير جوه الـ function ونسيت أكتب <code>let</code> أو <code>const</code>. إيه اللي هيحصل؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي كارثة يا جمعة! لو عملت كده، المتغير ده بيتسرب بره الـ function وبيبقى <strong>Global Variable</strong>، يعني أي حد في أي حتة في الكود يقدر يشوفه ويغيره ويبوظلك الدنيا.</p>
+                             <pre><button class="copy-btn">Copy</button><code>function createLeak() {
+  leakedVar = 'أنا تسربت!';
+}
+
+createLeak();
+console.log(leakedVar); // "أنا تسربت!"</code></pre>
+                             <p>الحل؟ حط <code>"use strict";</code> في أول ملف الجافاسكريبت بتاعك. ده بيشغل "الوضع الصارم" اللي بيمنع الأخطاء الشائعة دي وبيطلعلك error واضح.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>فهمت! طب ما تديني تمرين أحلّه عشان أثبت المعلومة.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>تمرين على مزاجك. اكتبلي function اسمها <code>reverseString</code> تاخد string وتعكسه. يعني لو اديتها 'hello' ترجع 'olleh'.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>أعتقد دي طريقة كويسة؟</p>
+                            <pre><button class="copy-btn">Copy</button><code>function reverseString(str) {
+  let reversed = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversed += str[i];
+  }
+  return reversed;
+}
+
+reverseString('Sawy'); // 'ywaS'</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>الله ينور عليك يا جمعة! بالظبط كده. أنت بقيت برنس في الـ functions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module7">
+                <h2>Module 7: خلي الكود يختار (Control Flow)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، عايز الكود بتاعي يبقى ذكي. يعني لو درجة الطالب فوق 90 ياخد "ممتاز"، لو أقل يبقى "جيد جداً" وهكذا. إزاي أخليه ياخد قرارات؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي سهلة، بنستخدم <strong><code>if / else if / else</code></strong>. دي بتخليك تحط شروط، والكود يمشي على أول شرط يتحقق.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let score = 85;
+
+if (score >= 90) {
+  console.log('ممتاز');
+} else if (score >= 80) {
+  console.log('جيد جداً'); // الشرط ده هيتحقق
+} else {
+  console.log('مقبول');
+}
+// Output: جيد جداً</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>تمام! طب لو عايز أطبع الأرقام من 1 لـ 5؟ مش معقول هكتب <code>console.log</code> خمس مرات!</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>أكيد لأ. هنا يجي دور الـ <strong>Loops (الحلقات التكرارية)</strong>. لو عارف عدد المرات بالظبط، استخدم <strong><code>for</code></strong> loop.</p>
+                            <pre><button class="copy-btn">Copy</button><code>//  (البداية; الشرط; الخطوة)
+for (let i = 1; i <= 5; i++) {
+  console.log(i);
+}
+// 1, 2, 3, 4, 5</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب لو عايز أفضل أكرر حاجة طول ما شرط معين متحقق، بس مش عارف كام مرة بالظبط؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>في الحالة دي، استخدم <strong><code>while</code></strong> loop. بتفضل شغالة طول ما الشرط بتاعها <code>true</code>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let num = 1;
+while (num < 50) {
+  num = num * 2;
+  console.log(num); // 2, 4, 8, 16, 32, 64
+}
+// بتقف لما الرقم يبقى أكبر من 50</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>فهمت! طب إديني تحدي يجمع بين الـ loops والـ if.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>تحدي جميل. عندك array أرقام، وعايزك تعمل function تلاقي أول رقم زوجي وترجعه. لو مفيش، ترجع رسالة تقول 'No even numbers found'.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let numbers = [1, 3, 5, 8, 9, 10];</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>أعتقد حليتها!</p>
+                            <pre><button class="copy-btn">Copy</button><code>function findFirstEven(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] % 2 === 0) {
+      return arr[i]; // لقيت واحد، ارجع بيه فوراً
+    }
+  }
+  return 'No even numbers found'; // خلصت اللفة وملقتش
+}
+
+findFirstEven(numbers); // 8</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>عاش يا وحش! استخدامك للـ <code>return</code> جوه الـ loop عشان توقفها أول ما تلاقي الحل ممتاز. أنت كده فهمت التحكم في المسار صح.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <hr>
+
+            <section id="module8">
+                <h2>Module 8: لمّة العيلة (Arrays)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، عندي مشكلة. عايز أخزن قايمة بأسماء أصحابي، وقايمة تانية بدرجاتهم في لعبة. عامل متغير لكل واحد والدنيا باظت مني.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>أنت محتاج حاجة تلملك الداتا دي كلها في مكان واحد. أنت محتاج <strong>Array</strong>. فكر فيها كأنها "عيلة" أو "قايمة" بتشيل كل القيم بتاعتك بالترتيب.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// بنعمل array فاضية
+let friends = [];
+
+// نضيف عناصر بالترتيب
+friends.push('Ahmed');
+friends.push('Sara');
+friends.push('Mona');
+
+console.log(friends); // ['Ahmed', 'Sara', 'Mona']
+console.log(friends[0]); // 'Ahmed' (بنجيب أول عنصر)</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>حلو أوي! طب لو عندي array فيها أرقام، وعايز أجيب مجموعهم وأعلى درجة؟</p>
+                            <pre><button class="copy-btn">Copy</button><code>let scores = [88, 92, 75, 99, 80];</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>هنا بقى بنستخدم الـ loops اللي اتعلمناها عشان نلف على الـ array عنصر عنصر.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let scores = [88, 92, 75, 99, 80];
+let sum = 0;
+let maxScore = scores[0]; // بنفترض إن أول عنصر هو الأعلى مؤقتاً
+
+for (let i = 0; i < scores.length; i++) {
+  sum += scores[i]; // بنضيف كل درجة للمجموع
+
+  if (scores[i] > maxScore) {
+    maxScore = scores[i]; // لو لقينا درجة أعلى، بنغير الـ max
+  }
+}
+
+console.log('Sum:', sum); // 434
+console.log('Max Score:', maxScore); // 99</code></pre>
+                            <p>بنفس الطريقة تقدر تجيب أقل قيمة أو المتوسط الحسابي.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>فكرة جامدة. طب لو عايز أعمل array جديدة تكون فيها كل الدرجات مضروبة في 2؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>سهلة. بتعمل array جديدة فاضية، وتلف على القديمة، وكل مرة تضرب الرقم في 2 وتعمله <code>push</code> في الجديدة.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let scores = [10, 20, 30];
+let doubledScores = [];
+
+for (let i = 0; i < scores.length; i++) {
+  doubledScores.push(scores[i] * 2);
+}
+
+console.log(doubledScores); // [20, 40, 60]</code></pre>
+                            <p>في المستقبل هتتعلم طرق مختصرة زي <code>.map()</code>، بس فهم الأساس ده أهم حاجة.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <hr>
+
+            <section id="module9">
+                <h2>Module 9: اللعب في الصفحة (DOM Interaction)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، أنا زهقت من الكلام النظري. مش ممكن نلعب في الصفحة دي نفسها؟ يعني أدوس على زرار يغير الكلام ده مثلاً؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>أكيد طبعاً! ده بقى سحر الـ <strong>DOM</strong> أو (Document Object Model). المتصفح بيشوف صفحة الـ HTML بتاعتك كشجرة من العناصر، وإحنا بالجافاسكريبت نقدر نمسك أي "فرع" في الشجرة دي ونغيره.</p>
+                            <p>بص كده، عندنا برجراف واخد <code>id="welcome-msg"</code>. شوف إزاي هنغير محتواه:</p>
+                            <pre><button class="copy-btn">Copy</button><code>// HTML: &lt;p id="welcome-msg"&gt;Hello World&lt;/p&gt;
+
+// 1. بنمسك العنصر بالـ ID بتاعه
+const messageElement = document.getElementById('welcome-msg');
+
+// 2. بنغير النص اللي جواه
+messageElement.textContent = 'أهلاً بيك في عالم الـ DOM!';</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>الله! طب لو عايز آخد كلام من المستخدم نفسه وأعرضه بحروف كبيرة؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ممتاز. هنعمل <code>input</code> للمستخدم وزرار. لما يدوس على الزرار، ناخد القيمة من الـ input ونعرضها.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// HTML:
+// &lt;input id="userInput"&gt;
+// &lt;button id="actionBtn"&gt;اعرض&lt;/button&gt;
+// &lt;p id="display"&gt;&lt;/p&gt;
+
+const input = document.getElementById('userInput');
+const btn = document.getElementById('actionBtn');
+const display = document.getElementById('display');
+
+btn.onclick = function() {
+  // بنجيب القيمة من مربع النص
+  const userText = input.value;
+  // بنعرضها في البرجراف بحروف كبيرة
+  display.textContent = userText.toUpperCase();
+};</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>جااامد! طب وصورتك دي، ينفع أكبرّها كل ما أدوس عليها؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ينفع ونص. هنمسك الصورة ونديها <code>onclick</code> هي كمان، وكل مرة نزوّد العرض بتاعها.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// HTML: &lt;img id="sawy-pic" src="..." width="100"&gt;
+
+const sawyPic = document.getElementById('sawy-pic');
+
+sawyPic.onclick = function() {
+  // بنزوّد العرض الحالي بـ 10 بكسل
+  sawyPic.width += 10;
+};</code></pre>
+                            <p>أنت كده بدأت تفهم إزاي بنعمل صفحات ويب تفاعلية. دي البداية بس!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module10">
+                <h2>Module 10: المشروع النهائي (Mini Lab)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>إيه يا جمعة، مستعد للتحدي الأخير؟ هنبني برنامج صغير يجمع كل اللي اتعلمناه. هنعمل "محلل أرقام".</p>
+                            <p>المطلوب: المستخدم يدخل أرقام، والبرنامج يطلعله قايمة الأرقام، عددهم، مجموعهم، والمتوسط بتاعهم. وطبعاً لازم نمنعه يدخل أي حاجة غير الأرقام.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا دين النبي! أجمع كله في مكان واحد؟ طب إزاي أمنعه يدخل حروف؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>بالـ <strong>Validation</strong>. هنعمل function صغيرة تتأكد من المدخلات. لو مش رقم، ترجع رسالة خطأ.</p>
+                            <pre><button class="copy-btn">Copy</button><code>function validateInput(text) {
+  if (text.trim() === '') {
+    return { valid: false, message: 'مينفعش تسيبها فاضية!' };
+  }
+  const num = Number(text);
+  if (isNaN(num)) {
+    return { valid: false, message: 'من فضلك أدخل رقم صحيح.' };
+  }
+  return { valid: true, value: num };
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>فهمتك. طبقت الفكرة وعملت الـ HTML والـ JavaScript. شوف كده وقولي رأيك.</p>
+                            <pre><button class="copy-btn">Copy</button><code>&lt;!-- HTML --&gt;
+&lt;h3&gt;Number Analyzer&lt;/h3&gt;
+&lt;input id="numInput" placeholder="Enter a number"&gt;
+&lt;button id="addBtn"&gt;Add Number&lt;/button&gt;
+&lt;p id="errorMsg" style="color:red;"&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4&gt;Results:&lt;/h4&gt;
+&lt;p&gt;&lt;b&gt;Numbers:&lt;/b&gt; &lt;span id="numList"&gt;[]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Count:&lt;/b&gt; &lt;span id="count"&gt;0&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Sum:&lt;/b&gt; &lt;span id="sum"&gt;0&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Average:&lt;/b&gt; &lt;span id="avg"&gt;0&lt;/span&gt;&lt;/p&gt;</code></pre>
+                            <pre><button class="copy-btn">Copy</button><code>// JavaScript
+const numbers = [];
+
+// ... (validation function here)
+
+document.getElementById('addBtn').onclick = function() {
+  const inputEl = document.getElementById('numInput');
+  const errorEl = document.getElementById('errorMsg');
+  const result = validateInput(inputEl.value);
+
+  if (!result.valid) {
+    errorEl.textContent = result.message;
+    return;
+  }
+
+  errorEl.textContent = '';
+  numbers.push(result.value);
+  inputEl.value = '';
+
+  updateResults();
+};
+
+function updateResults() {
+  let sum = 0;
+  for(let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
+  const avg = numbers.length > 0 ? sum / numbers.length : 0;
+
+  document.getElementById('numList').textContent = JSON.stringify(numbers);
+  document.getElementById('count').textContent = numbers.length;
+  document.getElementById('sum').textContent = sum;
+  document.getElementById('avg').textContent = avg.toFixed(2);
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>الله عليك يا ابني! أنت كده لميت الأساسيات كلها في مشروع واحد. استخدمت متغيرات، دوال، تحكم في المسار، مصفوفات، ولعبت في الـ DOM. أنت كده بقيت چونيور جافاسكريبت ديفلوبر رسمي!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module11">
+                <h2>Module 11: بناء المصنع (Adding Elements to DOM)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، أنا دلوقتي بعرف أغير الحاجات الموجودة. إزاي بقى أبني عناصر جديدة خالص من الصفر وأحطها في الصفحة؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>سؤال المبرمجين الكبار ده. عندك كذا طريقة، كل واحدة ليها استخدامها.</p>
+                            <p><strong>الطريقة الأولى: <code>innerHTML</code> (السهل الممتنع)</strong></p>
+                            <p>دي أسهل طريقة، بتكتب الـ HTML كأنه نص. بس خلي بالك، بتمسح كل حاجة جوه العنصر الأب وتحط الجديد، وممكن تكون خطر لو بتعرض بيانات من المستخدم من غير فلترة.</p>
+                            <pre><button class="copy-btn">Copy</button><code>const container = document.getElementById('container');
+container.innerHTML = '&lt;h3&gt;Title&lt;/h3&gt;&lt;p&gt;New paragraph.&lt;/p&gt;';</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p><strong>الطريقة الثانية: <code>createElement</code> (الطريقة الاحترافية)</strong></p>
+                            <p>دي الطريقة الصح والأكتر أمانًا. بتبني كل عنصر لوحده كأنه قطعة ليجو، وبعدين تركبهم في بعض وفي الصفحة.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// 1. Create the new element
+const newP = document.createElement('p');
+
+// 2. Set its content and attributes
+newP.textContent = 'This is a safe paragraph.';
+newP.className = 'highlight';
+
+// 3. Add it to the page
+const container = document.getElementById('container');
+container.appendChild(newP);</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>حلوة أوي طريقة الليجو دي. طب إيه حوار <code>document.write</code> اللي بسمع عنه؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p><strong>تحذير: <code>document.write()</code></strong></p>
+                            <p>ابعد عنها! دي طريقة قديمة جداً. لو استخدمتها بعد ما الصفحة تكون حملت، هتمسح كل حاجة في الصفحة وتكتب اللي أنت عايزه بس. محدش بيستخدمها تقريبًا في الشغل الحديث.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// Just for demonstration, DON'T USE THIS!
+document.write('&lt;h1&gt;I wiped the page!&lt;/h1&gt;');</code></pre>
+                            <p>خليك في <code>createElement</code> عشان تبقى برنس.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module12">
+                <h2>Module 12: تطويرات العصر (ES6+ Features)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، بسمع عن حاجات شكلها غريب في الجافاسكريبت الجديدة. سهم كده <code>=></code> وكلمة <code>const</code>. إيه الكلام ده؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي يا سيدي تطويرات العصر، اسمها <strong>ES6</strong> وما بعدها. دي خلت شكل الكود أحسن وأقوى. نبدأ بالسهل، الـ <strong>Arrow Functions</strong>.</p>
+                            <p>بدل ما تكتب <code>function() {...}</code>، بتكتبها كده:</p>
+                            <pre><button class="copy-btn">Copy</button><code>// زمان
+function add(a, b) {
+  return a + b;
+}
+
+// دلوقتي
+const add = (a, b) => a + b;</code></pre>
+                            <p>مجرد شكل مختصر وأنيق.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>حلوة دي! طب و <code>let</code> و <code>const</code>؟ إيه فرقهم عن <code>var</code> اللي صدعتني بيها؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>فاكر لما <code>var</code> كانت بتعمل hoisting وتطلع فوق الـ scope؟ الاتنين دول حلوا المشكلة دي. ليهم <strong>Block Scope</strong>، يعني بيعيشوا بس جوه القوسين <code>{...}</code> اللي اتعرفوا فيهم.</p>
+                            <ul>
+                                <li><strong>let</strong>: للمتغيرات اللي قيمتها ممكن تتغير.</li>
+                                <li><strong>const</strong>: للثوابت اللي قيمتها مش هتتغير أبدًا.</li>
+                            </ul>
+                            <p>نصيحة: استخدم <code>const</code> دايمًا، إلا لو كنت متأكد إنك هتحتاج تغير القيمة، ساعتها استخدم <code>let</code>. ارمي <code>var</code> في الزبالة.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>أوكي، يبقى <code>const</code> هو الأساس. طب لو عايز أدمج متغير مع نص، كنت بعمل <code>'Hello ' + name</code>. فيه طريقة أشيك؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>أكيد! استخدم الـ <strong>Template Literals</strong>. بتستخدم علامة (<code>`</code>) بدل (<code>'</code>) أو (<code>"</code>)، وتقدر تحط المتغيرات جوه النص علطول.</p>
+                            <pre><button class="copy-btn">Copy</button><code>const user = 'Gomaa';
+const greeting = `Hello, ${user}! Welcome back.`;
+
+console.log(greeting); // Hello, Gomaa! Welcome back.</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا سلام! دي هتوفر عليا كتير. إيه تاني من كنوز ES6 دي؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>عندك الـ <strong>Destructuring</strong>، دي بتخليك تفكك الـ objects والـ arrays بسهولة.</p>
+                             <pre><button class="copy-btn">Copy</button><code>// بتفكك الأوبجكت لمتغيرات
+const person = { name: 'Sawy', age: 35 };
+const { name, age } = person;
+console.log(name); // 'Sawy'
+
+// بتفكك الأراي بالترتيب
+const colors = ['Red', 'Green'];
+const [firstColor, secondColor] = colors;
+console.log(firstColor); // 'Red'</code></pre>
+                             <p>وعندك الـ <strong>Rest/Spread Operator (...)</strong> اللي بيلم أو يفرد عناصر. دي مواضيع متقدمة شوية بس اعرفها بالاسم دلوقتي.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="conclusion">
+                <h2>الخاتمة: نهاية الرحلة (أم بدايتها؟)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، أنا حاسس إن دماغي بقت مليانة أكواد... بس مبسوط! حاسس إني فهمت الأساسيات بجد.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>جدع يا جمعة! دي كانت مجرد البداية. اللي اتعلمته ده هو المفتاح اللي هيفتحلك أبواب عالم الويب كله.</p>
+                            <p>الخطوة الجاية إنك تبدأ تبني مشاريع صغيرة بنفسك. اعمل آلة حاسبة، لعبة بسيطة، قائمة مهام... أي حاجة تخطر في بالك.</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يعني أقدر أقول على نفسي مبرمج دلوقتي؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>تقدر تقول إنك حطيت رجلك على أول الطريق. البرمجة رحلة تعلم مستمرة، وكل يوم فيه جديد. المهم متوقفش.</p>
+                            <p><strong>يلا روح انطلق، ومشوفش وشك غير ومعاك مشروع عامله بإيدك!</strong></p>
+                        </div>
+                    </div>
+                     <div class="final-signoff">
+                        <p>تمت بحمد الله</p>
+                        <img src="https://i.pinimg.com/originals/4d/0a/a8/4d0aa86d353f35086d3703c375233363.gif" alt="Happy Coding">
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => {
+                            button.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        button.textContent = 'Error';
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
