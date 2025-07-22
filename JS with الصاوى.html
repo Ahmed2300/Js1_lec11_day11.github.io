@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sawy & Gomaa Learn JS: The Full Lecture</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #007bff;
+            --header-color: #f7df1e; /* JavaScript Yellow */
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #f7df1e;
+            --bg-color-offset: #f8f9fa;
+            --primary-color-light: #e7f3ff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        header .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        header .summarizer-credit {
+            text-align: center;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        main section {
+            background-color: var(--bg-color-light);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border-right: 4px solid var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 3px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; background-color: #444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s;
+        }
+
+        pre:hover .copy-btn { opacity: 1; }
+
+        strong { color: var(--primary-color); }
+        
+        .demo-box {
+            border: 2px dashed var(--border-color); padding: 20px; margin-top: 1em; border-radius: 8px; background-color: var(--bg-color); text-align: center;
+        }
+        
+        .demo-box button {
+            margin: 5px; padding: 8px 12px; border-radius: 5px; border: 1px solid var(--primary-color); background-color: var(--primary-color); color: white; cursor: pointer; transition: background-color 0.2s;
+        }
+        
+        .demo-box button:hover { background-color: #0056b3; }
+        
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 3rem 0; }
+        
+        .comic-conversation { display: flex; flex-direction: column; gap: 20px; }
+        .convo-turn { display: flex; align-items: flex-start; gap: 15px; max-width: 90%; }
+        .convo-turn.gomaa { align-self: flex-start; }
+        .convo-turn.sawy { align-self: flex-end; flex-direction: row-reverse; }
+        .convo-turn img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--primary-color); margin-top: 10px; }
+        .bubble { background-color: #fff; padding: 15px; border-radius: 15px; position: relative; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .convo-turn.gomaa .bubble { border-top-right-radius: 0; }
+        .convo-turn.sawy .bubble { border-top-left-radius: 0; background-color: var(--primary-color-light); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>الأسطى صاوى يعلّم جمعة چافاسكريبت</h1>
+            <p class="subtitle">شرح شامل للمفاهيم الأساسية والأوبجكتس المدمجة في اللغة.</p>
+            <p class="summarizer-credit">Summarized by: Ahmed Azam</p>
+        </header>
+
+        <main>
+            <section id="module1">
+                <h2>Module 1: كلام مباشر مع المستخدم (Dialog Boxes)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>إيه يا صاوى! عايز أخلي الصفحة تطلع رسالة للمستخدم، أو تسأله عن اسمه. أعملها إزاي دي؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>دي سهلة يا جمعة، عندك 3 صناديق حوار جاهزين تحت أمرك.</p>
+                            <p>الأول <strong><code>alert()</code></strong>، ده بتاع "خد بالك!" أو "تم بنجاح". مجرد رسالة وزرار OK.</p>
+                            <pre><code>alert("تم حفظ البيانات!");</code></pre>
+                        </div>
+                    </div>
+                     <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>التاني <strong><code>confirm()</code></strong>، ده بتاع الأسئلة اللي إجابتها أه أو لأ. بيرجعلك <code>true</code> لو داس OK و <code>false</code> لو داس Cancel.</p>
+                            <pre><code>let wantsToDelete = confirm("متأكد عايز تمسح؟");</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>والتالت <strong><code>prompt()</code></strong>، ده اللي بيخليك تاخد كلام من المستخدم. بيرجعلك الكلام اللي كتبه.</p>
+                             <pre><code>let name = prompt("اكتب اسمك يا بطل:");</code></pre>
+                            <p>بس خلي بالك، الحاجات دي قديمة وبتوقف الصفحة كلها لحد ما المستخدم يرد. في الشغل بنعمل أشكال أحسن بالـ HTML والـ CSS.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-box">
+                    <h3>جرب بنفسك</h3>
+                    <button id="demo-alert">جرب الـ Alert</button>
+                    <button id="demo-confirm">جرب الـ Confirm</button>
+                    <button id="demo-prompt">جرب الـ Prompt</button>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module2">
+                <h2>Module 2: مصنع الأكواد (Functions)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، أنا بكتب كود كتير بيتكرر. عايز أعمل حاجة زي "مصنع" صغير، أديله شوية حاجات ويطلعلي نتيجة. إيه الحل؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>الحل هو الـ <strong>Functions</strong> يا جمعة. دي بتخليك تكتب الكود مرة واحدة وتستخدمه 100 مرة. بص كده:</p>
+                            <pre><button class="copy-btn">Copy</button><code>// 1. بنبني المصنع وبنقوله هياخد إيه (parameters)
+function createGreeting(name) {
+  const greeting = "أهلاً بيك يا " + name;
+  return greeting; // 2. بنقوله هيرجع إيه
+}
+
+// 3. بنشغل المصنع ونديله الحاجات اللي عايزها (arguments)
+let message = createGreeting("جمعة");
+console.log(message); // "أهلاً بيك يا جمعة"</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+            
+            <section id="module3">
+                <h2>Module 3: التكرار يعلم الشطار (Loops)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب لو عايز أطبع الأرقام من 1 لـ 5؟ مش معقول هكتب <code>console.log</code> خمس مرات!</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>أكيد لأ. هنا يجي دور الـ <strong>Loops</strong>. لو عارف عدد المرات، استخدم <strong><code>for</code></strong> loop.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// (البداية; الشرط اللي هيوقفنا; الخطوة اللي بنمشيها)
+for (let i = 1; i <= 5; i++) {
+  console.log(i);
+}
+// 1, 2, 3, 4, 5</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>طب لو عايز أفضل أسأل عن الباسورد لحد ما يتكتب صح؟ أنا مش عارف هياخده من كام مرة!</p>
+                        </div>
+                    </div>
+                     <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>في الحالة دي، استخدم <strong><code>do...while</code></strong>. دي بتنفذ الكود مرة واحدة على الأقل، وبعدين تفضل تكرر طول ما الشرط متحقق.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let password;
+do {
+  password = prompt("Enter the password:");
+} while (password !== "secret");
+
+alert("Access granted!");</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr>
+            
+            <section id="module4">
+                <h2>Module 4: التعامل مع النصوص (String Object)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، عايز ألعب في الكلام. عندي جملة وعايز أعرف طولها، وأشيل المسافات الزيادة، وأخليها كلها حروف كبيرة!</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ده شغل الـ <strong>String Object</strong>. أي نص عندك بيكون معاه شنطة مليانة أدوات (methods) جاهزة. بص كده:</p>
+                            <pre><button class="copy-btn">Copy</button><code>let text = "  JavaScript is Fun!  ";
+
+// .length بيجيب الطول
+console.log(text.length); // 23
+
+// .trim() بيشيل المسافات من الأول والآخر
+let cleanText = text.trim(); 
+console.log(cleanText); // "JavaScript is Fun!"
+
+// .toUpperCase() بيخلي كله كابيتال
+console.log(cleanText.toUpperCase());
+
+// .split() بيكسر النص ويحوله لـ array
+let words = cleanText.split(' ');
+console.log(words); // ["JavaScript", "is", "Fun!"]</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+            
+            <section id="module5">
+                <h2>Module 5: لمّة العيلة (Array Object)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا صاوى، عندي قايمة درجات وعايز أعمل عليها عمليات. عايز أطلع قايمة جديدة بالدرجات الناجحة بس (أكبر من 50).</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>ده شغل الـ <strong>Array Object</strong> وأدواته السحرية. بدل ما تعمل loop بنفسك، استخدم <strong><code>.filter()</code></strong>.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let scores = [80, 45, 90, 30, 65];
+
+// .filter() بتعدي على كل عنصر وتشوف الشرط
+// لو الشرط صح، بتحط العنصر في الأراي الجديدة
+let passingScores = scores.filter(function(score) {
+  return score > 50;
+});
+
+console.log(passingScores); // [80, 90, 65]</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>يا سلام! طب لو عايز أعمل قايمة جديدة فيها كل الدرجات بعد ما أزود 5 درجات بونص لكل طالب؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>هنا تستخدم <strong><code>.map()</code></strong>. دي بتلف على كل عنصر وتعمل عليه عملية وترجعلك array جديدة بالنتائج.</p>
+                            <pre><button class="copy-btn">Copy</button><code>let scores = [80, 45, 90];
+
+// .map() بتاخد كل درجة وتطبق عليها المعادلة
+let scoresWithBonus = scores.map(function(score) {
+  return score + 5;
+});
+
+console.log(scoresWithBonus); // [85, 50, 95]</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+            
+            <section id="module6">
+                <h2>Module 6: عبقري الرياضيات (Math Object)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>عايز أعمل لعبة تخمين أرقام. إزاي أخلّي الكمبيوتر يختار رقم عشوائي من 1 لـ 9؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>هنا تستدعي العبقري <strong><code>Math</code></strong>. ده object جاهز فيه كل العمليات الحسابية اللي تتخيلها. عشان تجيب رقم عشوائي، بنعمل تركيبة بسيطة:</p>
+                            <pre><button class="copy-btn">Copy</button><code>// Math.random() بتجيب رقم عشري من 0 لـ 0.999
+// بنضربه في 9 عشان يبقى من 0 لـ 8.999
+// Math.floor() بتقص الكسر، يبقى من 0 لـ 8
+// نزود 1 عشان يبقى من 1 لـ 9
+const randomNumber = Math.floor(Math.random() * 9) + 1;
+console.log(randomNumber); // رقم عشوائي بين 1 و 9</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>فهمت التركيبة. طب إيه حوار التقريب ده؟ <code>floor</code> و <code>ceil</code> و <code>round</code>؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>بص يا سيدي: <strong><code>floor</code></strong> بينزل للأرض (بيشيل الكسر). <strong><code>ceil</code></strong> بيطلع للسقف (بيقرّب للرقم الأكبر). <strong><code>round</code></strong> بيقرّب للأقرب.</p>
+                            <pre><button class="copy-btn">Copy</button><code>console.log(Math.floor(5.9)); // 5 (الأرض)
+console.log(Math.ceil(5.1));  // 6 (السقف)
+console.log(Math.round(5.4)); // 5 (الأقرب)
+console.log(Math.round(5.5)); // 6 (الأقرب)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section id="module7">
+                <h2>Module 7: نتيجة الزمن (Date Object)</h2>
+                <div class="comic-conversation">
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>آخر حاجة يا صاوى، إزاي أعرف النهاردة تاريخ كام أو الساعة كام دلوقتي؟</p>
+                        </div>
+                    </div>
+                    <div class="convo-turn sawy">
+                        <img src="https://iili.io/FwsMmjS.png" alt="الصاوى">
+                        <div class="bubble">
+                            <p>هنا لازم تعمل object جديد من <strong><code>new Date()</code></strong>. ده بيديك object بيمثل اللحظة الحالية بالظبط.</p>
+                            <pre><button class="copy-btn">Copy</button><code>// 1. بنجيب اللحظة الحالية
+const now = new Date();
+console.log(now.toDateString()); // "Sat Oct 21 2023"
+
+// 2. بنطلع منها اللي إحنا عايزينه
+const year = now.getFullYear();
+const month = now.getMonth() + 1; // الشهور بتبدأ من 0، لازم نزود 1
+const day = now.getDate();
+const hours = now.getHours();
+const minutes = now.getMinutes();
+
+console.log(`التاريخ: ${day}/${month}/${year}`);
+console.log(`الساعة: ${hours}:${minutes}`);</code></pre>
+                        </div>
+                    </div>
+                    <div class="convo-turn gomaa">
+                        <img src="https://iili.io/FwsMbu2.jpg" alt="جمعة">
+                        <div class="bubble">
+                            <p>تسلم يا أسطى صاوى، كده لميت الدنيا كلها. أنا رايح أطبق بقى!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => {
+                            button.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                });
+            });
+
+            document.getElementById('demo-alert').addEventListener('click', () => {
+                alert("This is a simple alert box!");
+            });
+
+            document.getElementById('demo-confirm').addEventListener('click', () => {
+                const result = confirm("Do you want to continue?");
+                alert("You clicked " + (result ? "OK" : "Cancel"));
+            });
+
+            document.getElementById('demo-prompt').addEventListener('click', () => {
+                const result = prompt("What is your favorite color?", "Blue");
+                if (result) {
+                    alert("Your favorite color is " + result);
+                } else {
+                    alert("You cancelled the prompt.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
