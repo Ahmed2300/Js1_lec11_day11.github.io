@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced JS: Functions, Arguments & Arrays</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #28a745; /* Green for this lecture */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14; /* Orange for emphasis */
+            --task-bg: #e6f7ff; /* Light blue for tasks */
+            --task-border: #007bff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        header .summarizer-credit {
+            text-align: center;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        main section {
+            background-color: #fff;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 .material-icons {
+            font-size: 2.5rem;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            color: #343a40;
+            margin-top: 2.5rem;
+            border-right: 4px solid var(--primary-color);
+            padding-right: 15px;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 90%;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border-radius: 5px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s;
+        }
+
+        pre:hover .copy-btn { opacity: 1; }
+
+        strong { color: var(--primary-color); }
+        
+        blockquote {
+            border-right: 5px solid var(--quote-border);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: #495057;
+            background-color: #fff9e6;
+            border-radius: 5px;
+        }
+        
+        .task-box {
+            border: 2px solid var(--task-border);
+            background-color: var(--task-bg);
+            padding: 20px;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+        
+        .task-box h4 {
+            margin-top: 0;
+            color: var(--task-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Advanced JavaScript: Functions, Arguments & Arrays</h1>
+            <p class="subtitle">محاضرة متقدمة عن أساسيات البرمجة الوظيفية وأساليب التعامل الاحترافي مع البيانات.</p>
+            <p class="summarizer-credit">Summarized by: Ahmed Azam</p>
+        </header>
+
+        <main>
+            <!-- MODULE 1: FUNCTIONS -->
+            <section id="functions">
+                <h2><span class="material-icons">integration_instructions</span>Module 1: Functions - The Core of Reusability</h2>
+                <p>الدوال هي "مصانع" الكود. تقوم بتغليف منطق معين يمكننا إعادة استخدامه في أي مكان، مما يجعل الكود نظيفًا ومنظمًا وسهل الصيانة.</p>
+
+                <h3>Example 1: A Simple "Procedural" Function</h3>
+                <p>هذه الدالة تقوم بمهمة واحدة بسيطة: طباعة رسالة ترحيب. لا تأخذ أي مدخلات ولا تعيد أي قيمة.</p>
+                <pre><button class="copy-btn">Copy</button><code>function showWelcomeMessage() {
+  console.log("Welcome to the course!");
+}
+
+showWelcomeMessage(); // Call the function to execute its code</code></pre>
+                
+                <h3>Example 2: A Function with Parameters and a Return Value</h3>
+                <p>هذه الدالة أكثر فائدة. تأخذ مدخلات (<code>width</code>, <code>height</code>) وتقوم بعملية حسابية ثم تعيد الناتج. يمكننا تخزين هذا الناتج في متغير واستخدامه لاحقًا.</p>
+                <pre><button class="copy-btn">Copy</button><code>function calculateArea(width, height) {
+  const area = width * height;
+  return area;
+}
+
+let roomArea = calculateArea(10, 5); // 50
+let deskArea = calculateArea(2, 1.5); // 3
+console.log("The area of the room is:", roomArea);</code></pre>
+
+                 <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #1</h4>
+                    <p><strong>المطلوب:</strong> اكتب دالة اسمها <code>isEligible</code> تأخذ عمر الشخص كـ parameter. إذا كان العمر 18 أو أكبر، يجب أن تعيد الدالة <code>true</code>. وإلا، يجب أن تعيد <code>false</code>. قم باختبارها مع أعمار مختلفة.</p>
+                </div>
+            </section>
+            
+            <hr>
+
+            <!-- MODULE 2: ARGUMENTS OBJECT -->
+            <section id="arguments">
+                <h2><span class="material-icons">dynamic_feed</span>Module 2: Handling Function Arguments</h2>
+                <p>ماذا لو أردنا إنشاء دالة مرنة يمكنها قبول أي عدد من المدخلات؟ هنا يأتي دور الـ <strong><code>arguments</code> object</strong>، وهو ميزة مدمجة في دوال جافاسكريبت (التي لا تستخدم صيغة السهم).</p>
+
+                <h3>What is the `arguments` Object?</h3>
+                <p>داخل أي دالة (معرفة بكلمة <code>function</code>)، يمكنك الوصول إلى كائن خاص اسمه <code>arguments</code>. هذا الكائن يشبه المصفوفة (array-like) ويحتوي على جميع القيم التي تم تمريرها إلى الدالة عند استدعائها، بغض النظر عن عدد الـ parameters المحددة في تعريف الدالة.</p>
+                
+                <h4>Example 1: A Function to Sum All Inputs</h4>
+                <p>هذه الدالة يمكنها جمع رقمين، أو ثلاثة، أو عشرة، دون تغيير تعريفها. نستخدم حلقة <code>for</code> للمرور على جميع الـ arguments.</p>
+                <pre><button class="copy-btn">Copy</button><code>function sumAll() {
+  let total = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    total += arguments[i];
+  }
+  return total;
+}
+
+console.log(sumAll(1, 2));          // Output: 3
+console.log(sumAll(5, 10, 15, 20)); // Output: 50
+console.log(sumAll(100));           // Output: 100</code></pre>
+                
+                <h3>Limitations and The Modern Approach</h3>
+                <p>على الرغم من فائدته، فإن <code>arguments</code> ليس مصفوفة حقيقية. هذا يعني أنه لا يمكنك استخدام دوال المصفوفات الحديثة مثل <code>.map()</code> أو <code>.filter()</code> عليه مباشرة.</p>
+                <blockquote>
+                    <strong>The Modern Way: Rest Parameters (<code>...</code>)</strong><br>
+                    في ES6+، الطريقة الأفضل والأكثر شيوعًا هي استخدام Rest Parameters. تقوم بجمع كل المدخلات المتبقية في <strong>مصفوفة حقيقية</strong>، مما يمنحك كل قوة دوال المصفوفات.
+                </blockquote>
+                <pre><button class="copy-btn">Copy</button><code>// The modern way to write the sumAll function
+function sumAllModern(...numbers) {
+  // 'numbers' is a real array, so we can use .reduce()!
+  return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sumAllModern(5, 10, 15, 20)); // Output: 50</code></pre>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #2 (Cumulative)</h4>
+                    <p><strong>المطلوب:</strong> اكتب دالة اسمها <code>findMax</code> تستخدم الـ <code>arguments</code> object للعثور على أكبر رقم من بين جميع الأرقام التي تم تمريرها إليها. يجب أن تعمل الدالة بشكل صحيح بغض النظر عن عدد الأرقام.</p>
+                    <p><code>findMax(1, 10, 5)</code> يجب أن يعيد <code>10</code>. و <code>findMax(50, 2, 99, 34)</code> يجب أن يعيد <code>99</code>.</p>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- MODULE 3: ARRAY MANIPULATION -->
+            <section id="arrays-basic">
+                <h2><span class="material-icons">data_array</span>Module 3: Mastering Array Manipulation</h2>
+                <p>إتقان التعامل مع المصفوفات هو مفتاح كتابة كود فعال ونظيف. سنتعلم الآن الفرق بين تعديل المصفوفة الأصلية وإعادة نسخة جديدة.</p>
+
+                <h3>Mutating Methods (تعديل المصفوفة الأصلية)</h3>
+                <p>هذه الدوال تغير المصفوفة التي استدعيت عليها مباشرة. كن حذرًا عند استخدامها.</p>
+                <pre><button class="copy-btn">Copy</button><code>let team = ["Ahmed", "Sara", "Mona"];
+
+// Add a new member in the middle
+team.splice(1, 0, "Khalid"); // At index 1, delete 0, add "Khalid"
+console.log(team); // ["Ahmed", "Khalid", "Sara", "Mona"]
+
+// Remove a member
+team.splice(2, 1); // At index 2, delete 1 item ("Sara")
+console.log(team); // ["Ahmed", "Khalid", "Mona"]</code></pre>
+
+                <h3>Non-Mutating Methods (إعادة نسخة جديدة)</h3>
+                <p>الطريقة الأكثر أمانًا. هذه الدوال لا تلمس المصفوفة الأصلية أبدًا.</p>
+                 <pre><button class="copy-btn">Copy</button><code>let original = ['a', 'b', 'c'];
+let copy = original.slice();
+copy.push('d');
+
+console.log("Original is untouched:", original); // ['a', 'b', 'c']
+console.log("New copy is modified:", copy);     // ['a', 'b', 'c', 'd']</code></pre>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #3 (Cumulative)</h4>
+                    <p><strong>المطلوب:</strong> اكتب دالة اسمها <code>processQueue</code> تستقبل مصفوفة (تمثل طابورًا) واسمًا جديدًا.</p>
+                    <ol>
+                        <li>تنشئ نسخة <strong>جديدة</strong> من الطابور.</li>
+                        <li>تحذف أول شخص من النسخة الجديدة (لأنه أنهى خدمته).</li>
+                        <li>تضيف الاسم الجديد في نهاية النسخة الجديدة.</li>
+                        <li>تعيد النسخة الجديدة من الطابور.</li>
+                    </ol>
+                    <p>يجب ألا تتأثر المصفوفة الأصلية.</p>
+                </div>
+            </section>
+            
+            <hr>
+
+            <!-- MODULE 4: FUNCTIONAL METHODS -->
+            <section id="arrays-functional">
+                <h2><span class="material-icons">functions</span>Module 4: Functional Array Methods</h2>
+                <p>هذه هي الطريقة الحديثة والمفضلة للتعامل مع المصفوفات. هي دوال تستقبل كول باك لتنفيذ عمليات معقدة بطريقة موجزة ومقروءة، ودائمًا ما تعيد مصفوفة جديدة.</p>
+
+                <h3><code>.map()</code> - The Transformer</h3>
+                <p>تستخدم لتحويل كل عنصر في مصفوفة إلى شيء آخر، وتضع النتائج في مصفوفة جديدة بنفس الطول.</p>
+                <pre><button class="copy-btn">Copy</button><code>// Real-World Example: Creating HTML list items from data
+const products = [{ name: "Laptop" }, { name: "Mouse" }];
+const htmlItems = products.map(p => `<li>${p.name}</li>`);
+// htmlItems is now ["<li>Laptop</li>", "<li>Mouse</li>"]</code></pre>
+                
+                <h3><code>.filter()</code> - The Sieve</h3>
+                <p>تستخدم لإنشاء مصفوفة جديدة تحتوي فقط على العناصر التي تستوفي شرطًا معينًا.</p>
+                 <pre><button class="copy-btn">Copy</button><code>// Real-World Example: Find all students who passed
+const students = [
+  { name: "Ahmed", grade: 92 },
+  { name: "Sara", grade: 48 },
+  { name: "Mona", grade: 75 }
+];
+const passingStudents = students.filter(student => student.grade >= 50);
+console.log(passingStudents); // Array with Ahmed and Mona's objects</code></pre>
+                
+                <h3><code>.reduce()</code> - The Aggregator</h3>
+                <p>تستخدم لـ "تقليص" مصفوفة إلى قيمة واحدة. هي الأقوى والأكثر مرونة.</p>
+                <pre><button class="copy-btn">Copy</button><code>// Real-World Example: Tallying votes
+const votes = ["Yes", "No", "Yes", "Yes", "Absent"];
+const voteTally = votes.reduce((tally, vote) => {
+  tally[vote] = (tally[vote] || 0) + 1;
+  return tally;
+}, {}); // Start with an empty object as the initial value
+console.log(voteTally); // { Yes: 3, No: 1, Absent: 1 }</code></pre>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #4 (Cumulative)</h4>
+                    <p><strong>المطلوب:</strong> لديك مصفوفة من بيانات الموظفين. استخدم <code>.filter()</code> و <code>.map()</code> في خطوة واحدة (chaining) لإنشاء مصفوفة جديدة تحتوي على <strong>أسماء الموظفين الذين تزيد أعمارهم عن 30 عامًا فقط</strong>.</p>
+                    <pre><code>const employees = [
+  { name: "Ali", age: 40, department: "IT" },
+  { name: "Noha", age: 25, department: "HR" },
+  { name: "Samir", age: 35, department: "IT" }
+];
+// Your code here...
+// Expected output: ["Ali", "Samir"]</code></pre>
+                </div>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 5: SORTING -->
+            <section id="sorting">
+                 <h2><span class="material-icons">sort</span>Module 5: The Art of Sorting</h2>
+                 <p>دالة <code>.sort()</code> تعدل المصفوفة الأصلية، وتتطلب دائمًا دالة مقارنة (compare function) عند التعامل مع أي شيء غير النصوص البسيطة لضمان الدقة.</p>
+
+                 <h3>Sorting an Array of Objects</h3>
+                <p>هذا هو الاستخدام الأكثر شيوعًا في التطبيقات الحقيقية: ترتيب البيانات بناءً على خاصية معينة.</p>
+                <pre><button class="copy-btn">Copy</button><code>const products = [
+  { name: "Laptop", price: 1200 },
+  { name: "Mouse", price: 25 },
+  { name: "Keyboard", price: 75 }
+];
+
+// Sort by price (lowest to highest)
+products.sort((a, b) => a.price - b.price);
+console.table(products); // Will show sorted table in console
+
+// Sort by name (alphabetically)
+products.sort((a, b) => a.name.localeCompare(b.name));
+console.table(products);</code></pre>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Final Problem-Solving Task (Cumulative)</h4>
+                    <p><strong>المطلوب:</strong> لديك مصفوفة بيانات. قم بتنفيذ الخطوات التالية بالترتيب باستخدام دوال المصفوفات:</p>
+                    <ol>
+                        <li><strong>Filter:</strong> أنشئ مصفوفة جديدة تحتوي فقط على الطلاب الذين هم في قسم "CS" ودرجتهم 50 أو أعلى.</li>
+                        <li><strong>Map:</strong> من المصفوفة المفلترة، أنشئ مصفوفة جديدة تحتوي على strings بالتنسيق التالي: <code>"[Name] - Grade: [grade]"</code>.</li>
+                        <li><strong>Sort:</strong> قم بترتيب مصفوفة النصوص النهائية <strong>تنازليًا</strong> حسب الدرجة (Hint: ستحتاج للوصول إلى بيانات الطلاب الأصلية مرة أخرى أو هيكلة بياناتك بشكل مختلف). <strong>تحدي إضافي:</strong> هل يمكنك فعل ذلك دون الرجوع للمصفوفة الأصلية؟</li>
+                        <li><strong>forEach:</strong> استخدم <code>.forEach()</code> لطباعة كل عنصر من المصفوفة النهائية المرتبة في الـ console.</li>
+                    </ol>
+                     <pre><code>const students = [
+  { name: "Mona", grade: 95, major: "CS" },
+  { name: "Karim", grade: 45, major: "CS" },
+  { name: "Hoda", grade: 88, major: "Arts" },
+  { name: "Fady", grade: 70, major: "CS" }
+];
+// Your chained methods here...</code></pre>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+
+            document.getElementById('demo-alert').addEventListener('click', () => {
+                alert("This is a simple alert box!");
+            });
+            document.getElementById('demo-confirm').addEventListener('click', () => {
+                const result = confirm("Do you want to continue?");
+                alert("You clicked " + (result ? "OK" : "Cancel"));
+            });
+            document.getElementById('demo-prompt').addEventListener('click', () => {
+                const result = prompt("What is your favorite color?", "Blue");
+                if (result) {
+                    alert("Your favorite color is " + result);
+                } else {
+                    alert("You cancelled the prompt.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
