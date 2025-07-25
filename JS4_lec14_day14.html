@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 4: JavaScript and The Browser (BOM)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #6f42c1; /* Purple for this lecture */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14; /* Orange for emphasis */
+            --task-bg: #e6f7ff;
+            --task-border: #007bff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        header .summarizer-credit {
+            text-align: center;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        main section {
+            background-color: #fff;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 .material-icons {
+            font-size: 2.5rem;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            color: #343a40;
+            margin-top: 2.5rem;
+            border-right: 4px solid var(--primary-color);
+            padding-right: 15px;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 90%;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border-radius: 5px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s;
+        }
+
+        pre:hover .copy-btn { opacity: 1; }
+
+        strong { color: var(--primary-color); }
+        
+        blockquote {
+            border-right: 5px solid var(--quote-border);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: #495057;
+            background-color: #fff9e6;
+            border-radius: 5px;
+        }
+
+        .task-box {
+            border: 2px solid var(--task-border);
+            background-color: var(--task-bg);
+            padding: 20px;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+        
+        .task-box h4 {
+            margin-top: 0;
+            color: var(--task-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+
+        /* RTL Adjustments */
+        [dir="rtl"] body {
+            text-align: right;
+        }
+
+        [dir="rtl"] h3 {
+            border-right: none;
+            padding-right: 0;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 15px;
+        }
+
+        [dir="rtl"] .copy-btn {
+            right: auto;
+            left: 10px;
+        }
+
+        [dir="rtl"] blockquote {
+            border-right: none;
+            border-left: 5px solid var(--quote-border);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>المحاضرة الرابعة: جافاسكريبت والمتصفح (BOM)</h1>
+            <p class="subtitle">فهم كيفية تفاعل جافاسكريبت مع نافذة المتصفح نفسها (The Browser Object Model)</p>
+            <p class="summarizer-credit">تلخيص: أحمد عزام</p>
+        </header>
+
+        <main>
+            <!-- الوحدة الأولى: مقدمة إلى BOM -->
+            <section id="intro-bom">
+                <h2><span class="material-icons">web_asset</span>الوحدة الأولى: مقدمة إلى نموذج كائن المتصفح (BOM)</h2>
+                <p>في المحاضرات السابقة، ركزنا على لغة جافاسكريبت نفسها (Core JS). الآن، سننتقل إلى كيفية تفاعل هذه اللغة مع بيئتها الأساسية: <strong>المتصفح</strong>. الـ <strong>BOM</strong> هو مجموعة من الكائنات (Objects) التي يوفرها المتصفح، مما يسمح لنا بالتحكم في النافذة، والوصول إلى معلومات عن الشاشة، وإدارة الـ URL، وتنفيذ أكواد مؤقتة.</p>
+                
+                <h3>الكائن <code>window</code>: النطاق العام</h3>
+                <p>الكائن <code>window</code> هو الكائن الرئيسي والأعلى في هرمية الـ BOM. إنه يمثل نافذة المتصفح الحالية. والأهم من ذلك، أنه يعمل <strong>كالـ Global Object</strong> في بيئة المتصفح. هذا يعني أن أي متغير يُعرّف باستخدام <code>var</code> في النطاق العام (Global Scope) يصبح خاصية (property) على الكائن <code>window</code>.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// السطرين دول زي بعض
+var myGlobalVar = "Hello from the global scope!";
+console.log(myGlobalVar);
+
+// يمكن الوصول إليه عن طريق الكائن window
+console.log(window.myGlobalVar);
+
+// كل هذه خصائص للكائن window:
+console.log(window.screen);      // معلومات عن شاشة المستخدم
+console.log(window.location);    // معلومات عن رابط الصفحة الحالي
+console.log(window.navigator);   // معلومات عن المتصفح نفسه
+console.log(window.document);    // نقطة الدخول إلى الـ DOM (المحاضرة القادمة)</code></pre>
+
+                <blockquote>
+                    <strong>نقطة مهمة للمحترفين:</strong> في الكود الحديث، نتجنب إنشاء متغيرات عامة قدر الإمكان لتجنب تضارب الأسماء (naming collisions). استخدام <code>let</code> و <code>const</code> في النطاق العام <strong>لا</strong> يضيف خصائص إلى الكائن <code>window</code>، مما يجعل الكود أكثر أمانًا ونظافة.
+                </blockquote>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة الثانية: التحكم في النوافذ -->
+            <section id="window-manipulation">
+                <h2><span class="material-icons">open_in_new</span>الوحدة الثانية: التحكم في النوافذ</h2>
+                <p>يوفر الـ BOM القدرة على فتح نوافذ جديدة، التحكم فيها، وإغلاقها برمجيًا. هذا كان شائعًا في الماضي للإعلانات المنبثقة (pop-ups)، واليوم له استخدامات في التطبيقات التي تحتاج إلى نوافذ مساعدة (e.g., login via Google).</p>
+
+                <h3>فتح وإغلاق النوافذ</h3>
+                <p>نستخدم <code>window.open()</code> لفتح نافذة جديدة. هذه الدالة تعيد مرجعًا (reference) للنافذة الجديدة، والذي يجب أن نحتفظ به في متغير لنتحكم فيها لاحقًا.</p>
+                <pre><button class="copy-btn">نسخ</button><code>let _childWindow; // متغير عام للاحتفاظ بالمرجع
+
+function openNewWindow() {
+  // open(URL, name, features)
+  _childWindow = window.open("child.html", "newWindow", "width=300,height=300");
+}
+
+function closeChildWindow() {
+  if (_childWindow) {
+    _childWindow.close();
+  }
+}</code></pre>
+
+                <h3>التحكم في موضع وحجم النافذة</h3>
+                <p>باستخدام المرجع الذي حصلنا عليه، يمكننا تحريك النافذة أو تغيير حجمها.</p>
+                <ul>
+                    <li><strong><code>moveTo(x, y)</code>:</strong> تحريك النافذة إلى إحداثيات مطلقة على الشاشة.</li>
+                    <li><strong><code>moveBy(dx, dy)</code>:</strong> تحريك النافذة بمقدار معين من موقعها الحالي.</li>
+                    <li><strong><code>resizeTo(width, height)</code>:</strong> تغيير حجم النافذة إلى أبعاد مطلقة.</li>
+                    <li><strong><code>resizeBy(dw, dh)</code>:</strong> تغيير حجم النافذة بمقدار معين.</li>
+                </ul>
+                <pre><button class="copy-btn">نسخ</button><code>// على افتراض أن _childWindow مفتوحة من المثال السابق
+
+function moveWindow() {
+  _childWindow.moveTo(50, 50); // تحريك للركن العلوي الأيسر
+}
+
+function resizeWindow() {
+  _childWindow.resizeTo(500, 500); // تغيير الحجم إلى 500x500 بكسل
+}</code></pre>
+                 <blockquote>
+                    <strong>ملاحظة هامة:</strong> معظم المتصفحات الحديثة تمنع فتح النوافذ برمجيًا إلا إذا كان ذلك نتيجة لفعل مباشر من المستخدم (مثل click event)، وذلك لمنع الإعلانات المزعجة.
+                </blockquote>
+            </section>
+            
+            <hr>
+            
+            <!-- الوحدة الثالثة: المؤقتات -->
+            <section id="timers">
+                <h2><span class="material-icons">timer</span>الوحدة الثالثة: المؤقتات والتنفيذ غير المتزامن</h2>
+                <p>من أقوى ميزات الـ BOM هي القدرة على جدولة تنفيذ الكود في المستقبل. هذا هو مدخلنا الأول لعالم البرمجة غير المتزامنة (Asynchronous JavaScript).</p>
+                
+                <h3><code>setTimeout()</code> - التنفيذ مرة واحدة بعد فترة</h3>
+                <p>تُستخدم لتأجيل تنفيذ دالة معينة لمرة واحدة فقط بعد انقضاء فترة زمنية محددة (بالمللي ثانية).</p>
+                <pre><button class="copy-btn">نسخ</button><code>console.log("الرسالة 1: ستظهر فورًا.");
+
+// setTimeout تأخذ دالة callback وتأخير بالمللي ثانية (3000ms = 3s)
+setTimeout(function() {
+  console.log("الرسالة 2: ستظهر بعد 3 ثوانٍ.");
+}, 3000);
+
+console.log("الرسالة 3: ستظهر فورًا بعد الرسالة 1.");</code></pre>
+                
+                <h3><code>setInterval()</code> - التنفيذ بشكل متكرر</h3>
+                <p>تُستخدم لتكرار تنفيذ دالة معينة كل فترة زمنية محددة.</p>
+                 <pre><button class="copy-btn">نسخ</button><code>let counter = 0;
+const timerDiv = document.getElementById("timerDisplay"); // على افتراض وجود div بهذا الـ ID
+
+const intervalId = setInterval(function() {
+  counter++;
+  timerDiv.textContent = `العداد: ${counter}`;
+  
+  if (counter >= 10) {
+    clearInterval(intervalId); // يجب أن نوقف الـ interval!
+    timerDiv.textContent += " - تم إيقاف الـ Interval!";
+  }
+}, 1000); // هذه الدالة تعمل كل ثانية</code></pre>
+
+                <h3>مثال واقعي: عارض الصور (Image Slider)</h3>
+                <p>هذا المثال العملي يجمع بين <code>setInterval</code> والتحكم في الـ DOM لإنشاء عارض صور (slider) بسيط.</p>
+                <pre><button class="copy-btn">نسخ</button><code>let timerId;
+let imageCounter = 1;
+const imageElement = document.getElementById("myImage"); // <img id="myImage">
+
+function startSlider() {
+  // منع تشغيل عدة intervals في نفس الوقت
+  stopSlider(); 
+
+  timerId = setInterval(function() {
+    imageCounter++;
+    if (imageCounter > 8) { // على افتراض أن لدينا 8 صور
+      imageCounter = 1;
+    }
+    imageElement.src = `Images/${imageCounter}.jpg`;
+  }, 1000); // تغيير الصورة كل ثانية
+}
+
+function stopSlider() {
+  clearInterval(timerId);
+}</code></pre>
+            </section>
+            
+            <hr>
+
+            <!-- الوحدة الرابعة: الـ location والنماذج -->
+            <section id="location-forms">
+                <h2><span class="material-icons">http</span><span>الوحدة الرابعة: الكائن <code>location</code> وبيانات النماذج</span></h2>
+                <p>الكائن <code>location</code> هو بوابتنا للتعامل مع عنوان URL الحالي للصفحة. يمكننا من خلاله قراءة أجزاء من الـ URL أو إعادة توجيه المستخدم إلى صفحة أخرى.</p>
+                
+                <h3>قراءة الـ URL</h3>
+                <p>يحتوي <code>location</code> على خصائص مفيدة مثل:</p>
+                <ul>
+                    <li><code>location.href</code>: الـ URL الكامل.</li>
+                    <li><code>location.hostname</code>: اسم النطاق (e.g., "www.google.com").</li>
+                    <li><code>location.pathname</code>: المسار بعد النطاق (e.g., "/search").</li>
+                    <li><code>location.search</code>: الجزء الذي يبدأ بـ <code>?</code> (query string)، وهو الأهم لنقل البيانات.</li>
+                </ul>
+                
+                <h3>تمرير البيانات مع النماذج (طريقة GET)</h3>
+                <p>عندما تقوم بإرسال form باستخدام الطريقة الافتراضية (GET)، يقوم المتصفح بترميز بيانات الـ form وإضافتها إلى الـ URL كـ query string. يمكننا بعد ذلك قراءة هذه البيانات في الصفحة التالية باستخدام <code>location.search</code>.</p>
+                
+                <h4>مثال: معالجة بيانات النموذج</h4>
+                <p>لنفترض أن لدينا form في صفحة <code>formReg.html</code>:</p>
+                <pre><button class="copy-btn">نسخ</button><code>&lt;form action="server.html"&gt;
+  &lt;input type="text" name="txtName" /&gt;
+  &lt;input type="text" name="txtEmail" /&gt;
+  &lt;input type="submit" /&gt;
+&lt;/form&gt;</code></pre>
+                <p>إذا أدخل المستخدم "Nadia" و "nadia@iti.com"، سيكون الـ URL في صفحة <code>server.html</code> هو: <br><code>.../server.html?txtName=Nadia&txtEmail=nadia%40iti.com</code></p>
+                
+                <p>في صفحة <code>server.html</code>، يمكننا استخدام الكود التالي لتحليل هذه البيانات وعرضها:</p>
+                <pre><button class="copy-btn">نسخ</button><code>// هذا الكود يعمل داخل server.html
+
+// 1. احصل على الـ query string (e.g., "?txtName=Nadia&txtEmail=nadia...")
+const queryString = location.search;
+
+// 2. قم بإزالة علامة '?'
+const paramsString = queryString.substring(1); // "txtName=Nadia&txtEmail=nadia..."
+
+// 3. قسّم إلى أزواج مفتاح-قيمة
+const paramsArray = paramsString.split('&'); // ["txtName=Nadia", "txtEmail=nadia..."]
+
+// 4. عالج واعرض كل زوج
+paramsArray.forEach(param => {
+  const parts = param.split('=');
+  const key = parts[0];
+  const value = decodeURIComponent(parts[1]); // فك ترميز الحروف الخاصة مثل %40 -> @
+  
+  document.writeln(`<p><strong>${key}:</strong> ${value}</p>`);
+});</code></pre>
+                 <blockquote>
+                    <strong>تطبيق عملي:</strong> هذه الطريقة هي أساس كيفية عمل صفحات البحث، حيث يتم وضع مصطلح البحث في الـ URL. كما أنها تُستخدم لتمرير معرفات (IDs) أو إعدادات بسيطة بين الصفحات.
+                </blockquote>
+            </section>
+            <hr>
+
+            <!-- الوحدة الخامسة: المؤقتات المتقدمة وعارض الصور -->
+            <section id="advanced-timers">
+                <h2><span class="material-icons">schedule</span>الوحدة الخامسة: المؤقتات المتقدمة وعارض الصور</h2>
+                <p>بناءً على معرفتنا بالمؤقتات، دعنا نستكشف مثالًا عمليًا أكثر: إنشاء عارض صور تلقائي باستخدام <code>setInterval()</code> والتحكم فيه باستخدام <code>clearInterval()</code>.</p>
+
+                <h3>مثال: بناء عارض صور</h3>
+                <p>يوضح هذا المثال كيفية التنقل بين سلسلة من الصور تلقائيًا. سنحتاج إلى بنية HTML أساسية وبعض جافاسكريبت للتعامل مع المنطق.</p>
+
+                <h4>بنية HTML</h4>
+                <p>أولاً، نحتاج إلى عنصر صورة وأزرار للتحكم في عارض الصور.</p>
+                <pre><button class="copy-btn">نسخ</button><code>&lt;div&gt;
+  &lt;img src="Images/1.jpg" id="myImage" style="width: 350px; height: 250px;" /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+  &lt;input type="button" value="تشغيل" onclick="startSlider();" /&gt;
+  &lt;input type="button" value="إيقاف" onclick="stopSlider();" /&gt;
+&lt;/div&gt;</code></pre>
+
+                <h4>منطق جافاسكريبت</h4>
+                <p>سيحدد كود جافاسكريبت وظائف بدء وإيقاف عارض الصور. تستخدم الدالة <code>startSlider</code> <code>setInterval</code> لتغيير مصدر الصورة كل ثانية، وتستخدم <code>stopSlider</code> <code>clearInterval</code> لإيقافه مؤقتًا.</p>
+                <pre><button class="copy-btn">نسخ</button><code>let timerId;
+let imageCounter = 1;
+
+function startSlider() {
+  // منع تشغيل عدة intervals
+  stopSlider(); 
+
+  const imageElement = document.getElementById("myImage");
+
+  timerId = setInterval(function() {
+    imageCounter++;
+    if (imageCounter > 8) { // على افتراض أن لدينا 8 صور
+      imageCounter = 1;
+    }
+    imageElement.src = `Images/${imageCounter}.jpg`;
+  }, 1000); // تغيير الصورة كل ثانية
+}
+
+function stopSlider() {
+  clearInterval(timerId);
+}</code></pre>
+                <blockquote>
+                    <strong>فكرة رئيسية:</strong> نقوم بتخزين الـ ID الذي يعود من <code>setInterval</code> في متغير عام (<code>timerId</code>). يتم بعد ذلك استخدام هذا الـ ID بواسطة <code>clearInterval</code> لتحديد وإيقاف المؤقت الصحيح. هذا نمط حاسم لإدارة الأحداث الموقوتة في جافاسكريبت.
+                </blockquote>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture 4</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        // Image Slider Logic
+        let timerId;
+        let imageCounter = 1;
+
+        function startSlider() {
+            stopSlider(); // Prevent multiple intervals from running
+            const imageElement = document.getElementById("myImage");
+            if (imageElement) {
+                timerId = setInterval(function() {
+                    imageCounter++;
+                    if (imageCounter > 8) { // Assuming we have 8 images
+                        imageCounter = 1;
+                    }
+                    imageElement.src = `Images/${imageCounter}.jpg`;
+                }, 1000); // Change image every second
+            }
+        }
+
+        function stopSlider() {
+            clearInterval(timerId);
+        }
+
+        // General Page Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
