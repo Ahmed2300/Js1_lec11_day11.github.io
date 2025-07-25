@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحاضرة 5: التعامل مع الـ DOM والأحداث</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #0d6efd; /* Blue for this lecture */
+            --header-color: #0d6efd;
+            --border-color: #dee2e6;
+            --code-bg: #e9ecef;
+            --pre-bg: #282c34; /* Atom One Dark background */
+            --quote-border: #fd7e14;
+            --task-bg: #e6f7ff;
+            --task-border: #007bff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        main section {
+            background-color: #fff;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 .material-icons {
+            font-size: 2.5rem;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            color: #343a40;
+            margin-top: 2.5rem;
+            border-right: 4px solid var(--primary-color);
+            padding-right: 15px;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            color: #c7254e;
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 90%;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border-radius: 5px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+            font-size: 14px;
+            color: #abb2bf; /* Light text for dark background */
+            background-color: transparent;
+        }
+
+        .copy-btn {
+            position: absolute; top: 10px; left: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s;
+        }
+
+        pre:hover .copy-btn { opacity: 1; }
+
+        blockquote {
+            border-right: 5px solid var(--quote-border);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: #495057;
+            background-color: #fff9e6;
+            border-radius: 5px;
+        }
+
+        .problem-solving {
+            background-color: var(--task-bg);
+            border: 1px solid var(--task-border);
+            border-right: 5px solid var(--task-border);
+            padding: 20px;
+            margin-top: 2rem;
+            border-radius: 5px;
+        }
+
+        .problem-solving h4 {
+            margin-top: 0;
+            color: var(--task-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .real-life-example {
+            background-color: #e9f7ef;
+            border-right: 4px solid #28a745;
+            padding: 15px;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+        }
+
+        .real-life-example h4 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>المحاضرة الخامسة: نموذج كائن المستند (DOM)</h1>
+            <p class="subtitle">التحكم في صفحة الويب بشكل كامل باستخدام جافاسكريبت</p>
+        </header>
+
+        <main>
+            <!-- Introduction -->
+            <section id="intro">
+                <h2><span class="material-icons">account_tree</span>مقدمة إلى الـ DOM</h2>
+                <p>عندما يقوم المتصفح بتحميل صفحة ويب، فإنه ينشئ تمثيلاً للصفحة في الذاكرة. هذا التمثيل يسمى <strong>نموذج كائن المستند (Document Object Model)</strong> أو اختصارًا <strong>DOM</strong>.</p>
+                <p>الـ DOM هو واجهة برمجية (API) تسمح لنا بالوصول إلى عناصر HTML و XML وتعديلها ككائنات (Objects). يمكننا التفكير في الـ DOM على أنه شجرة، حيث كل عنصر، نص، أو خاصية في المستند هي "عقدة" (Node) في هذه الشجرة.</p>
+                <img src="https://www.w3schools.com/js/pic_htmltree.gif" alt="DOM Tree" style="display: block; margin: 1rem auto; max-width: 100%; border-radius: 5px;">
+                <blockquote>
+                    <strong>فكرة رئيسية:</strong> الـ DOM هو جسر بين كود جافاسكريبت الخاص بك ومحتوى صفحة الويب. أي تغيير تقوم به على الـ DOM ينعكس فورًا على ما يراه المستخدم في المتصفح.
+                </blockquote>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة الأولى: اختيار العناصر -->
+            <section id="selecting-elements">
+                <h2><span class="material-icons">ads_click</span>الوحدة الأولى: اختيار عناصر الـ DOM</h2>
+                <p>أول خطوة للتعامل مع الـ DOM هي العثور على العناصر التي تريد التفاعل معها. توفر جافاسكريبت عدة طرق قوية لاختيار العناصر.</p>
+                
+                <h3>1. `getElementById()` - الأسرع والأكثر تحديدًا</h3>
+                <p>تُستخدم هذه الدالة لاختيار عنصر واحد فقط عن طريق خاصية الـ <code>id</code> الفريدة الخاصة به. بما أن الـ <code>id</code> يجب أن يكون فريدًا في الصفحة، فهذه هي أسرع طريقة للوصول إلى عنصر معين.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// HTML: <div id="main-title">...</div>
+
+const titleElement = document.getElementById('main-title');
+console.log(titleElement.textContent); // يطبع النص الموجود داخل الـ div</code></pre>
+
+                <h3>2. `getElementsByTagName()` - اختيار حسب اسم الوسم</h3>
+                <p>تُرجع هذه الدالة مجموعة من العناصر (HTMLCollection) التي تتطابق مع اسم الوسم (Tag) المحدد. المجموعة تشبه المصفوفة ولكنها ليست مصفوفة حقيقية.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// HTML: <p>Paragraph 1</p><p>Paragraph 2</p>
+
+const allParagraphs = document.getElementsByTagName('p');
+console.log(allParagraphs.length); // 2
+
+// للوصول إلى عنصر معين، نستخدم index
+console.log(allParagraphs[0].textContent); // "Paragraph 1"</code></pre>
+
+                <h3>3. `getElementsByClassName()` - اختيار حسب اسم الكلاس</h3>
+                <p>تُرجع هذه الدالة مجموعة (HTMLCollection) من العناصر التي تحتوي على اسم الكلاس المحدد.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// HTML: <div class="note">Note 1</div><span class="note">Note 2</span>
+
+const allNotes = document.getElementsByClassName('note');
+console.log(allNotes.length); // 2</code></pre>
+
+                <h3>4. `querySelector()` - القوة والدقة مع محددات CSS</h3>
+                <p>هذه هي الدالة الأكثر مرونة وقوة. تسمح لك باستخدام أي محدد CSS (CSS Selector) لاختيار عنصر. تخيل أن صفحتك هي مبنى كبير، و `querySelector` هو حارس الأمن الذي يمكنك أن تعطيه وصفًا دقيقًا جدًا للعثور على شخص ما.</p>
+                <div class="real-life-example">
+                    <h4>مثال من الحياة الواقعية</h4>
+                    <p><code>getElementById('office-101')</code> يشبه قول "أريد مكتب 101". مباشر وسريع.</p>
+                    <p><code>getElementsByTagName('p')</code> يشبه قول "أريد كل الموظفين". تحصل على قائمة كاملة.</p>
+                    <p>أما <code>querySelector('.department-marketing p.lead')</code> فهو يشبه قول "أريد الموظف الرئيسي في قسم التسويق". أنت تستخدم وصفًا مركبًا ودقيقًا للوصول إلى ما تريد بالضبط.</p>
+                </div>
+                <p>إنها مفيدة جدًا للوصول إلى عناصر لا تحتوي على <code>id</code> أو عندما تحتاج إلى تحديد عنصر بناءً على علاقته بعناصر أخرى.</p>
+                <p><strong>ملاحظة هامة:</strong> `querySelector` تعيد دائمًا <strong>أول عنصر فقط</strong> يطابق المحدد. إذا أردت كل العناصر المطابقة (كل الموظفين الرئيسيين في كل الأقسام)، استخدم `querySelectorAll()`.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// يختار أول عنصر p داخل div له id="container"
+const firstParagraph = document.querySelector('div#container p');
+
+// يختار العنصر الذي له خاصية data-widget-name="menu"
+const widget = document.querySelector('[data-widget-name="menu"]');</code></pre>
+
+                <h3>5. `querySelectorAll()` - اختيار كل العناصر المطابقة</h3>
+                <p>تشبه الدالة السابقة، ولكنها تُرجع <strong>كل العناصر</strong> التي تتطابق مع محدد CSS المحدد، على شكل قائمة عقد (NodeList).</p>
+                <pre><button class="copy-btn">نسخ</button><code>// يختار كل العناصر التي لها كلاس 'item' داخل قائمة ul
+const listItems = document.querySelectorAll('ul .item');
+
+// يمكننا استخدام forEach للتكرار على كل العناصر
+listItems.forEach(item => {
+  console.log(item.textContent);
+});</code></pre>
+
+                <div class="problem-solving">
+                    <h4><span class="material-icons">engineering</span>حل مسائل (1): اختيار العناصر</h4>
+                    <p><strong>المطلوب:</strong> قم بإنشاء صفحة HTML بسيطة تحتوي على عنوان <code>h1</code>، فقرتين <code>p</code>، وقائمة غير مرتبة <code>ul</code> بها ثلاثة عناصر <code>li</code>. أعطِ أحد عناصر القائمة كلاسًا مميزًا باسم `special`.</p>
+                    <p>بعد ذلك، اكتب كود جافاسكريبت يقوم بالآتي:</p>
+                    <ol>
+                        <li>اختر العنوان واطبعه في الـ console.</li>
+                        <li>اختر كل الفقرات واطبع عددها في الـ console.</li>
+                        <li>اختر عنصر القائمة الذي له كلاس `special` واطبعه في الـ console.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة الثانية: تعديل العناصر والأنماط -->
+            <section id="manipulating-elements">
+                <h2><span class="material-icons">edit</span>الوحدة الثانية: تعديل العناصر والأنماط</h2>
+                <p>بمجرد اختيار عنصر، يمكنك تغيير كل شيء فيه تقريبًا: محتواه، خصائصه، وحتى شكله وتصميمه.</p>
+
+                <h3>1. تغيير المحتوى: `innerHTML` و `textContent`</h3>
+                <p>هناك طريقتان أساسيتان لتغيير ما بداخل العنصر:</p>
+                <ul>
+                    <li><strong><code>textContent</code></strong>: تقوم بتغيير المحتوى النصي فقط. إنها تتجاهل أي وسوم HTML وتتعامل معها كنص عادي. هذه الطريقة أكثر أمانًا وأسرع إذا كنت تتعامل مع نصوص فقط.</li>
+                    <li><strong><code>innerHTML</code></strong>: تسمح لك بإدراج وسوم HTML كاملة داخل العنصر. المتصفح سيقوم بتحليلها وعرضها. استخدمها بحذر لتجنب ثغرات أمنية مثل (XSS) إذا كنت تدرج محتوى من المستخدم.</li>
+                </ul>
+                <pre><button class="copy-btn">نسخ</button><code>const welcomeBox = document.getElementById('welcome');
+
+// يغير النص فقط
+welcomeBox.textContent = "مرحبًا بك في محاضرتنا!";
+
+// يضيف وسم h3 داخل الـ div
+welcomeBox.innerHTML = "<h3>مرحبًا بك في محاضرتنا!</h3>";</code></pre>
+
+                <h3>2. تعديل الخصائص (Attributes)</h3>
+                <p>يمكنك الوصول إلى خصائص العنصر (مثل <code>src</code> لصورة أو <code>href</code> لرابط) وتغييرها مباشرة كأنها خصائص في كائن جافاسكريبت.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// HTML: <img id="main-image" src="image1.jpg">
+
+const mainImage = document.getElementById('main-image');
+
+// تغيير مصدر الصورة
+mainImage.src = "image2.jpg";
+
+// تغيير النص البديل
+mainImage.alt = "صورة جديدة";</code></pre>
+
+                <h3>3. تعديل الأنماط (CSS Styles)</h3>
+                <p>يمكنك تغيير أنماط CSS لعنصر ما عن طريق خاصية <code>style</code>. أي خاصية CSS بها شرطة (مثل <code>background-color</code>) يتم تحويلها إلى camelCase (مثل <code>backgroundColor</code>).</p>
+                <pre><button class="copy-btn">نسخ</button><code>const title = document.getElementById('main-title');
+
+title.style.color = 'blue';
+title.style.backgroundColor = '#f0f0f0'; // لاحظ استخدام camelCase
+title.style.padding = '10px';
+title.style.borderBottom = '2px solid red';</code></pre>
+
+                <h3>4. التعامل مع الكلاسات: `classList`</h3>
+                <p>خاصية <code>classList</code> توفر طرقًا سهلة لإضافة، إزالة، والتحقق من وجود كلاسات على عنصر، وهو أفضل من تعديل خاصية <code>className</code> مباشرة.</p>
+                <ul>
+                    <li><code>add('className')</code>: لإضافة كلاس.</li>
+                    <li><code>remove('className')</code>: لإزالة كلاس.</li>
+                    <li><code>toggle('className')</code>: لإضافة الكلاس إذا لم يكن موجودًا، وإزالته إذا كان موجودًا.</li>
+                    <li><code>contains('className')</code>: للتحقق من وجود كلاس (ترجع true أو false).</li>
+                </ul>
+                <pre><button class="copy-btn">نسخ</button><code>const notification = document.getElementById('notification');
+
+// إضافة كلاس لجعله مرئيًا
+notification.classList.add('visible');
+
+// إزالة كلاس بعد فترة
+setTimeout(() => {
+  notification.classList.remove('visible');
+}, 3000);
+
+// تبديل كلاس عند النقر
+notification.addEventListener('click', () => {
+  notification.classList.toggle('highlight');
+});</code></pre>
+
+                <div class="problem-solving">
+                    <h4><span class="material-icons">engineering</span>حل مسائل (2): الاختيار والتعديل</h4>
+                    <p><strong>المطلوب:</strong> بناءً على التمرين السابق، قم بالآتي:</p>
+                    <ol>
+                        <li>اختر العنوان <code>h1</code> وغير نصه إلى "مرحبًا بعالم الـ DOM!".</li>
+                        <li>اختر الفقرة الأولى وغير لون خطها إلى اللون الأزرق.</li>
+                        <li>اختر عنصر القائمة الذي له كلاس `special` وأضف له كلاسًا آخر باسم `highlighted`، والذي يعطيه خلفية صفراء.</li>
+                        <li>اختر الصورة الرئيسية في الصفحة (أضف واحدة إذا لم تكن موجودة) وغير مصدرها إلى صورة أخرى من اختيارك.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة الثالثة: إنشاء وحذف العناصر -->
+            <section id="creating-elements">
+                <h2><span class="material-icons">add_circle_outline</span>الوحدة الثالثة: إنشاء وحذف العناصر</h2>
+                <p>التحكم الحقيقي في الصفحة يأتي من القدرة على إضافة وإزالة العناصر ديناميكيًا استجابةً لأفعال المستخدم أو بيانات جديدة.</p>
+
+                <h3>1. إنشاء العناصر: `document.createElement()`</h3>
+                <p>هذه الدالة تنشئ عنصر HTML جديدًا بناءً على اسم الوسم الذي تحدده. العنصر الجديد يتم إنشاؤه في الذاكرة فقط، ولكنه لا يكون جزءًا من الصفحة بعد.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// إنشاء عنصر فقرة جديد
+const newParagraph = document.createElement('p');
+
+// إنشاء عنصر رابط
+const newLink = document.createElement('a');</code></pre>
+
+                <h3>2. إضافة العناصر إلى الـ DOM</h3>
+                <p>بعد إنشاء العنصر، تحتاج إلى إضافته إلى الشجرة. هناك طريقتان شائعتان:</p>
+                <ul>
+                    <li><strong><code>parentElement.appendChild(newElement)</code></strong>: تضيف العنصر الجديد كآخر ابن للعنصر الأب.</li>
+                    <li><strong><code>parentElement.insertBefore(newElement, referenceElement)</code></strong>: تضيف العنصر الجديد قبل عنصر مرجعي محدد (<code>referenceElement</code>).</li>
+                </ul>
+                <pre><button class="copy-btn">نسخ</button><code>// 1. نختار العنصر الأب الذي سنضيف إليه
+const container = document.getElementById('container');
+
+// 2. ننشئ العنصر الجديد ونجهز محتواه
+const newDiv = document.createElement('div');
+newDiv.textContent = "أنا عنصر جديد تم إنشاؤه بالجافاسكريبت!";
+newDiv.style.border = "1px solid green";
+newDiv.style.padding = "10px";
+
+// 3. نضيف العنصر الجديد إلى الصفحة
+container.appendChild(newDiv);</code></pre>
+
+                <h3>3. حذف العناصر من الـ DOM</h3>
+                <p>لإزالة عنصر، يمكنك استخدام إحدى طريقتين:</p>
+                <ul>
+                    <li><strong><code>elementToRemove.remove()</code></strong>: الطريقة الأحدث والأبسط، حيث تقوم باستدعائها على العنصر الذي تريد حذفه مباشرة.</li>
+                    <li><strong><code>parentElement.removeChild(elementToRemove)</code></strong>: الطريقة الأقدم، وتتطلب الوصول إلى العنصر الأب أولاً.</li>
+                </ul>
+                <pre><button class="copy-btn">نسخ</button><code>// الطريقة الحديثة (موصى بها)
+const elementToDelete = document.getElementById('old-element');
+if (elementToDelete) {
+    elementToDelete.remove();
+}
+
+// الطريقة القديمة
+const parent = document.getElementById('parent-container');
+const childToRemove = document.getElementById('child-element');
+if (parent && childToRemove) {
+    parent.removeChild(childToRemove);
+}</code></pre>
+
+                <div class="problem-solving">
+                    <h4><span class="material-icons">engineering</span>حل مسائل (3): بناء ديناميكي</h4>
+                    <p><strong>المطلوب:</strong> بناءً على التمرين السابق، قم بالآتي:</p>
+                    <ol>
+                        <li>أنشئ زرًا جديدًا (<code>button</code>) وأعطه نص "أضف عنصرًا جديدًا".</li>
+                        <li>أضف هذا الزر إلى نهاية الصفحة (داخل الـ <code>body</code>).</li>
+                        <li>عندما يتم النقر على هذا الزر (سنتعلم الأحداث لاحقًا، الآن فقط قم بإنشائه)، يجب أن يضيف عنصر <code>li</code> جديدًا إلى القائمة <code>ul</code> الموجودة في الصفحة.</li>
+                        <li>أنشئ زرًا آخر نصه "احذف العنصر المميز"، وعند النقر عليه، يجب أن يحذف العنصر الذي له كلاس `special`.</li>
+                    </ol>
+                    <blockquote><strong>تلميح:</strong> بما أننا لم نغطِ الأحداث بعد، يمكنك وضع الكود الذي يضيف ويحذف العناصر داخل دالتين منفصلتين (`addNewItem()` و `deleteSpecialItem()`) وتستدعيهما من الـ console للتجربة.</blockquote>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة الرابعة: مقدمة إلى الأحداث -->
+            <section id="events">
+                <h2><span class="material-icons">mouse</span>الوحدة الرابعة: مقدمة إلى الأحداث (Events)</h2>
+                <p>الأحداث هي أفعال تحدث في المتصفح، مثل نقرة زر الماوس، الضغط على مفتاح في لوحة المفاتيح، أو انتهاء تحميل الصفحة. يمكننا "الاستماع" لهذه الأحداث وتنفيذ كود جافاسكريبت عندما تحدث، مما يجعل صفحاتنا تفاعلية.</p>
+
+                <h3>1. الاستماع للأحداث: `addEventListener()`</h3>
+                <p>الطريقة الحديثة والموصى بها لربط حدث بعنصر هي استخدام دالة <code>addEventListener()</code>. إنها تسمح بإضافة عدة مستمعين لنفس الحدث على نفس العنصر.</p>
+                <p>تأخذ هذه الدالة وسيطين أساسيين: اسم الحدث (مثل 'click')، والدالة التي سيتم تنفيذها (callback function) عندما يقع الحدث.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const myButton = document.getElementById('my-button');
+
+function handleButtonClick() {
+  alert('تم النقر على الزر!');
+}
+
+// ربط دالة handleButtonClick بحدث النقر على الزر
+myButton.addEventListener('click', handleButtonClick);</code></pre>
+
+                <h3>2. كائن الحدث (The Event Object)</h3>
+                <p>عندما يقع حدث، يقوم المتصفح تلقائيًا بتمرير كائن خاص (event object) إلى دالة الـ callback. هذا الكائن يحتوي على معلومات قيمة عن الحدث الذي وقع.</p>
+                <ul>
+                    <li><strong><code>event.target</code></strong>: يشير إلى العنصر الذي أطلق الحدث مباشرة.</li>
+                    <li><strong><code>event.preventDefault()</code></strong>: يمنع السلوك الافتراضي للحدث. على سبيل المثال، منع رابط من الانتقال لصفحة أخرى، أو منع نموذج من الإرسال.</li>
+                    <li><strong><code>event.stopPropagation()</code></strong>: يمنع انتشار الحدث إلى العناصر الأب (سنتناوله في الوحدة التالية).</li>
+                </ul>
+                <pre><button class="copy-btn">نسخ</button><code>const myLink = document.getElementById('my-link');
+
+myLink.addEventListener('click', function(event) {
+  // منع الرابط من فتح الرابط الموجود في href
+  event.preventDefault();
+
+  console.log('لقد نقرت على الرابط، ولكن لم يتم فتح صفحة جديدة.');
+  console.log('العنصر الذي نقرت عليه هو:', event.target);
+});</code></pre>
+
+                <h3>3. أحداث شائعة</h3>
+                <p>هناك العديد من الأحداث، ولكن هذه بعض من الأكثر استخدامًا:</p>
+                <ul>
+                    <li><strong>أحداث الماوس:</strong> <code>click</code>, <code>dblclick</code>, <code>mouseover</code>, <code>mouseout</code>, <code>mousedown</code>, <code>mouseup</code>.</li>
+                    <li><strong>أحداث لوحة المفاتيح:</strong> <code>keydown</code>, <code>keyup</code>, <code>keypress</code>.</li>
+                    <li><strong>أحداث النماذج:</strong> <code>submit</code>, <code>focus</code>, <code>blur</code>, <code>change</code>.</li>
+                    <li><strong>أحداث الصفحة:</strong> <code>DOMContentLoaded</code>, <code>load</code>, <code>resize</code>, <code>scroll</code>.</li>
+                </ul>
+
+                <div class="problem-solving">
+                    <h4><span class="material-icons">engineering</span>حل مسائل (4): جعل الصفحة تفاعلية</h4>
+                    <p><strong>المطلوب:</strong> بناءً على التمرين السابق، قم بالآتي:</p>
+                    <ol>
+                        <li>اجعل زر "أضف عنصرًا جديدًا" يعمل بالفعل. عند النقر عليه، يجب أن يضيف عنصر <code>li</code> جديدًا إلى القائمة.</li>
+                        <li>اجعل زر "احذف العنصر المميز" يعمل. عند النقر عليه، يجب أن يحذف العنصر الذي له كلاس `special`.</li>
+                        <li>عندما يمرر المستخدم الماوس فوق العنوان <code>h1</code>، قم بتغيير لونه إلى اللون الأحمر. وعندما يبتعد الماوس، أعده إلى لونه الأصلي.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة الخامسة: أحداث متقدمة والتحقق من النماذج -->
+            <section id="advanced-events">
+                <h2><span class="material-icons">rule</span>الوحدة الخامسة: أحداث متقدمة والتحقق من النماذج</h2>
+                <p>الآن بعد أن أتقنا الأساسيات، يمكننا الانتقال إلى تقنيات أكثر تقدمًا وواقعية تُستخدم في تطبيقات الويب الحديثة.</p>
+
+                <h3>1. تفويض الأحداث (Event Delegation)</h3>
+                <p>ماذا لو كان لديك قائمة بها 100 عنصر، وتريد أن تفعل شيئًا عند النقر على أي منها؟ بدلاً من إضافة 100 مستمع أحداث (وهو أمر غير فعال)، يمكننا استخدام تقنية تسمى <strong>تفويض الأحداث</strong>.</p>
+                <p>الفكرة هي أن نضع مستمع أحداث واحد فقط على العنصر الأب (مثل الـ <code>ul</code>). عندما يتم النقر على عنصر ابن (مثل <code>li</code>)، فإن الحدث "يفور" (bubbles up) إلى الأب. يمكننا بعد ذلك استخدام <code>event.target</code> لمعرفة أي ابن تم النقر عليه بالفعل.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// HTML: <ul id="my-list"><li>Item 1</li><li>Item 2</li>...</ul>
+
+const list = document.getElementById('my-list');
+
+list.addEventListener('click', function(event) {
+  // تحقق مما إذا كان العنصر الذي تم النقر عليه هو عنصر li
+  if (event.target.tagName === 'LI') {
+    console.log('You clicked on:', event.target.textContent);
+    event.target.style.textDecoration = 'line-through';
+  }
+});
+
+// هذه الطريقة تعمل أيضًا مع العناصر التي تتم إضافتها ديناميكيًا في المستقبل!</code></pre>
+                <blockquote>
+                    <strong>لماذا نستخدم تفويض الأحداث؟</strong><br>
+                    1. <strong>كفاءة الذاكرة:</strong> مستمع واحد بدلاً من العشرات أو المئات.<br>
+                    2. <strong>المرونة:</strong> يعمل تلقائيًا مع العناصر الجديدة التي تتم إضافتها إلى الحاوية لاحقًا.
+                </blockquote>
+
+                <h3>2. التحقق من صحة النماذج (Form Validation)</h3>
+                <p>التحقق من صحة إدخالات المستخدم قبل إرسالها إلى الخادم هو أحد أكثر استخدامات جافاسكريبت شيوعًا. هذا يحسن تجربة المستخدم ويقلل العبء على الخادم.</p>
+                <p>سنقوم بالاستماع لحدث <code>submit</code> على النموذج. داخل دالة الاستجابة، سنتحقق من الحقول ونستخدم <code>event.preventDefault()</code> لمنع الإرسال إذا كانت هناك أخطاء.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// HTML: <form id="register-form"><input id="username"><button type="submit">Register</button></form>
+
+const form = document.getElementById('register-form');
+
+form.addEventListener('submit', function(event) {
+  const usernameInput = document.getElementById('username');
+  
+  // تحقق مما إذا كان حقل اسم المستخدم فارغًا
+  if (usernameInput.value.trim() === '') {
+    // امنع النموذج من الإرسال
+    event.preventDefault();
+    
+    alert('من فضلك أدخل اسم المستخدم!');
+    usernameInput.style.border = '2px solid red';
+  } else {
+    usernameInput.style.border = '2px solid green';
+  }
+});</code></pre>
+
+                <h3>3. التعامل مع النماذج الديناميكية: خاصية <code>.form</code> ومجموعة <code>.elements</code></h3>
+                <p>في كثير من الأحيان، خاصة في التطبيقات المعقدة، قد لا تعرف مسبقًا عدد الحقول الموجودة في النموذج. قد يتم إنشاؤها ديناميكيًا بناءً على اختيارات المستخدم. هنا يأتي دور خاصية <code>.form</code> ومجموعة <code>.elements</code>.</p>
+                
+                <h4>خاصية <code>.form</code></h4>
+                <p>هي خاصية للقراءة فقط متاحة على جميع عناصر التحكم في النموذج (مثل <code>&lt;input&gt;</code>, <code>&lt;button&gt;</code>, <code>&lt;select&gt;</code>). تُرجع هذه الخاصية مرجعًا مباشرًا إلى عنصر <code>&lt;form&gt;</code> الذي تنتمي إليه، مما يسهل الوصول إلى النموذج من أي عنصر داخله.</p>
+                <pre><button class="copy-btn">نسخ</button><code>&lt;form id="profileForm"&gt;
+    &lt;input type="text" id="name" placeholder="Your Name"&gt;
+    &lt;button type="button" onclick="showFormInfo(this)"&gt;Show Form ID&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function showFormInfo(element) {
+    // From the button, we can easily access its parent form
+    const parentForm = element.form;
+    alert('This element belongs to the form with ID: ' + parentForm.id);
+}
+&lt;/script&gt;</code></pre>
+
+                <h4>مجموعة <code>form.elements</code></h4>
+                <p>هذه هي الأداة الأقوى للتعامل مع النماذج الديناميكية. كل عنصر <code>&lt;form&gt;</code> لديه خاصية <code>.elements</code>، وهي عبارة عن `HTMLFormControlsCollection` تحتوي على جميع عناصر التحكم (inputs, buttons, selects, etc.) داخل النموذج.</p>
+                <p>يمكنك استخدامها لإنشاء دالة عامة (generic function) يمكنها جمع البيانات من أي نموذج، بغض النظر عن عدد الحقول أو أسمائها.</p>
+                <pre><button class="copy-btn">نسخ</button><code>&lt;form id="contactForm" onsubmit="serializeForm(event)"&gt;
+    &lt;input name="fullName" placeholder="Full Name"&gt;
+    &lt;input name="email" type="email" placeholder="Email"&gt;
+    &lt;textarea name="message" placeholder="Your Message"&gt;&lt;/textarea&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function serializeForm(event) {
+    event.preventDefault(); // Prevent actual submission
+
+    const form = event.target; // The form that triggered the submit event
+    const formData = {};
+
+    // Loop through all form elements
+    for (const element of form.elements) {
+        // We only want elements with a 'name' and a 'value'
+        if (element.name && element.value) {
+            formData[element.name] = element.value;
+        }
+    }
+
+    console.log('Serialized Form Data:');
+    console.log(formData);
+    alert('Check the console for the form data!');
+}
+&lt;/script&gt;</code></pre>
+
+                <div class="problem-solving">
+                    <h4><span class="material-icons">engineering</span>حل مسائل (5): مشروع صغير متكامل</h4>
+                    <p><strong>المطلوب:</strong> إنشاء تطبيق "قائمة مهام" (To-Do List) بسيط يجمع كل ما تعلمناه.</p>
+                    <ol>
+                        <li>أنشئ حقل إدخال <code>input</code> وزر "إضافة مهمة".</li>
+                        <li>عندما يكتب المستخدم مهمة في الحقل ويضغط على الزر، قم بإنشاء عنصر قائمة (<code>&lt;li&gt;</code>)، واجعل نصه هو العنصر الحالي.</li>
+                        <li>استخدم <strong>تفويض الأحداث</strong>: عندما ينقر المستخدم على أي عنصر في القائمة، قم بوضع خط في منتصفه (<code>text-decoration: line-through</code>) للإشارة إلى أنه تم إنجازه.</li>
+                        <li>أضف زر "حذف" صغير (يمكن أن يكون حرف 'X') بجانب كل مهمة عند إنشائها.</li>
+                        <li>باستخدام تفويض الأحداث مرة أخرى، عندما ينقر المستخدم على زر الحذف، قم بإزالة عنصر المهمة (<code>&lt;li&gt;</code>) بالكامل من القائمة.</li>
+                        <li>(تحدي إضافي): امنع إضافة مهمة فارغة إلى القائمة.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- الوحدة السادسة: دوال مرنة -->
+            <section id="flexible-functions">
+                <h2><span class="material-icons">functions</span>الوحدة السادسة: دوال مرنة بعدد غير محدد من المعاملات</h2>
+                <p>في بعض الأحيان، نحتاج إلى كتابة دالة يمكنها قبول أي عدد من المدخلات (arguments). على سبيل المثال، دالة تجمع كل الأرقام التي نمررها لها، سواء كانت رقمين أو عشرة أرقام. جافاسكريبت توفر طريقتين لتحقيق ذلك.</p>
+
+                <h3>1. الطريقة القديمة: الكائن `arguments`</h3>
+                <p>داخل أي دالة تقليدية (ليست arrow function)، يوجد كائن خاص اسمه <code>arguments</code>. هذا الكائن يشبه الـ Array ويحتوي على كل المعاملات التي تم تمريرها للدالة عند استدعائها.</p>
+                <p><strong>ملاحظة هامة:</strong> <code>arguments</code> ليس مصفوفة حقيقية. لا يمكنك استخدام دوال المصفوفة مثل <code>forEach()</code> أو <code>reduce()</code> عليه مباشرة. لحل هذه المشكلة، كنا نحوله إلى مصفوفة حقيقية باستخدام <code>Array.from()</code>. كما يجب تجنب استخدام دالة <code>eval()</code> تمامًا لأنها خطيرة جدًا وبطيئة.</p>
+                <pre><button class="copy-btn">نسخ</button><code>function calculate() {
+  // First, convert the 'arguments' object into a real array.
+  const numbers = Array.from(arguments);
+
+  if (numbers.length === 0) {
+    console.log("Please provide some numbers.");
+    return;
+  }
+
+  // Use the safe and powerful 'reduce' method for calculations.
+  const sum = numbers.reduce((acc, current) => acc + current, 0);
+  const product = numbers.reduce((acc, current) => acc * current, 1);
+
+  console.log(`The numbers are: ${numbers.join(', ')}`);
+  console.log(`Sum: ${sum}`);
+  console.log(`Product: ${product}`);
+}
+
+calculate(5, 10, 2); 
+// Output:
+// The numbers are: 5, 10, 2
+// Sum: 17
+// Product: 100
+
+calculate(3, 3, 3, 3);
+// Output:
+// The numbers are: 3, 3, 3, 3
+// Sum: 12
+// Product: 81</code></pre>
+
+                <h3>2. الطريقة الحديثة (موصى بها): معاملات البقية (Rest Parameters)</h3>
+                <p>قدمت ES6 طريقة أفضل وأكثر وضوحًا باستخدام معاملات البقية (rest parameters). عبر استخدام <code>...</code> قبل اسم آخر معامل في الدالة، يمكنك جمع كل المعاملات المتبقية في مصفوفة حقيقية.</p>
+                <p>هذه الطريقة أفضل لأنها تنشئ مصفوفة حقيقية مباشرة، وهي أكثر وضوحًا في القراءة.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// '...numbers' gathers all arguments into a real array called 'numbers'.
+function sumAllModern(...numbers) {
+  // 'numbers' is a real array, so we can use reduce() directly.
+  return numbers.reduce((sum, current) => sum + current, 0);
+}
+
+console.log(sumAllModern(1, 5, 10, 20)); // Output: 36
+console.log(sumAllModern(4, 8));       // Output: 12
+
+// You can also have named parameters before the rest parameter.
+function introduce(firstPerson, ...otherPeople) {
+    console.log(`Hello, ${firstPerson}!`);
+    console.log(`I also see: ${otherPeople.join(', ')}`);
+}
+
+introduce('Ahmed', 'Mohamed', 'Sara');
+// Output:
+// Hello, Ahmed!
+// I also see: Mohamed, Sara</code></pre>
+
+                <h3>مثال عملي على الـ DOM</h3>
+                <p>لنفترض أننا نريد كتابة دالة تأخذ أي عدد من عناصر الـ DOM وتضيف إليهم كلاسًا معينًا لتغيير لونهم.</p>
+                <pre><button class="copy-btn">نسخ</button><code>// This function takes any number of elements and adds a class to them.
+function highlightElements(...elements) {
+  elements.forEach(element => {
+    if (element) { // Check if the element exists
+      element.classList.add('highlight');
+    }
+  });
+}
+
+// Let's assume we have these elements in our HTML
+const title = document.getElementById('main-title');
+const paragraph = document.querySelector('.some-paragraph');
+const footer = document.querySelector('footer');
+
+// Now we can highlight them all with one function call
+highlightElements(title, paragraph, footer);</code></pre>
+
+                <div class="problem-solving">
+                    <h4><span class="material-icons">engineering</span>حل مسائل (6): دوال مرنة</h4>
+                    <p><strong>المهمة:</strong></p>
+                    <ol>
+                        <li>اكتب دالة اسمها <code>appendChildren(parentElement, ...children)</code>.</li>
+                        <li>الدالة تأخذ عنصرًا أبًا كأول معامل، ثم أي عدد من العناصر الأبناء كبقية المعاملات.</li>
+                        <li>يجب على الدالة أن تضيف كل عنصر من الأبناء إلى العنصر الأب باستخدام <code>appendChild()</code>.</li>
+                        <li>اختبر دالتك عن طريق إنشاء div رئيسي، ثم إنشاء عدة عناصر (مثل p, span, h4) وإضافتها جميعًا إلى الـ div الرئيسي باستخدام دالتك الجديدة.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- ملحق: مراجعة دوال المصفوفات -->
+            <section id="array-methods-review">
+                <h2><span class="material-icons">list_alt</span>ملحق: مراجعة سريعة على أهم دوال المصفوفات</h2>
+                <p>هذه الدوال هي أدواتك الأساسية للتعامل مع أي قائمة من البيانات في جافاسكريبت، سواء كانت قائمة أسماء، أرقام، أو حتى قائمة عناصر DOM. إتقانها سيجعل كتابة الكود أسهل وأكثر فعالية.</p>
+
+                <h3>🔁 دوال التحويل (Transformation Methods) - بترجع مصفوفة جديدة</h3>
+                
+                <h4><code>map()</code></h4>
+                <p><strong>الوصف:</strong> بتعدي على كل عنصر في المصفوفة، وتطبق عليه عملية معينة، ثم ترجع مصفوفة جديدة بنفس الطول تحتوي على النتائج.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const numbers = [1, 2, 3];
+const doubled = numbers.map(x => x * 2);
+// doubled is now [2, 4, 6]
+// The original 'numbers' array is unchanged.</code></pre>
+
+                <h4><code>filter()</code></h4>
+                <p><strong>الوصف:</strong> بترجع مصفوفة جديدة تحتوي فقط على العناصر التي نجحت في اختبار (شرط) معين.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const numbers = [10, 25, 8, 40];
+const biggerThan20 = numbers.filter(x => x > 20);
+// biggerThan20 is now [25, 40]</code></pre>
+
+                <h4><code>slice()</code></h4>
+                <p><strong>الوصف:</strong> بترجع نسخة سطحية (shallow copy) من جزء من المصفوفة بدون تعديل المصفوفة الأصلية.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const fruits = ['Banana', 'Orange', 'Lemon', 'Apple', 'Mango'];
+const citrus = fruits.slice(1, 3); // Starts at index 1, ends before index 3
+// citrus is now ['Orange', 'Lemon']</code></pre>
+
+                <h4><code>concat()</code></h4>
+                <p><strong>الوصف:</strong> تدمج مصفوفتين أو أكثر لإنشاء مصفوفة جديدة.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const array1 = ['a', 'b'];
+const array2 = ['c', 'd'];
+const combined = array1.concat(array2);
+// combined is now ['a', 'b', 'c', 'd']</code></pre>
+
+                <h4><code>reverse()</code></h4>
+                <p><strong>الوصف:</strong> بتعكس ترتيب عناصر المصفوفة. <strong>(ملاحظة: هذه الدالة تعدل على المصفوفة الأصلية مباشرة).</strong></p>
+                <pre><button class="copy-btn">نسخ</button><code>const array1 = ['one', 'two', 'three'];
+array1.reverse();
+// array1 is now ['three', 'two', 'one']</code></pre>
+
+                <h4><code>sort()</code></h4>
+                <p><strong>الوصف:</strong> بترتب عناصر المصفوفة. <strong>(ملاحظة: هذه الدالة تعدل على المصفوفة الأصلية مباشرة).</strong></p>
+                <pre><button class="copy-btn">نسخ</button><code>const months = ['March', 'Jan', 'Feb', 'Dec'];
+months.sort();
+// months is now ['Dec', 'Feb', 'Jan', 'March']
+
+const numbers = [4, 2, 5, 1, 3];
+numbers.sort((a, b) => a - b); // For numbers, provide a compare function
+// numbers is now [1, 2, 3, 4, 5]</code></pre>
+
+                <h3>🔍 دوال البحث (Searching & Finding Methods)</h3>
+
+                <h4><code>find()</code></h4>
+                <p><strong>الوصف:</strong> بترجع <strong>أول عنصر</strong> في المصفوفة يحقق الشرط.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const numbers = [5, 12, 8, 130, 44];
+const found = numbers.find(element => element > 10);
+// found is 12</code></pre>
+
+                <h4><code>findIndex()</code></h4>
+                <p><strong>الوصف:</strong> بترجع <strong>الـ index</strong> بتاع أول عنصر يحقق الشرط.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const numbers = [5, 12, 8, 130, 44];
+const foundIndex = numbers.findIndex(element => element > 10);
+// foundIndex is 1</code></pre>
+
+                <h4><code>includes()</code></h4>
+                <p><strong>الوصف:</strong> تتأكد إذا كانت المصفوفة تحتوي على قيمة معينة (بترجع <code>true</code> أو <code>false</code>).</p>
+                <pre><button class="copy-btn">نسخ</button><code>const pets = ['cat', 'dog', 'bat'];
+console.log(pets.includes('cat')); // true
+console.log(pets.includes('at'));  // false (must be an exact match)</code></pre>
+
+                <h4><code>indexOf()</code></h4>
+                <p><strong>الوصف:</strong> بترجع أول index توجد فيه القيمة المحددة، أو -1 لو مش موجودة.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const beasts = ['ant', 'bison', 'camel', 'duck', 'bison'];
+console.log(beasts.indexOf('bison'));      // 1
+console.log(beasts.indexOf('bison', 2)); // 4 (start searching from index 2)
+console.log(beasts.indexOf('giraffe'));    // -1</code></pre>
+
+                <h4><code>lastIndexOf()</code></h4>
+                <p><strong>الوصف:</strong> زي اللي فاتت بس بتبدأ البحث من آخر المصفوفة.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const animals = ['Dodo', 'Tiger', 'Penguin', 'Dodo'];
+console.log(animals.lastIndexOf('Dodo')); // 3
+console.log(animals.lastIndexOf('Tiger'));// 1</code></pre>
+
+                <h4><code>some()</code></h4>
+                <p><strong>الوصف:</strong> تتأكد إذا كان <strong>بعض</strong> عناصر المصفوفة (عنصر واحد على الأقل) يحقق الشرط.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const array = [1, 2, 3, 4, 5];
+const hasEvenNumber = array.some(element => element % 2 === 0);
+// hasEvenNumber is true</code></pre>
+
+                <h4><code>every()</code></h4>
+                <p><strong>الوصف:</strong> تتأكد إذا كان <strong>كل</strong> عناصر المصفوفة تحقق الشرط.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const numbers = [1, 3, 5];
+const allAreOdd = numbers.every(num => num % 2 !== 0);
+// allAreOdd is true</code></pre>
+
+                <h3>📊 دوال التجميع (Reducing & Accumulating)</h3>
+
+                <h4><code>reduce()</code></h4>
+                <p><strong>الوصف:</strong> بتنفذ دالة على كل عنصر في المصفوفة لتختزلها في قيمة واحدة نهائية (مثل مجموع أو ناتج ضرب).</p>
+                <pre><button class="copy-btn">نسخ</button><code>const numbers = [1, 2, 3, 4];
+// 0 is the initial value for the accumulator (acc)
+const sum = numbers.reduce((acc, current) => acc + current, 0);
+// sum is 10</code></pre>
+
+                <h3>🧪 دوال التكرار (Iteration Methods)</h3>
+                <h4><code>forEach()</code></h4>
+                <p><strong>الوصف:</strong> بتنفذ دالة معينة مرة واحدة لكل عنصر في المصفوفة. (لا ترجع أي قيمة).</p>
+                <pre><button class="copy-btn">نسخ</button><code>const fruits = ['apple', 'orange', 'cherry'];
+fruits.forEach(fruit => {
+  console.log(`I love ${fruit}`);
+});
+// Logs:
+// I love apple
+// I love orange
+// I love cherry</code></pre>
+
+                <h3>✅ دوال مساعدة ومفيدة (Helper & Utility Methods)</h3>
+
+                <h4><code>Array.from()</code></h4>
+                <p><strong>الوصف:</strong> بتحول أي حاجة شبه مصفوفة (like an array-like object or iterable) لمصفوفة حقيقية.</p>
+                <pre><button class="copy-btn">نسخ</button><code>const str = 'hello';
+const chars = Array.from(str);
+// chars is now ['h', 'e', 'l', 'l', 'o']
+
+// Also useful for NodeLists from querySelectorAll
+const divs = document.querySelectorAll('div');
+const divArray = Array.from(divs); // Now you can use map, filter, etc.</code></pre>
+
+                <h4><code>Array.isArray()</code></h4>
+                <p><strong>الوصف:</strong> بتتحقق إذا كان المتغير عبارة عن مصفوفة ولا لأ (بترجع <code>true</code> أو <code>false</code>).</p>
+                <pre><button class="copy-btn">نسخ</button><code>console.log(Array.isArray([1, 2, 3]));  // true
+console.log(Array.isArray({foo: 123})); // false
+console.log(Array.isArray('hello'));    // false</code></pre>
+
+            </section>
+
+            <hr>
+
+            <!-- الخاتمة -->
+            <section id="conclusion">
+                <h2><span class="material-icons">check_circle</span>الخاتمة: أنت الآن مطور DOM!</h2>
+                <p>تهانينا! لقد أكملت رحلة مكثفة عبر عالم الـ DOM. لقد انتقلت من مجرد فهم ماهية شجرة الـ DOM إلى التحكم فيها بالكامل باستخدام جافاسكريبت.</p>
+                <p>دعنا نلخص ما أنجزته:</p>
+                <ul>
+                    <li><strong>الاختيار والوصول:</strong> تعلمت كيف تجد أي عنصر في الصفحة باستخدام مجموعة متنوعة من الدوال مثل <code>getElementById</code>, <code>querySelector</code>, و <code>getElementsByTagName</code>.</li>
+                    <li><strong>التعديل والتغيير:</strong> أصبحت قادرًا على تغيير محتوى العناصر، وتعديل خصائصها (attributes)، والتحكم في مظهرها عبر تغيير الأنماط (CSS) ديناميكيًا.</li>
+                    <li><strong>الإنشاء والحذف:</strong> اكتسبت القدرة على بناء أجزاء جديدة من صفحتك من الصفر باستخدام <code>createElement</code> وإضافتها إلى الصفحة، وكذلك إزالة العناصر التي لم تعد بحاجة إليها.</li>
+                    <li><strong>التفاعل والأحداث:</strong> تعلمت كيف تجعل صفحتك تستجيب لأفعال المستخدم من خلال الاستماع للأحداث (Events) مثل النقرات وحركات الماوس، وكيفية استخدام تقنيات متقدمة مثل تفويض الأحداث للتعامل معها بكفاءة.</li>
+                </ul>
+                <p>التمرين الأخير في <strong>الوحدة الخامسة (مشروع قائمة المهام)</strong> هو الاختبار الحقيقي لمهاراتك. إنه يجمع كل هذه المفاهيم معًا في تطبيق عملي واحد. نشجعك بشدة على محاولة بنائه بنفسك من الألف إلى الياء.</p>
+                <p>الآن، أصبحت لديك الأدوات الأساسية لبناء واجهات ويب تفاعلية وديناميكية. استمر في الممارسة والتجربة، فهذه هي أفضل طريقة لترسيخ هذه المهارات. بالتوفيق في رحلتك القادمة في عالم تطوير الويب!</p>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">نهاية المحاضرة الخامسة</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'تم النسخ!';
+                        setTimeout(() => { button.textContent = 'نسخ'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
