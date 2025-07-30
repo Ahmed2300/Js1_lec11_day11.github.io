@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 5: The World of Objects & OOP in JavaScript</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #6f42c1; /* Purple for this lecture */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14; /* Orange for emphasis */
+            --task-bg: #e6f7ff;
+            --task-border: #007bff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        header .summarizer-credit {
+            text-align: center;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        main section {
+            background-color: #fff;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 .material-icons {
+            font-size: 2.5rem;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            color: #343a40;
+            margin-top: 2.5rem;
+            border-right: 4px solid var(--primary-color);
+            padding-right: 15px;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 90%;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border-radius: 5px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        pre, pre code {
+            direction: ltr;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s;
+        }
+
+        pre:hover .copy-btn { opacity: 1; }
+
+        strong { color: var(--primary-color); }
+        
+        blockquote {
+            border-right: 5px solid var(--quote-border);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: #495057;
+            background-color: #fff9e6;
+            border-radius: 5px;
+        }
+        
+        .task-box {
+            border: 2px solid var(--task-border);
+            background-color: var(--task-bg);
+            padding: 20px;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+        
+        .task-box h4 {
+            margin-top: 0;
+            color: var(--task-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Lecture 5: The World of Objects & OOP in JavaScript</h1>
+            <p class="subtitle">من الكائنات البسيطة إلى بناء تطبيقات تفاعلية كاملة.</p>
+            <p class="summarizer-credit">Summarized by: Ahmed Azam</p>
+        </header>
+
+        <main>
+            <!-- MODULE 1: OBJECT LITERALS -->
+            <section id="object-literals">
+                <h2><span class="material-icons">data_object</span>Module 1: The Simplest Form - Object Literals</h2>
+                <p>الـ Object هو حجر الأساس في جافاسكريبت. إنه ببساطة حاوية غير مرتبة من البيانات (properties) والسلوكيات (methods) المرتبطة ببعضها. أسهل طريقة لإنشاء object هي باستخدام الـ "Object Literal Syntax" <code>{...}</code>.</p>
+                
+                <h3>Analysis of <code>Object.js</code></h3>
+                <p>في ملف الديمو، نرى تعريف <code>BookObject</code>. هذا المثال يوضح لنا قوة الـ Literals:</p>
+                <ul>
+                    <li><strong>Properties متنوعة:</strong> يمكن للـ property أن تكون أي نوع بيانات: <code>Name: "JS"</code> (string), <code>version: 2</code> (number), <code>publishedCities: ["Cairo", "Alex"]</code> (array), وحتى object آخر متداخل مثل <code>"Auther Name"</code>.</li>
+                    <li><strong>Methods:</strong> يمكن أن تكون الـ property عبارة عن function، وفي هذه الحالة نسميها method. مثل <code>Borrow: function(...)</code>.</li>
+                    <li><strong>الوصول للبيانات:</strong> نستخدم إما <strong>Dot Notation</strong> (<code>BookObject.Name</code>) أو <strong>Bracket Notation</strong> (<code>BookObject["Auther Name"]</code>). نلجأ للـ Bracket Notation عندما يحتوي اسم الـ property على مسافات أو رموز خاصة، أو عندما يكون اسم الـ property ديناميكيًا (متغير).</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>const BookObject = {
+    Name: "JS",
+    "Auther Name": { FName: "John" },
+    Borrow: function (readerName) {
+        // 'this.Name' is better than 'BookObject.Name' here
+        console.log(readerName + " borrowed the book: " + this.Name);
+    }
+};
+
+// Accessing properties
+console.log(BookObject.Name); // "JS"
+console.log(BookObject["Auther Name"].FName); // "John"
+
+// Calling a method
+BookObject.Borrow("Ahmed");</code></pre>
+                
+                <h3>Dynamic Nature of Objects</h3>
+                <p>جافاسكريبت لغة ديناميكية، مما يعني أنه يمكنك إضافة أو حذف خصائص من الـ object في أي وقت بعد إنشائه.</p>
+                <pre><button class="copy-btn">Copy</button><code>// Add a new property at runtime
+BookObject.pages = 500;
+console.log(BookObject.pages); // 500
+
+// Delete a property
+delete BookObject.version;
+console.log(BookObject.version); // undefined</code></pre>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #1</h4>
+                    <p><strong>المطلوب:</strong> قم بإنشاء object يمثل "سيارة" باستخدام الـ literal syntax. يجب أن يحتوي على خصائص مثل <code>make</code> (string), <code>model</code> (string), <code>year</code> (number), و <code>isRunning</code> (boolean). أضف method اسمها <code>startEngine()</code> تقوم بتغيير قيمة <code>isRunning</code> إلى <code>true</code> وتطبع رسالة في الـ console.</p>
+                </div>
+            </section>
+
+            <hr>
+            
+            <!-- MODULE 2: FACTORY & CONSTRUCTOR FUNCTIONS -->
+            <section id="constructors">
+                <h2><span class="material-icons">engineering</span>Module 2: Creating Objects - Factory vs. Constructor</h2>
+                <p>عندما نحتاج إلى إنشاء العديد من الـ objects التي لها نفس الهيكل، يصبح تكرار الـ object literal أمرًا غير عملي. هنا تظهر الأنماط (Patterns) لإنشاء الكائنات.</p>
+                
+                <h3>Factory Functions (الدوال المصنعية)</h3>
+                <p>هي مجرد دالة عادية تقوم بإنشاء object وإعادته. هي طريقة بسيطة ومباشرة.</p>
+                <h4>Analysis of <code>factoryFunction.js</code></h4>
+                <pre><button class="copy-btn">Copy</button><code>function StudentFactory(_name, id, age) {
+    // 1. Create an empty object
+    const studentObject = {};
+    
+    // 2. Add properties to it
+    studentObject.Name = _name;
+    studentObject.Id = id;
+    studentObject.Age = age;
+    
+    // 3. Return the new object
+    return studentObject;
+}
+
+const std1 = StudentFactory("ahmed ali", 1002, 23);
+console.log(std1.Name); // "ahmed ali"</code></pre>
+                
+                <h3>Constructor Functions (الدوال البَنَّاءة)</h3>
+                <p>هذه هي الطريقة التقليدية والأكثر شيوعًا لمحاكاة الـ "Classes" في جافاسكريبت (قبل ES6). تعتمد على كلمتين رئيسيتين: <strong><code>this</code></strong> و <strong><code>new</code></strong>.</p>
+                
+                <h4>Analysis of <code>ConstructorFunction.js</code></h4>
+                <p>عندما نستدعي دالة باستخدام كلمة <code>new</code>، تحدث أربع خطوات سحرية:</p>
+                <ol>
+                    <li>يتم إنشاء object فارغ جديد <code>{}</code>.</li>
+                    <li>كلمة <code>this</code> داخل الدالة تشير إلى هذا الـ object الجديد.</li>
+                    <li>يتم تنفيذ الكود داخل الدالة، مما يضيف خصائص للـ object الجديد عبر <code>this</code>.</li>
+                    <li>يتم إرجاع الـ object الجديد تلقائيًا (بشكل ضمني).</li>
+                </ol>
+                <pre><button class="copy-btn">Copy</button><code>// Conventionally, constructor names start with a capital letter
+function Student(_Name, _Age) {
+    // 'this' refers to the new empty object being created
+    this.Name = _Name;
+    this.Age = _Age;
+
+    this.toString = function() {
+        return "Student Name: " + this.Name;
+    }
+}
+
+// The 'new' keyword is crucial!
+const student1 = new Student("Ahmed Ali", 25);
+console.log(student1.Name); // "Ahmed Ali"
+console.log(student1.toString()); // "Student Name: Ahmed Ali"</code></pre>
+
+                <blockquote>
+                    <p><strong>Constructor vs. Factory: ما هو الأفضل؟</strong></p>
+                    الـ Constructor Functions هي المعيار الكلاسيكي وتسمح بالميراث (inheritance) من خلال الـ prototype، وهو مفهوم متقدم. الـ Factory Functions أبسط ولا تستخدم <code>new</code> أو <code>this</code> بنفس الطريقة، مما يراه البعض أسهل وأقل عرضة للأخطاء. في الكود الحديث (ES6+)، نستخدم الكلمة <code>class</code>، وهي في الحقيقة مجرد "sugar coating" فوق الـ Constructor Functions.
+                </blockquote>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #2 (Cumulative)</h4>
+                    <p><strong>المطلوب:</strong> قم بتحويل الـ `Car` object من المهمة السابقة إلى <strong>Constructor Function</strong> اسمها <code>Car</code>. يجب أن تستقبل <code>make</code>, <code>model</code>, و <code>year</code> كـ parameters. أضف خاصية <code>isRunning</code> بقيمة افتراضية <code>false</code> داخل الـ constructor. حافظ على الـ method <code>startEngine()</code>.</p>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- MODULE 3: ENCAPSULATION AND PRIVACY -->
+            <section id="encapsulation">
+                <h2><span class="material-icons">privacy_tip</span>Module 3: Encapsulation - Private Properties</h2>
+                <p>أحد المبادئ الأساسية في البرمجة الشيئية (OOP) هو <strong>Encapsulation</strong>، والذي يعني إخفاء تفاصيل التنفيذ الداخلية للكائن وعدم السماح بالوصول المباشر إليها. في جافاسكريبت، يمكننا محاكاة الخصائص "الخاصة" (private) باستخدام المتغيرات المحلية داخل الـ constructor.</p>
+
+                <h3>Analysis of Salary in <code>ConstructorFunction.js</code> & <code>Crud.js</code></h3>
+                <p>لاحظ في الديمو أن <code>salary</code> لم يتم تعريفها كـ <code>this.salary</code>. تم تعريفها كمتغير محلي (local variable) داخل الـ constructor. هذا يعني أنه لا يمكن الوصول إليه من خارج الـ object.</p>
+                <p>الطريقة الوحيدة للتعامل معه هي من خلال الـ "privileged methods" <code>setSalary</code> و <code>getSalary</code>، لأن هذه الدوال تم تعريفها في نفس النطاق (scope) ولديها إمكانية الوصول إلى المتغير <code>salary</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>function Student(_Name, _Age) {
+    this.Name = _Name;
+    this.Age = _Age;
+    
+    // This is a "private" variable. It only exists inside this function.
+    let salary; 
+
+    // This is a "privileged" method because it has access to the private scope.
+    this.setSalary = function(value) {
+        if (value > 0) { // We can add validation logic here!
+            salary = value;
+        }
+    }
+
+    this.getSalary = function() {
+        return salary;
+    }
+}
+
+const student1 = new Student("Nadia", 23);
+student1.setSalary(5000);
+
+console.log(student1.getSalary()); // 5000
+console.log(student1.salary);      // undefined -> Cannot access it directly!</code></pre>
+                <blockquote>
+                    <p><strong>تطبيق عملي:</strong></p>
+                    هذا النمط قوي للغاية. يمنع الكود الخارجي من إعطاء قيمة غير صالحة للراتب (مثل قيمة سالبة). أنت تجبر المطورين الآخرين على استخدام الـ `setSalary` method، حيث يمكنك وضع كل منطق التحقق (validation logic) الخاص بك.
+                </blockquote>
+
+                <div class="task-box">
+                    <h4><span class="material-icons">assignment</span>Problem-Solving Task #3 (Cumulative)</h4>
+                    <p><strong>المطلوب:</strong> قم بتعديل الـ <code>Car</code> constructor من المهمة السابقة. اجعل خاصية <code>isRunning</code> "خاصة" (private). قم بإنشاء method اسمها <code>getEngineStatus()</code> تعيد حالة المحرك الحالية (true/false). حافظ على <code>startEngine()</code> لتغيير حالتها، وأضف method أخرى اسمها <code>stopEngine()</code> تقوم بتغييرها إلى <code>false</code>.</p>
+                </div>
+            </section>
+            
+            <hr>
+
+            <!-- MODULE 4: THE CRUD APP -->
+            <section id="crud-app">
+                 <h2><span class="material-icons">apps</span>Module 4: Putting It All Together - The CRUD Application</h2>
+                 <p>الآن سنقوم بتحليل تطبيق الـ CRUD (Create, Read, Update, Delete) من الديمو. هذا المثال يربط كل ما تعلمناه: الـ Constructor Functions، المصفوفات، التلاعب بالـ DOM، والتعامل مع الأحداث (Events).</p>
+
+                 <h3>Analysis of <code>Crud.js</code></h3>
+                 <ol>
+                     <li><strong>Data Storage:</strong> <code>var StudentArray = [];</code><br>هذه هي "قاعدة البيانات" البسيطة الخاصة بنا. إنها مجرد مصفوفة عامة ستخزن كل كائنات الطلاب التي ننشئها.</li>
+                     <li><strong>Create (C):</strong> <code>AddnewStudent()</code><br>هذه الدالة هي نقطة البداية. عند النقر على الزر، تقوم بـ:
+                        <ul>
+                            <li>قراءة البيانات من حقول الإدخال (<code>getInputsData</code>).</li>
+                            <li>إنشاء كائن طالب جديد باستخدام <code>new Students(...)</code>.</li>
+                            <li>إضافة الكائن الجديد إلى <code>StudentArray</code>.</li>
+                            <li>استدعاء دالة لرسم صف جديد في جدول الـ HTML (<code>createNewTR</code>).</li>
+                        </ul>
+                     </li>
+                     <li><strong>Read (R):</strong> <code>createNewTR()</code> & Table Display<br>عملية "القراءة" هنا هي عرض البيانات في الجدول. الدالة <code>createNewTR</code> تأخذ كائن طالب وتحوله إلى صف <code>&lt;tr&gt;</code> مع خلايا <code>&lt;td&gt;</code>، ثم تضيفه إلى الـ DOM.</li>
+                     <li><strong>Update (U):</strong> <code>FindIndexByID()</code><br>على الرغم من أنها ليست متصلة بزر في الديمو، إلا أن هذه الدالة توضح منطق التحديث. تبحث في المصفوفة عن كائن معين (باستخدام <code>.find()</code>) ثم تعدل إحدى خصائصه مباشرة.</li>
+                     <li><strong>Delete (D):</strong> (Not fully implemented in demo, but logic would be similar)<br>لإضافة الحذف، سنقوم بإنشاء زر "Delete" في كل صف. عند النقر عليه، سيقوم باستدعاء دالة تعرف index الصف، تستخدم <code>StudentArray.splice(index, 1)</code> لحذف الكائن من المصفوفة، ثم تعيد رسم الجدول بأكمله.</li>
+                 </ol>
+                 
+                 <blockquote>
+                    <p><strong>النمط الأهم: Data is the Source of Truth</strong></p>
+                    لاحظ أننا لا نقوم بتعديل جدول الـ HTML مباشرة. بدلاً من ذلك، نحن دائمًا <strong>نعدل على مصفوفة البيانات <code>StudentArray</code> أولاً، ثم نعيد رسم الجدول من البداية بناءً على البيانات المحدثة</strong>. هذا هو المبدأ الأساسي الذي تعمل به جميع مكتبات الواجهة الأمامية الحديثة مثل React و Vue. البيانات هي مصدر الحقيقة الوحيد، والواجهة هي مجرد انعكاس لها.
+                </blockquote>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+    
+    <!-- Task HTML and JS will be placed here -->
+    <hr>
+    <div class="container" id="task-section">
+        <section style="border-color: var(--task-border);">
+            <h2><span class="material-icons" style="color: var(--task-border);">build</span>Final Task: Employee Management System</h2>
+            <p><strong>المطلوب:</strong> بناء نظام إدارة موظفين بسيط باستخدام كل المفاهيم التي تعلمتها. قم بإنشاء ملفات HTML و JS لتنفيذ المتطلبات التالية.</p>
+
+            <!-- Task HTML -->
+            <div id="employee-app">
+                <h3>Add New Employee</h3>
+                <div>
+                    <input type="text" id="empName" placeholder="Employee Name">
+                    <input type="text" id="empAge" placeholder="Employee Age">
+                    <input type="text" id="empSalary" placeholder="Employee Salary">
+                    <select id="empDept">
+                        <option value="SD">SD</option>
+                        <option value="OS">OS</option>
+                        <option value="AI">AI</option>
+                    </select>
+                    <button id="addEmployeeBtn">Add Employee</button>
+                </div>
+                <p id="error-message" style="color: red;"></p>
+                <hr style="margin: 2rem 0;">
+
+                <h3>Employee List</h3>
+                <div>
+                    Sort by: 
+                    <select id="sort-select">
+                        <option value="name">Name</option>
+                        <option value="department">Department</option>
+                    </select>
+                    &nbsp;&nbsp;
+                    Filter by Salary: 
+                    <select id="filter-select">
+                        <option value="all">All</option>
+                        <option value="gt5000">Greater than 5000</option>
+                        <option value="lte5000">Less than or equal to 5000</option>
+                    </select>
+                </div>
+                
+                <table style="width:100%; margin-top: 1rem; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Age</th>
+                            <th>Salary</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employee-table-body">
+                        <!-- Rows will be added here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Task JavaScript -->
+            <script>
+                // This script is self-contained for the task
+                document.addEventListener('DOMContentLoaded', function() {
+                    
+                    // --- 1. CONSTRUCTOR ---
+                    function Employee(name, age, department, salary) {
+                        this.name = name;
+                        this.age = age;
+                        this.department = department;
+
+                        let _salary = salary; // Private variable
+
+                        this.getSalary = function() {
+                            return _salary;
+                        }
+                    }
+
+                    // --- 2. GLOBAL DATA STORE ---
+                    let employees = [];
+
+                    // --- 3. DOM ELEMENTS ---
+                    const nameInput = document.getElementById('empName');
+                    const ageInput = document.getElementById('empAge');
+                    const salaryInput = document.getElementById('empSalary');
+                    const deptSelect = document.getElementById('empDept');
+                    const addButton = document.getElementById('addEmployeeBtn');
+                    const errorP = document.getElementById('error-message');
+                    const tableBody = document.getElementById('employee-table-body');
+                    const sortSelect = document.getElementById('sort-select');
+                    const filterSelect = document.getElementById('filter-select');
+
+                    // --- 4. CORE FUNCTIONS ---
+
+                    /**
+                     * Renders the employees array to the HTML table.
+                     * This is the single source of truth for our UI.
+                     */
+                    function renderTable() {
+                        // Clear the current table content
+                        tableBody.innerHTML = '';
+                        errorP.textContent = '';
+                        
+                        // Apply filters first
+                        let employeesToRender = employees;
+                        const filterValue = filterSelect.value;
+                        if (filterValue === 'gt5000') {
+                            employeesToRender = employees.filter(emp => emp.getSalary() > 5000);
+                        } else if (filterValue === 'lte5000') {
+                            employeesToRender = employees.filter(emp => emp.getSalary() <= 5000);
+                        }
+
+                        // Apply sorting
+                        const sortValue = sortSelect.value;
+                        employeesToRender.sort((a, b) => {
+                            if (a[sortValue].toLowerCase() < b[sortValue].toLowerCase()) return -1;
+                            if (a[sortValue].toLowerCase() > b[sortValue].toLowerCase()) return 1;
+                            return 0;
+                        });
+
+                        // Create and append a row for each employee
+                        employeesToRender.forEach((emp, index) => {
+                            const tr = document.createElement('tr');
+                            
+                            tr.innerHTML = `
+                                <td>${emp.name}</td>
+                                <td>${emp.department}</td>
+                                <td>${emp.age}</td>
+                                <td>${emp.getSalary()}</td>
+                                <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+                            `;
+                            
+                            tableBody.appendChild(tr);
+                        });
+                    }
+
+                    /**
+                     * Handles the logic for adding a new employee.
+                     */
+                    function addEmployee() {
+                        // a. Get values from inputs
+                        const name = nameInput.value;
+                        const age = Number(ageInput.value);
+                        const salary = Number(salaryInput.value);
+                        const department = deptSelect.value;
+
+                        // b. Validation
+                        if (name.trim() === '') {
+                            errorP.textContent = 'Name is required.';
+                            return;
+                        }
+                        if (isNaN(age) || age < 25 || age > 60) {
+                            errorP.textContent = 'Age should be a number between 25 and 60.';
+                            return;
+                        }
+                        if (isNaN(salary) || salary <= 0) {
+                            errorP.textContent = 'Salary should be a positive number.';
+                            return;
+                        }
+
+                        // c. Create new employee object
+                        const newEmployee = new Employee(name, age, department, salary);
+
+                        // d. Add to the main array
+                        employees.push(newEmployee);
+
+                        // e. Re-render the table with the new data
+                        renderTable();
+
+                        // f. Clear input fields
+                        nameInput.value = '';
+                        ageInput.value = '';
+                        salaryInput.value = '';
+                    }
+                    
+                    /**
+                     * Handles deleting an employee.
+                     */
+                    function deleteEmployee(index) {
+                         // Remove 1 element at the specified index
+                         employees.splice(index, 1);
+                         // Re-render the table to reflect the change
+                         renderTable();
+                    }
+
+                    // --- 5. EVENT LISTENERS ---
+                    addButton.addEventListener('click', addEmployee);
+                    sortSelect.addEventListener('change', renderTable);
+                    filterSelect.addEventListener('change', renderTable);
+                    
+                    // Event delegation for delete buttons
+                    tableBody.addEventListener('click', function(event) {
+                        if (event.target.classList.contains('delete-btn')) {
+                            const indexToDelete = event.target.dataset.index;
+                            deleteEmployee(indexToDelete);
+                        }
+                    });
+
+                    // Initial render on page load
+                    renderTable();
+                });
+            </script>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+
+            // Dialog Demos
+            document.getElementById('demo-alert').addEventListener('click', () => alert("This is a simple alert box!"));
+            document.getElementById('demo-confirm').addEventListener('click', () => {
+                const result = confirm("Do you want to continue?");
+                alert("You clicked " + (result ? "OK" : "Cancel"));
+            });
+            document.getElementById('demo-prompt').addEventListener('click', () => {
+                const result = prompt("What is your favorite color?", "Blue");
+                if (result) {
+                    alert("Your favorite color is " + result);
+                } else {
+                    alert("You cancelled the prompt.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

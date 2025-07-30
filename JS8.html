@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 8: OOP and Modules in Modern JavaScript</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #6f42c1; /* Purple for OOP */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14; /* Orange for emphasis */
+            --note-bg: #e6f7ff;
+            --note-border: #007bff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8;
+        }
+
+        .container { max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
+        header h1 { font-size: 2.8rem; color: #343a40; text-align: center; margin-bottom: 0.5rem; font-weight: 700; }
+        header .subtitle { text-align: center; font-size: 1.2rem; color: #6c757d; margin-bottom: 2rem; }
+        main section { background-color: #fff; padding: 30px; margin-bottom: 40px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); }
+        h2 { font-size: 2.2rem; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        h2 .material-icons { font-size: 2.5rem; }
+        h3 { font-size: 1.6rem; color: #343a40; margin-top: 2.5rem; border-right: 4px solid var(--primary-color); padding-right: 15px; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 90%; border-radius: 4px; font-family: 'Fira Code', 'Courier New', monospace; }
+        pre { background-color: var(--pre-bg); border-radius: 5px; padding: 1.2rem; overflow-x: auto; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        pre, pre code { direction: ltr; text-align: left; font-size: 14px; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        pre:hover .copy-btn { opacity: 1; }
+        strong { color: var(--primary-color); }
+        blockquote { border-right: 5px solid var(--quote-border); padding: 1.5rem; margin: 2rem 0; color: #495077; background-color: #fff3e6; border-radius: 5px; }
+        .note-box { border: 2px solid var(--note-border); background-color: var(--note-bg); padding: 20px; margin-top: 1.5rem; border-radius: 8px; }
+        .note-box h4 { margin-top: 0; color: var(--note-border); display: flex; align-items: center; gap: 8px; }
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Lecture 8: OOP and Modules in Modern JavaScript</h1>
+            <p class="subtitle">من الـ Constructor Functions إلى الـ Classes، ومن الـ Script Tags إلى الـ Modules.</p>
+        </header>
+
+        <main>
+            <!-- MODULE 1: ES6 CLASSES -->
+            <section id="es6-classes">
+                <h2><span class="material-icons">class</span>Module 1: The `class` Keyword - A New Syntax</h2>
+                <p>في المحاضرات السابقة، استخدمنا الـ "Constructor Functions" لمحاكاة فكرة الـ "Classes". في ES6، تم تقديم كلمة <code>class</code> لتوفير صيغة أوضح وأكثر ألفة للمطورين القادمين من لغات أخرى مثل Java أو C#. من المهم أن نفهم أن هذا <strong>"syntactic sugar"</strong> (سكر نحوي)، أي أنه لا يقدم نظام OOP جديد، بل هو مجرد طريقة أسهل لكتابة نفس الـ Constructor Functions والـ prototypes التي كانت موجودة دائمًا.</p>
+                
+                <h3>Analysis of <code>classes/index.js</code> - Basic Class Definition</h3>
+                <p>هذا المثال يوضح البنية الأساسية للـ class:</p>
+                <ul>
+                    <li><strong><code>class MyEmp { ... }</code>:</strong> تعريف الـ class.</li>
+                    <li><strong><code>constructor(...)</code>:</strong> دالة خاصة يتم استدعاؤها تلقائيًا عند استخدام كلمة <code>new</code>. هي المكان الذي نقوم فيه بتهيئة خصائص الكائن (instance properties) باستخدام <code>this</code>.</li>
+                    <li><strong>Methods:</strong> الدوال مثل <code>toString()</code> و <code>printData()</code> يتم تعريفها مباشرة داخل الـ class.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>class MyEmp {
+    // The constructor is a special method for creating and initializing an object.
+    constructor(id, name, age) {
+        this.Id = id;
+        this.Name = name;
+        this.Age = age;
+    }
+
+    // Methods are defined directly on the class.
+    toString() {
+        return `Emp Data  Name:${this.Name} Age: ${this.Age}`;
+    }
+}
+
+// We create an instance using the 'new' keyword, just like with constructor functions.
+let emp1 = new MyEmp(2020, "Ahmed Yasser", 25);
+console.log(emp1.toString()); // "Emp Data  Name:Ahmed Yasser Age: 25"</code></pre>
+            </section>
+
+            <hr>
+            
+            <!-- MODULE 2: PRIVATE & STATIC MEMBERS -->
+            <section id="private-static">
+                <h2><span class="material-icons">vpn_key</span>Module 2: Encapsulation and Class-Level Members</h2>
+                <p>تقدم الـ classes الحديثة طرقًا مدمجة لتطبيق مبادئ الـ OOP مثل الـ Encapsulation (التغليف) وإنشاء خصائص ودوال مرتبطة بالـ class نفسه وليس بالـ instances.</p>
+
+                <h3>Private Class Fields (الخصائص الخاصة)</h3>
+                <p>لإخفاء البيانات الداخلية ومنع الوصول المباشر إليها، نستخدم الآن علامة الهاش (<code>#</code>) قبل اسم الخاصية. هذا يضمن أن الخاصية لا يمكن الوصول إليها إلا من داخل الـ class نفسه.</p>
+                <h4>Analysis of <code>classes/index.js</code> - Private Salary</h4>
+                <pre><button class="copy-btn">Copy</button><code>class MyEmp {
+    // #s is a private field. It CANNOT be accessed from outside the class.
+    #s; 
+
+    constructor(id, name) {
+        this.Id = id;
+        this.Name = name;
+    }
+
+    // We use public 'setter' and 'getter' methods to control access.
+    set Salary(_v) {
+        if (_v > 0) { // We can add validation logic here.
+            this.#s = _v + _v * 0.1; // Apply business logic (e.g., 10% tax)
+        }
+    }
+
+    get Salary() {
+        return this.#s;
+    }
+}
+
+let emp1 = new MyEmp(1, "Ahmed");
+emp1.Salary = 8000; // This calls the 'set' method.
+
+console.log(emp1.Salary); // 8800 (This calls the 'get' method)
+// console.log(emp1.#s); // SyntaxError: Private field '#s' must be declared in an enclosing class</code></pre>
+
+                <h3>Static Members (الأعضاء الثابتة)</h3>
+                <p>الـ Static members هي خصائص أو دوال تنتمي إلى الـ class نفسه، وليس إلى أي instance منه. نستخدمها للبيانات المشتركة أو الدوال المساعدة (utility functions).</p>
+                 <h4>Analysis of <code>classes/index.js</code> - Employee Counter</h4>
+                 <p>هنا، <code>NumberOFEmp</code> هو عداد مشترك لجميع الموظفين. يتم زيادته في كل مرة يتم فيها إنشاء instance جديد.</p>
+                <pre><button class="copy-btn">Copy</button><code>class MyEmp {
+    // A static property belongs to the class, not an instance.
+    static NumberOFEmp = 0;
+
+    constructor() {
+        // We access the static property using the class name.
+        MyEmp.NumberOFEmp++;
+    }
+
+    // A static method can be called directly on the class.
+    static ReturnNumberOfEmps() {
+        return "Total Employees: " + MyEmp.NumberOFEmp;
+    }
+}
+
+let emp1 = new MyEmp();
+let emp2 = new MyEmp();
+
+console.log(MyEmp.ReturnNumberOfEmps()); // "Total Employees: 2"
+// console.log(emp1.ReturnNumberOfEmps()); // TypeError: emp1.ReturnNumberOfEmps is not a function</code></pre>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 3: INHERITANCE -->
+            <section id="inheritance">
+                <h2><span class="material-icons">account_tree</span>Module 3: Inheritance with `extends` and `super`</h2>
+                <p>الوراثة هي أحد أعمدة الـ OOP. تسمح لنا بإنشاء class جديد (child) يرث الخصائص والـ methods من class موجود (parent)، مما يعزز إعادة استخدام الكود.</p>
+
+                <h3>Analysis of <code>Person.js</code>, <code>Emps.js</code>, and <code>Students.js</code></h3>
+                <p>هذا المثال يوضح سلسلة وراثة كاملة:</p>
+                <ol>
+                    <li><strong><code>Person</code> (Parent Class):</strong> هو الـ "base class" الذي يحتوي على الخصائص المشتركة (Id, Name, Age).</li>
+                    <li><strong><code>Emps extends Person</code> (Child Class):</strong> الـ class <code>Emps</code> يرث كل شيء من <code>Person</code> ويضيف خصائصه الخاصة (Address, Salary).</li>
+                    <li><strong><code>Students extends Emps</code> (Grandchild Class):</strong> الـ class <code>Students</code> يرث من <code>Emps</code> (وبالتالي من <code>Person</code> أيضًا) ويضيف خصائصه (CourseList, Track).</li>
+                </ol>
+
+                <h4>The <code>super()</code> Keyword</h4>
+                <p>كلمة <code>super</code> لها استخدامان رئيسيان:</p>
+                <ul>
+                    <li><strong><code>super(...)</code> inside constructor:</strong> يجب استدعاؤها <strong>أولاً</strong> في الـ constructor الخاص بالـ child class. تقوم باستدعاء الـ constructor الخاص بالـ parent class لتمرير الـ parameters اللازمة وتهيئة الجزء الموروث من الكائن.</li>
+                    <li><strong><code>super.methodName()</code>:</strong> تُستخدم لاستدعاء method من الـ parent class.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>// Parent Class
+class Person {
+    constructor(_id, _name, _age) {
+        this.Id = _id;
+        this.Name = _name;
+        this.Age = _age;
+    }
+    printDetails() {
+        return `ID: ${this.Id}, Name: ${this.Name}`;
+    }
+}
+
+// Child Class
+class Emps extends Person {
+    constructor(_id, _name, _age, _address) {
+        // 1. Call the parent's constructor first!
+        super(_id, _name, _age); 
+        
+        // 2. Then, initialize the child's own properties
+        this.Address = _address;
+    }
+    
+    // Method Overriding
+    printDetails() {
+        // Call the parent's method, then add more details
+        return super.printDetails() + `, Address: ${this.Address}`;
+    }
+}
+
+let emp1 = new Emps(101, "Eman", 25, "Tanta");
+console.log(emp1.printDetails()); // "ID: 101, Name: Eman, Address: Tanta"</code></pre>
+
+                <div class="note-box">
+                    <h4><span class="material-icons">science</span>Advanced Technique: Abstract Classes</h4>
+                    <p>في <code>Person.js</code>، نرى هذا الكود: <code>if (new.target.name == "Person") throw new Error(...)</code>. هذه خدعة لمحاكاة الـ "Abstract Classes" التي لا يمكن إنشاء instance منها مباشرة. هي تجبر المطور على أن يقوم بالـ extend منها فقط، مما يضمن أن الـ base class يُستخدم كقالب فقط.</p>
+                </div>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 4: MODULES -->
+            <section id="modules">
+                 <h2><span class="material-icons">lan</span>Module 4: ES6 Modules - Organizing Your Codebase</h2>
+                 <p>مع نمو التطبيقات، يصبح وضع كل الكود في ملف واحد كارثة. الـ ES6 Modules تسمح لنا بتقسيم الكود إلى ملفات مستقلة وقابلة لإعادة الاستخدام. كل ملف هو module، ويمكنه "تصدير" (export) المتغيرات والدوال والكلاسات، والملفات الأخرى يمكنها "استيرادها" (import).</p>
+                
+                 <blockquote>
+                    <strong>ملاحظة هامة:</strong> لاستخدام ES6 Modules في المتصفح، يجب أن تضيف <code>type="module"</code> إلى الـ script tag الرئيسي في ملف الـ HTML الخاص بك: <br><code>&lt;script src="main.js" type="module"&gt;&lt;/script&gt;</code>
+                </blockquote>
+
+                 <h3>Named Exports</h3>
+                 <p>تسمح لك بتصدير عدة قيم من ملف واحد. عند الاستيراد، يجب أن تستخدم نفس الأسماء داخل أقواس <code>{}</code>.</p>
+                 <h4>Analysis of <code>modules/module1.js</code> and <code>main.js</code></h4>
+                 <pre><button class="copy-btn">Copy</button><code>// In module1.js
+export let x = 3010;
+export const MyObject = { id: 20 };
+export const Myfun = (a, b) => a + b;
+
+// In main.js
+// We can import specific things by name
+import { x, Myfun } from "./module1.js";
+
+// We can also use an alias
+import { MyObject as ExportedObject } from "./module1.js";
+
+console.log(x); // 3010
+console.log(Myfun(5, 5)); // 10</code></pre>
+
+                 <h3>Default Export</h3>
+                 <p>كل ملف يمكن أن يحتوي على <strong>default export واحد فقط</strong>. هذا عادة ما يكون الشيء الرئيسي الذي يقدمه الملف (مثل class). عند الاستيراد، يمكنك إعطاؤه أي اسم تريده.</p>
+                 <pre><button class="copy-btn">Copy</button><code>// In module1.js
+// ... other named exports ...
+export default class Test {
+    // ... class implementation
+}
+
+// In main.js
+// We import the default export without curly braces
+import MyCustomClassName from "./module1.js";
+const t1 = new MyCustomClassName();</code></pre>
+                 
+                 <h3>Importing Everything</h3>
+                 <p>يمكنك استيراد جميع الـ named exports من ملف كـ object واحد باستخدام <code>import * as ...</code>.</p>
+                 <pre><button class="copy-btn">Copy</button><code>// In main.js
+import * as Module1Data from "./module1.js";
+
+console.log(Module1Data.x); // 3010
+console.log(Module1Data.MyObject); // { id: 20 }
+const t2 = new Module1Data.default(); // Accessing the default export</code></pre>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

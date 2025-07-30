@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 7: The Modern Era of JavaScript (ES6+)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #db3472; /* Pink/Purple for ES6 */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14;
+            --task-bg: #e6f7ff;
+            --task-border: #007bff;
+            --note-bg: #fffbe6;
+            --note-border: #ffc107;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8;
+        }
+
+        .container { max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
+        header h1 { font-size: 2.8rem; color: #343a40; text-align: center; margin-bottom: 0.5rem; font-weight: 700; }
+        header .subtitle { text-align: center; font-size: 1.2rem; color: #6c757d; margin-bottom: 2rem; }
+        main section { background-color: #fff; padding: 30px; margin-bottom: 40px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); }
+        h2 { font-size: 2.2rem; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        h2 .material-icons { font-size: 2.5rem; }
+        h3 { font-size: 1.6rem; color: #343a40; margin-top: 2.5rem; border-right: 4px solid var(--primary-color); padding-right: 15px; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 90%; border-radius: 4px; font-family: 'Fira Code', 'Courier New', monospace; }
+        pre { background-color: var(--pre-bg); border-radius: 5px; padding: 1.2rem; overflow-x: auto; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        pre, pre code { direction: ltr; text-align: left; font-size: 14px; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        pre:hover .copy-btn { opacity: 1; }
+        strong { color: var(--primary-color); }
+        blockquote { border-right: 5px solid var(--quote-border); padding: 1.5rem; margin: 2rem 0; color: #495057; background-color: #fff9e6; border-radius: 5px; }
+        .note-box { border: 2px solid var(--note-border); background-color: var(--note-bg); padding: 20px; margin-top: 1.5rem; border-radius: 8px; }
+        .note-box h4 { margin-top: 0; color: #b98900; display: flex; align-items: center; gap: 8px; }
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Lecture 7: The Modern Era of JavaScript (ECMAScript 2015/ES6+)</h1>
+            <p class="subtitle">الانتقال من جافاسكريبت الكلاسيكية إلى الأساليب الحديثة التي غيرت طريقة كتابة الكود.</p>
+        </header>
+
+        <main>
+            <!-- MODULE 1: LET & CONST -->
+            <section id="let-const">
+                <h2><span class="material-icons">lock</span>Module 1: The New Variables - <code>let</code> and <code>const</code></h2>
+                <p>قدمت ES6 طريقتين جديدتين لتعريف المتغيرات لحل المشاكل الكلاسيكية لـ <code>var</code>. القاعدة الأساسية: <strong>توقف عن استخدام <code>var</code> واستخدم <code>const</code> بشكل افتراضي، واستخدم <code>let</code> فقط عندما تحتاج إلى إعادة تعيين قيمة المتغير.</strong></p>
+                
+                <h3>Block Scoping: The Core Improvement</h3>
+                <p>الميزة الأهم لـ <code>let</code> و <code>const</code> هي أنهما <strong>block-scoped</strong>. هذا يعني أن المتغير يكون متاحًا فقط داخل الأقواس <code>{...}</code> التي تم تعريفه فيها. هذا يمنع "تسرب" المتغيرات.</p>
+                
+                <h4>Classic Problem: `var` in Loops</h4>
+                <p>في الماضي، كانت المتغيرات المعرفة بـ <code>var</code> داخل حلقة <code>for</code> تتسرب إلى النطاق الخارجي، مما قد يسبب أخطاء غير متوقعة، خاصة مع الـ closures والأحداث.</p>
+                <pre><button class="copy-btn">Copy</button><code>// The problem with 'var'
+for (var i = 0; i < 5; i++) {
+  // This 'i' is function-scoped or global-scoped
+}
+console.log(i); // 5 -> 'i' has "leaked". This can cause bugs.
+
+// The solution with 'let'
+for (let j = 0; j < 5; j++) {
+  // This 'j' only exists inside this block {}
+}
+// console.log(j); // ReferenceError: j is not defined -> Correct behavior!</code></pre>
+
+                <h3>Temporal Dead Zone (TDZ) vs. Hoisting</h3>
+                <p>المتغيرات المعرفة بـ <code>var</code> يتم "رفعها" (hoisted) وتأخذ قيمة ابتدائية <code>undefined</code>. أما <code>let</code> و <code>const</code>، فيتم رفعهما أيضًا ولكن لا يمكن الوصول إليهما قبل سطر التعريف، وهذه الفترة تسمى TDZ.</p>
+                 <pre><button class="copy-btn">Copy</button><code>console.log(myVar); // undefined (hoisted with default value)
+var myVar = 10;
+
+// console.log(myLet); // ReferenceError: Cannot access 'myLet' before initialization (in TDZ)
+let myLet = 20;</code></pre>
+
+                <h3>Global Scope Behavior</h3>
+                <p><code>var</code> في النطاق العام تقوم بإنشاء خاصية على الـ <code>window</code> object، مما قد يؤدي إلى استبدال خصائص موجودة. <code>let</code> و <code>const</code> لا تفعلان ذلك.</p>
+                <pre><button class="copy-btn">Copy</button><code>var name = "Eman";
+console.log(window.name === name); // true (pollutes the global object)
+
+let age = 30;
+console.log(window.age === age); // false (safer, does not create a window property)</code></pre>
+            </section>
+
+            <hr>
+            
+            <!-- MODULE 2: ARROW FUNCTIONS -->
+            <section id="arrow-functions">
+                <h2><span class="material-icons">trending_flat</span>Module 2: Arrow Functions</h2>
+                <p>هي طريقة مختصرة لكتابة الدوال، ولكنها تأتي مع اختلافات جوهرية عن دوال <code>function</code> التقليدية.</p>
+
+                <h3>Simplified Syntax</h3>
+                <pre><button class="copy-btn">Copy</button><code>// ES5
+var add_es5 = function(a, b) { return a + b; };
+
+// ES6 Arrow Function with explicit return
+const add_es6 = (a, b) => { return a + b; };
+
+// ES6 with implicit return (for single expressions)
+const subtract = (a, b) => a - b;
+
+// If returning an object literal, wrap it in parentheses
+const createPerson = (name, age) => ({ name: name, age: age });</code></pre>
+                
+                <div class="note-box">
+                    <h4><span class="material-icons">psychology</span>The Power of Lexical `this`</h4>
+                    <p>الميزة الأهم في الـ Arrow Functions هي أنها <strong>لا تملك <code>this</code> خاص بها</strong>. بدلاً من ذلك، هي "ترث" قيمة <code>this</code> من النطاق المحيط بها لحظة تعريفها (lexical scope). هذا يحل مشكلة كلاسيكية في جافاسكريبت.</p>
+                    
+                    <h4>The Old Problem with `this` in Callbacks</h4>
+                    <pre><button class="copy-btn">Copy</button><code>function Person() {
+  this.age = 0;
+  var self = this; // The famous 'self' or 'that' workaround
+
+  setInterval(function() {
+    // Here, 'this' refers to the `window` object, not the Person instance!
+    // So we use the workaround to access the correct 'this'.
+    self.age++;
+    console.log("ES5 way:", self.age);
+  }, 1000);
+}</code></pre>
+
+                    <h4>The Modern Solution with Arrow Functions</h4>
+                    <pre><button class="copy-btn">Copy</button><code>function ModernPerson() {
+  this.age = 0;
+
+  setInterval(() => {
+    // The arrow function doesn't have its own 'this'.
+    // It "borrows" `this` from the ModernPerson scope.
+    this.age++; 
+    console.log("ES6 way:", this.age);
+  }, 1000);
+}
+const p = new ModernPerson();</code></pre>
+                </div>
+            </section>
+            
+            <hr>
+
+            <!-- MODULE 3: SPREAD & REST -->
+            <section id="spread-rest">
+                <h2><span class="material-icons">call_split</span>Module 3: Spread and Rest Operators (<code>...</code>)</h2>
+                <p>على الرغم من أنها تبدو متشابهة، إلا أن هاتين الميزتين تقومان بعكس بعضهما البعض تمامًا.</p>
+
+                <h3>The Spread Operator (عامل الفرد)</h3>
+                <p>يقوم "بفرد" عناصر مصفوفة أو خصائص كائن. إنه مفيد للغاية لإنشاء نسخ، دمج المصفوفات، وتمرير الـ arguments.</p>
+                <pre><button class="copy-btn">Copy</button><code>// Use Case 1: Finding Max/Min in an array
+const numbers = [3, 1, 7, 4, 9];
+const maxNumber = Math.max(...numbers); // Spreads as: Math.max(3, 1, 7, 4, 9)
+console.log(maxNumber); // 9
+
+// Use Case 2: Creating a shallow copy (the modern way)
+const original = ['a', 'b'];
+const copy = [...original];
+
+// Use Case 3: Merging arrays
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const merged = [...arr1, ...arr2, 5]; // [1, 2, 3, 4, 5]</code></pre>
+                
+                <h3>The Rest Operator (عامل التجميع)</h3>
+                <p>يقوم "بتجميع" عدد غير محدد من الـ arguments في مصفوفة واحدة. يجب أن يكون دائمًا آخر parameter في تعريف الدالة.</p>
+                <pre><button class="copy-btn">Copy</button><code>// Use Case: A function that can operate on any number of inputs
+function sum(...values) {
+  // 'values' is a REAL array, so we can use .reduce()
+  return values.reduce((acc, val) => acc + val, 0);
+}
+
+console.log(sum(5, 10, 15)); // 30
+console.log(sum(1, 2, 3, 4, 5)); // 15</code></pre>
+            </section>
+            
+            <hr>
+
+            <!-- MODULE 4: ENHANCEMENTS -->
+            <section id="enhancements">
+                <h2><span class="material-icons">auto_awesome</span>Module 4: Other Key ES6 Enhancements</h2>
+
+                <h3>Template Literals</h3>
+                <p>طريقة حديثة وقوية لتعريف النصوص باستخدام backticks (<code>`</code>). تسمح بـ:</p>
+                <ul>
+                    <li><strong>Multiline Strings:</strong> كتابة النصوص على عدة أسطر بسهولة.</li>
+                    <li><strong>String Interpolation:</strong> إدراج المتغيرات والتعبيرات مباشرة داخل النص باستخدام <code>${...}</code>.</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>const userName = "Ahmed";
+const itemsCount = 5;
+const price = 10;
+
+// The old, clumsy way
+const messageES5 = "Hello " + userName + ",\n" +
+                 "You have " + itemsCount + " items in your cart.\n" +
+                 "Total price is $" + (itemsCount * price) + ".";
+
+// The modern, readable way
+const messageES6 = `Hello ${userName},
+You have ${itemsCount} items in your cart.
+Total price is $${itemsCount * price}.`;
+
+console.log(messageES6);</code></pre>
+                
+                <h3>Enhanced Object Literals</h3>
+                <p>جعلت ES6 تعريف الـ Object Literals أكثر إيجازًا.</p>
+                <pre><button class="copy-btn">Copy</button><code>const name = "Project X";
+const budget = 50000;
+
+// ES6 can infer property names and define methods concisely
+const project = {
+  // 1. Property Value Shorthand
+  name,
+  budget,
+  
+  // 2. Method Definition Shorthand
+  printSummary() {
+    console.log(`${this.name} has a budget of ${this.budget}`);
+  }
+};
+
+project.printSummary(); // "Project X has a budget of 50000"</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- MODULE 5: LAB SOLUTION -->
+            <section id="lab-solution">
+                 <h2><span class="material-icons">science</span>ECMAScript Lab 1 - Analysis & Solution</h2>
+                 <p>لنقم الآن بحل الواجب باستخدام كل المفاهيم الحديثة التي تعلمناها.</p>
+
+                 <h3>Task 1: Array and Math Operations</h3>
+                 <pre><button class="copy-btn">Copy</button><code>console.log("--- Task 1: Array Operations ---");
+// Define an array of numbers using let
+let numbers = [10, 60, 25, 80, 5, 55, 100, 30];
+
+// Sort them ascending using an arrow function
+numbers.sort((a, b) => a - b);
+console.log("Ascending:", numbers);
+
+// Sort them descending
+numbers.sort((a, b) => b - a);
+console.log("Descending:", numbers);
+
+// Filter numbers larger than 50 using an arrow function
+const largeNumbers = numbers.filter(num => num > 50);
+console.log("Numbers > 50:", largeNumbers);
+
+// Display Max and Min Numbers using the spread operator
+const minNumber = Math.min(...numbers);
+const maxNumber = Math.max(...numbers);
+console.log(`Min: ${minNumber}, Max: ${maxNumber}`);</code></pre>
+
+                 <h3>Task 2: Function with Rest Operator & Template Literals</h3>
+                 <pre><button class="copy-btn">Copy</button><code>console.log("\n--- Task 2: Function with Rest Operator ---");
+const calculate = (operator, ...values) => {
+  let result;
+  let operationName = '';
+
+  if (operator === '+') {
+      operationName = 'sum';
+      result = values.reduce((acc, val) => acc + val, 0);
+  } else {
+      // Add other operations as needed...
+      return "Unsupported operator";
+  }
+  
+  // Using template literals with substitution
+  return `Result of ${operationName} operation for ${values.join(',')} is ${result}`;
+}
+
+console.log(calculate('+', 3, 1, 6, 3));</code></pre>
+
+                 <h3>Task 3: Dynamic Object Creation</h3>
+                 <pre><button class="copy-btn">Copy</button><code>console.log("\n--- Task 3: Dynamic Object ---");
+
+// Taking properties from user (simulated here)
+const projectId = "P123";
+const projectName = "E-commerce Site";
+const duration = "6";
+
+// Create a constant anonymous object using ES6 shorthand features
+const project = {
+    projectId,
+    projectName,
+    duration: `${duration} months`,
+    printData() {
+        // 'this' refers to the project object itself
+        console.log("--- Project Data ---");
+        console.log(`ID: ${this.projectId}`);
+        console.log(`Name: ${this.projectName}`);
+        console.log(`Duration: ${this.duration}`);
+    }
+};
+
+project.printData();</code></pre>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
