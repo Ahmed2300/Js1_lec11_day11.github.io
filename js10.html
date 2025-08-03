@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 9: Asynchronous JavaScript - From Callbacks to Async/Await</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #007bff; /* Blue for Async */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14; /* Orange for emphasis */
+            --note-bg: #e6f7ff;
+            --note-border: #17a2b8;
+            --hell-color: #dc3545;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8;
+        }
+
+        .container { max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
+        header h1 { font-size: 2.8rem; color: #343a40; text-align: center; margin-bottom: 0.5rem; font-weight: 700; }
+        header .subtitle { text-align: center; font-size: 1.2rem; color: #6c757d; margin-bottom: 2rem; }
+        main section { background-color: #fff; padding: 30px; margin-bottom: 40px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); }
+        h2 { font-size: 2.2rem; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        h2 .material-icons { font-size: 2.5rem; }
+        h3 { font-size: 1.6rem; color: #343a40; margin-top: 2.5rem; border-right: 4px solid var(--primary-color); padding-right: 15px; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 90%; border-radius: 4px; font-family: 'Fira Code', 'Courier New', monospace; }
+        pre { background-color: var(--pre-bg); border-radius: 5px; padding: 1.2rem; overflow-x: auto; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        pre, pre code { direction: ltr; text-align: left; font-size: 14px; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        pre:hover .copy-btn { opacity: 1; }
+        strong { color: var(--primary-color); }
+        blockquote { border-right: 5px solid var(--quote-border); padding: 1.5rem; margin: 2rem 0; color: #495077; background-color: #fff3e6; border-radius: 5px; }
+        .note-box { border: 2px solid var(--note-border); background-color: var(--note-bg); padding: 20px; margin-top: 1.5rem; border-radius: 8px; }
+        .note-box h4 { margin-top: 0; color: var(--note-border); display: flex; align-items: center; gap: 8px; }
+        .hell-box { border: 2px solid var(--hell-color); background-color: #fbeaea; padding: 20px; margin-top: 1.5rem; border-radius: 8px; }
+        .hell-box h4 { margin-top: 0; color: var(--hell-color); }
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Lecture 10: Asynchronous JavaScript</h1>
+            <p class="subtitle">من جحيم الـ Callbacks إلى أناقة الـ Promises والـ Async/Await.</p>
+        </header>
+
+        <main>
+            <!-- MODULE 1: THE PROBLEM -->
+            <section id="the-problem">
+                <h2><span class="material-icons">hourglass_empty</span>Module 1: The Problem - Why We Need Asynchronous Code</h2>
+                <p>جافاسكريبت في جوهرها لغة <strong>"Single-Threaded"</strong>، أي أنها تستطيع تنفيذ مهمة واحدة فقط في كل مرة. تخيل أنك طلبت من المتصفح تحميل ملف كبير من الإنترنت. لو كانت جافاسكريبت "Synchronous" (متزامنة)، لتجمدت الصفحة بأكملها - لا يمكنك النقر على أي شيء، لا يمكنك التمرير - حتى ينتهي التحميل. هذه تجربة مستخدم كارثية.</p>
+                <p>الحل هو العمل بشكل <strong>"Asynchronous"</strong> (غير متزامن). نحن نقول للمتصفح: "ابدأ هذه المهمة التي تستغرق وقتًا (مثل طلب API)، وعندما تنتهي، قم بتنفيذ هذه الدالة (الكول باك)". في هذه الأثناء، يظل باقي الكود والصفحة يعملان بشكل طبيعي.</p>
+
+                <h3>The Classic (and Painful) Solution: Callback Hell</h3>
+                <p>في البداية، كانت الطريقة الوحيدة للتعامل مع العمليات غير المتزامنة المتتالية هي من خلال تداخل الـ Callbacks. تخيل أنك تحتاج إلى:</p>
+                <ol>
+                    <li>الحصول على بيانات طالب معين (عملية غير متزامنة).</li>
+                    <li><strong>ثم</strong>، بعد الحصول على الطالب، استخدام بياناته للحصول على قائمة الكورسات الخاصة به (عملية غير متزامنة ثانية).</li>
+                    <li><strong>ثم</strong>، بعد الحصول على الكورسات، عرضها على الصفحة.</li>
+                </ol>
+                <div class="hell-box">
+                    <h4>The Pyramid of Doom (هرم الهلاك)</h4>
+                    <p>هذا التداخل يؤدي إلى كود صعب القراءة والصيانة يسمى <strong>"Callback Hell"</strong> أو "هرم الهلاك".</p>
+                    <pre><button class="copy-btn">Copy</button><code>getStudentById(10, (student) => {
+    console.log("Got the student:", student);
+    
+    getStudentCourses(student.courses, (courses) => {
+        console.log("Got the courses:", courses);
+        
+        displayDataOnPage(student, courses, () => {
+            console.log("Everything is displayed!");
+            
+            // What if we need another step? The pyramid gets deeper!
+        });
+    }, (error) => {
+        console.error("Error getting courses:", error);
+    });
+}, (error) => {
+    console.error("Error getting student:", error);
+});</code></pre>
+                </div>
+            </section>
+
+            <hr>
+            
+            <!-- MODULE 2: PROMISES -->
+            <section id="promises">
+                <h2><span class="material-icons">task_alt</span>Module 2: The ES6 Solution - Promises</h2>
+                <p>الـ Promise هو كائن يمثل "وعدًا" بإكمال عملية غير متزامنة في المستقبل. هو يمثل القيمة النهائية لهذه العملية، سواء كانت نجاحًا (fulfillment) أو فشلاً (rejection). الـ Promise له ثلاث حالات:</p>
+                <ul>
+                    <li><strong>Pending:</strong> الحالة الأولية، العملية لم تكتمل بعد.</li>
+                    <li><strong>Fulfilled (Resolved):</strong> العملية نجحت، والـ Promise لديه قيمة.</li>
+                    <li><strong>Rejected:</strong> العملية فشلت، والـ Promise لديه سبب (خطأ).</li>
+                </ul>
+                
+                <h3>Creating a Promise</h3>
+                <p>ننشئ Promise باستخدام <code>new Promise()</code> الذي يأخذ دالة كول باك مع وسيطين: <code>resolve</code> و <code>reject</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>const getStudentsData = function() {
+   // The Promise constructor takes an executor function
+   return new Promise((resolve, reject) => {
+        // Inside, we perform our async operation (e.g., connecting to a database)
+        const isConnected = true; // Simulate a successful connection
+
+        if (isConnected) {
+            const data = [{ id: 1, name: "Ahmed" }];
+            // If successful, we call resolve() with the result
+            resolve(data);
+        } else {
+            // If it fails, we call reject() with an error message
+            reject("Connection Error: Could not connect to the database.");
+        }
+    });
+}</code></pre>
+
+                <h3>Consuming a Promise with <code>.then()</code> and <code>.catch()</code></h3>
+                <p>نستخدم <code>.then()</code> للتعامل مع حالة النجاح (fulfillment) و <code>.catch()</code> للتعامل مع حالة الفشل (rejection).</p>
+                <pre><button class="copy-btn">Copy</button><code>getStudentsData()
+    .then((data) => {
+        // This code runs if the promise is resolved
+        console.log("Success Data:", data);
+    })
+    .catch((error) => {
+        // This code runs if the promise is rejected
+        console.log("Error:", error);
+    });</code></pre>
+                
+                <h3>Solving Callback Hell with Promise Chaining</h3>
+                <p>الجمال الحقيقي للـ Promises يكمن في قدرتها على "التسلسل" (chaining). كل <code>.then()</code> يمكن أن يعيد Promise جديد، مما يسمح لنا بكتابة العمليات المتتالية بشكل خطي ومقروء.</p>
+                 <pre><button class="copy-btn">Copy</button><code>// The same logic from Callback Hell, now clean and readable
+getStudentById(10)
+    .then((student) => {
+        console.log("Got student:", JSON.parse(student));
+        // We return the next async operation (which is also a promise)
+        return getStudentCourses(JSON.parse(student).courses);
+    })
+    .then((courses) => {
+        // This .then() waits for the getStudentCourses promise to resolve
+        console.log("Got courses:", JSON.parse(courses));
+    })
+    .catch(error => {
+        // A single .catch() handles errors from ANY of the preceding promises
+        console.log("An error occurred in the chain:", error);
+    });</code></pre>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 3: ASYNC/AWAIT -->
+            <section id="async-await">
+                <h2><span class="material-icons">auto_awesome</span>Module 3: The Modern Elegance - `async` and `await`</h2>
+                <p>في ES8 (ES2017)، تم تقديم <code>async/await</code>، وهي "syntactic sugar" فوق الـ Promises. إنها لا تقدم شيئًا جديدًا، ولكنها تسمح لنا بكتابة كود غير متزامن ليبدو وكأنه كود متزامن، مما يجعله أسهل بكثير في القراءة والفهم.</p>
+                
+                <h3>How It Works</h3>
+                <ul>
+                    <li><strong><code>async</code>:</strong> عند وضعها قبل تعريف الدالة، فإنها تحولها تلقائيًا إلى دالة تعيد Promise.</li>
+                    <li><strong><code>await</code>:</strong> يمكن استخدامها <strong>فقط داخل دالة <code>async</code></strong>. تقوم بإيقاف تنفيذ الدالة مؤقتًا حتى يتم حل الـ Promise الذي يليه، ثم تستأنف التنفيذ وتعيد القيمة التي تم حلها.</li>
+                </ul>
+
+                <h3>Rewriting the Promise Chain with <code>async/await</code></h3>
+                <p>لاحظ كيف يبدو الكود الآن وكأنه كود متزامن عادي، مع استخدام <code>try...catch</code> للتعامل مع الأخطاء.</p>
+                <pre><button class="copy-btn">Copy</button><code>// This is the most modern and readable way to handle async operations
+const getAllStudentData = async function(id) {
+    try {
+        // 1. Wait for the student promise to resolve and get its value
+        let studentResponse = await getStudentById(id);
+        let student = JSON.parse(studentResponse);
+
+        // 2. Wait for the courses promise to resolve
+        let coursesResponse = await getStudentCourses(student.courses);
+        let courses = JSON.parse(coursesResponse);
+
+        // 3. Now we can work with the final data
+        console.log("Student:", student);
+        console.log("Courses:", courses);
+    }
+    catch (error) {
+        // The catch block will catch any rejection from ANY of the awaited promises
+        console.error("An error occurred:", error);
+    }
+}
+
+getAllStudentData(9);</code></pre>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 4: FETCH API -->
+            <section id="fetch-api">
+                <h2><span class="material-icons">public</span>Module 4: Real-World Data with the Fetch API</h2>
+                <p>الـ Fetch API هي الواجهة الحديثة والمدمجة في المتصفح لعمل طلبات الشبكة (مثل طلبات AJAX). إنها مبنية على الـ Promises بشكل أساسي، مما يجعلها مثالية للاستخدام مع <code>async/await</code>.</p>
+                
+                <h3>Making a GET Request</h3>
+                <p><code>fetch()</code> تأخذ الـ URL وتعيد Promise يتم حله إلى كائن <code>Response</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>const getPosts = async function() {
+    try {
+        // 1. Send the request and wait for the Response object
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+
+        // 2. The response object has a .json() method (which also returns a promise)
+        //    to parse the body of the response as JSON.
+        const posts = await response.json();
+
+        // 3. Now we have the data!
+        console.log("Fetched Posts:", posts);
+        
+        // Here you would typically loop over 'posts' to display them in the HTML
+    } catch(error) {
+        console.error("Failed to fetch posts:", error);
+    }
+}
+
+getPosts();</code></pre>
+
+                <h3>Making a POST Request</h3>
+                <p>لإرسال بيانات (مثل إضافة طالب جديد)، نقوم بتمرير object إعدادات (options) إلى <code>fetch()</code>.</p>
+                <pre><button class="copy-btn">Copy</button><code>async function addStudent(studentObject) {
+    const response = await fetch("http://localhost:8080/students", {
+        method: "POST", // Specify the HTTP method
+        body: JSON.stringify(studentObject), // Convert the JS object to a JSON string
+        headers: {
+            "Content-Type": "application/json" // Tell the server we're sending JSON
+        }
+    });
+
+    const data = await response.json(); // Get the server's response (e.g., the newly created student)
+    console.log("Insert Response:", data);
+}</code></pre>
+
+                <div class="note-box">
+                    <h4><span class="material-icons">task_alt</span>IIFE (Immediately Invoked Function Expression)</h4>
+                    <p>في ملف <code>ajax.js</code>، ترى هذا النمط: <code>(async () => { ... })()</code>. هذا يسمى IIFE. إنه يسمح لنا باستخدام <code>await</code> في المستوى الأعلى من الملف (top-level) دون الحاجة إلى إنشاء دالة منفصلة وتسميتها ثم استدعائها. إنها طريقة شائعة لتشغيل كود التهيئة غير المتزامن فور تحميل الصفحة.</p>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- MODULE 5: LAB 11 TASK -->
+            <section id="lab-task">
+                <h2><span class="material-icons">assignment</span>Task: Lab 11 - Countries API</h2>
+                <p>هذا الواجب هو تطبيق عملي ممتاز على <code>fetch</code> وتسلسل الـ Promises.</p>
+                
+                <h3>Task 1: Get Country Data</h3>
+                <p><strong>المطلوب:</strong> استخدام <code>fetch</code> لطلب بيانات دولة من API وعرضها.</p>
+                <pre><button class="copy-btn">Copy</button><code>const displayCountry = async (countryName) => {
+    try {
+        const response = await fetch(`https://restcountries.com/v2/name/${countryName}`);
+        const data = await response.json();
+        
+        // Data is an array, we want the first result
+        const country = data[0]; 
+        
+        console.log("Country Name:", country.name);
+        console.log("Capital:", country.capital);
+        console.log("Population:", country.population);
+        // ... now you would create HTML elements to display this data
+    } catch (error) {
+        console.error("Could not fetch country data:", error);
+    }
+};
+
+displayCountry("Egypt");</code></pre>
+
+                <h3>Task 2: Chaining Promises to Get Neighbor</h3>
+                <p><strong>المطلوب:</strong> بعد الحصول على بيانات الدولة الأولى، استخدم رمز الدولة المجاورة (borders) لعمل طلب <code>fetch</code> ثانٍ وجلب بيانات الدولة المجاورة.</p>
+                <pre><button class="copy-btn">Copy</button><code>const displayCountryAndNeighbor = async (countryName) => {
+    try {
+        // --- First Request ---
+        const countryRes = await fetch(`https://restcountries.com/v2/name/${countryName}`);
+        const countryData = await countryRes.json();
+        const country = countryData[0];
+        console.log("Main Country:", country.name);
+        // Here you would render the main country card
+
+        // --- Second Request (Dependent on the first) ---
+        // Get the first neighbor's code from the 'borders' array
+        const firstNeighborCode = country.borders[0];
+        
+        if (firstNeighborCode) {
+            const neighborRes = await fetch(`https://restcountries.com/v2/alpha/${firstNeighborCode}`);
+            const neighbor = await neighborRes.json();
+            console.log("Neighbor Country:", neighbor.name);
+            // Here you would render the neighbor country card
+        }
+
+    } catch (error) {
+        console.error("An error occurred:", error);
+    }
+};
+
+displayCountryAndNeighbor("Egypt");</code></pre>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

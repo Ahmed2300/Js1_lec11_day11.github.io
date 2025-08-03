@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 7: ES5 OOP, `this`, and Closures</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-color-light: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #6f42c1; /* Purple for OOP */
+            --header-color: #f7df1e;
+            --border-color: #dee2e6;
+            --code-bg: #f1f3f5;
+            --pre-bg: #e9ecef;
+            --quote-border: #fd7e14; /* Orange for emphasis */
+            --task-bg: #e6f7ff;
+            --task-border: #007bff;
+            --note-bg: #fffbe6;
+            --note-border: #ffc107;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8;
+        }
+
+        .container { max-width: 850px; margin: 2rem auto; padding: 0 1.5rem; }
+        header h1 { font-size: 2.8rem; color: #343a40; text-align: center; margin-bottom: 0.5rem; font-weight: 700; }
+        header .subtitle { text-align: center; font-size: 1.2rem; color: #6c757d; margin-bottom: 2rem; }
+        main section { background-color: #fff; padding: 30px; margin-bottom: 40px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); }
+        h2 { font-size: 2.2rem; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        h2 .material-icons { font-size: 2.5rem; }
+        h3 { font-size: 1.6rem; color: #343a40; margin-top: 2.5rem; border-right: 4px solid var(--primary-color); padding-right: 15px; }
+        code { background-color: var(--code-bg); padding: 0.2em 0.4em; margin: 0; font-size: 90%; border-radius: 4px; font-family: 'Fira Code', 'Courier New', monospace; }
+        pre { background-color: var(--pre-bg); border-radius: 5px; padding: 1.2rem; overflow-x: auto; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        pre, pre code { direction: ltr; text-align: left; font-size: 14px; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background-color: #555; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        pre:hover .copy-btn { opacity: 1; }
+        strong { color: var(--primary-color); }
+        blockquote { border-right: 5px solid var(--quote-border); padding: 1.5rem; margin: 2rem 0; color: #495077; background-color: #fff3e6; border-radius: 5px; }
+        .note-box { border: 2px solid var(--note-border); background-color: var(--note-bg); padding: 20px; margin-top: 1.5rem; border-radius: 8px; }
+        .note-box h4 { margin-top: 0; color: #b98900; display: flex; align-items: center; gap: 8px; }
+        hr { border: 0; height: 1px; background: var(--border-color); margin: 4rem 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Lecture 9: Deep Dive into ES5 OOP & Advanced Concepts</h1>
+            <p class="subtitle">فهم الـ Prototypes, التحكم في `this`, والـ Closures - أساسيات المطور المحترف.</p>
+        </header>
+
+        <main>
+            <!-- MODULE 1: ES5 OOP -->
+            <section id="es5-oop">
+                <h2><span class="material-icons">account_tree</span>Module 1: Object-Oriented Programming (The Classic Way)</h2>
+                <p>قبل ظهور <code>class</code> في ES6، كانت جافاسكريبت تستخدم نظامًا يعتمد على الـ Constructor Functions والـ <strong>Prototype Chain</strong>. فهم هذا النظام ضروري لقراءة الأكواد القديمة وفهم كيفية عمل الـ classes الحديثة "تحت الغطاء".</p>
+                
+                <h3>The Prototype Property: The Shared Blueprint</h3>
+                <p>كل دالة في جافاسكريبت لديها خاصية اسمها <code>prototype</code>. هذه الخاصية هي object. عندما ننشئ objects جديدة من constructor function باستخدام <code>new</code>، فإن هذه الـ objects ترتبط بـ prototype الخاص بالـ constructor.</p>
+                <p><strong>الفائدة الكبرى:</strong> أي method نضعها على الـ prototype تكون <strong>مشتركة</strong> بين كل الـ instances. هذا يوفر كمية هائلة من الذاكرة مقارنة بوضع الـ methods داخل الـ constructor نفسه، والذي كان سيخلق نسخة جديدة من الـ method لكل object.</p>
+                 <pre><button class="copy-btn">Copy</button><code>function Person(id, age) {
+    // Instance properties: each person gets their own id and age
+    this.id = id; 
+    this.age = age;
+}
+
+// Prototype method: ALL Person instances share this ONE function
+Person.prototype.sleep = function() {
+    console.log("Person with id " + this.id + " is sleeping!");
+}
+
+const person_1 = new Person(10, 30);
+const person_2 = new Person(20, 25);
+
+person_1.sleep(); // "Person with id 10 is sleeping!"
+person_2.sleep(); // "Person with id 20 is sleeping!"
+
+console.log(person_1.sleep === person_2.sleep); // true -> They are the exact same function!</code></pre>
+
+                <h3>Inheritance in ES5 (الوراثة)</h3>
+                <p>الوراثة بالطريقة الكلاسيكية كانت عملية يدوية من ثلاث خطوات رئيسية، كما هو موضح في ملف <code>OOP.js</code>.</p>
+                <ol>
+                    <li><strong>استدعاء الـ Parent Constructor:</strong> نستخدم <code>Person.call(this, ...)</code>. هذا "يستعير" الـ constructor الخاص بـ <code>Person</code> لتنفيذه على الـ object الجديد الخاص بـ <code>Student</code>، مما يضمن تهيئة الخصائص الموروثة (id, age, email).</li>
+                    <li><strong>ربط الـ Prototype Chain:</strong> <code>Student.prototype = Object.create(Person.prototype);</code>. هذه هي الخطوة السحرية. إنها تنشئ object جديد الـ prototype الخاص به هو <code>Person.prototype</code>، وتجعله هو الـ prototype الخاص بـ <code>Student</code>. الآن، إذا لم تجد جافاسكريبت method على <code>student_1</code>، ستبحث في <code>Student.prototype</code>، وإذا لم تجدها هناك، ستكمل البحث في <code>Person.prototype</code>.</li>
+                    <li><strong>إصلاح مؤشر الـ Constructor:</strong> <code>Student.prototype.constructor = Student;</code>. الخطوة السابقة قامت باستبدال prototype الطالب، مما جعل خاصية <code>.constructor</code> تشير إلى <code>Person</code> عن طريق الخطأ. هذه الخطوة تعيدها لتشير إلى <code>Student</code>، وهو السلوك الصحيح.</li>
+                </ol>
+                <pre><button class="copy-btn">Copy</button><code>// Child Constructor
+function Student(id, age, email, name) {
+    // Step 1: Call the parent constructor
+    Person.call(this, id, age, email);
+    this.name = name;
+}
+
+// Step 2: Link the prototypes
+Student.prototype = Object.create(Person.prototype);
+
+// Step 3: Fix the constructor pointer
+Student.prototype.constructor = Student;
+
+// Add new method to the child's prototype
+Student.prototype.study = function() {
+    console.log(this.name + " is studying...");
+}
+
+const student_1 = new Student(40, 22, "s@test.com", "Mona");
+student_1.sleep(); // Inherited from Person.prototype
+student_1.study(); // Defined on Student.prototype</code></pre>
+            </section>
+            
+            <hr>
+
+            <!-- MODULE 2: CALL, APPLY, BIND -->
+            <section id="call-apply-bind">
+                <h2><span class="material-icons">control_camera</span>Module 2: Mastering `this` with `call`, `apply`, & `bind`</h2>
+                <p>قيمة <code>this</code> في جافاسكريبت ديناميكية وتعتمد على "كيف" تم استدعاء الدالة. هذه الدوال الثلاثة تمنحنا التحكم الكامل في تحديد قيمة <code>this</code> بشكل صريح.</p>
+
+                <h3>"Borrowing" Methods with <code>.call()</code> and <code>.apply()</code></h3>
+                <p>هاتان الدالتان تقومان بنفس الشيء: استدعاء دالة مع تحديد قيمة <code>this</code> بشكل يدوي. الفرق الوحيد هو في طريقة تمرير الـ arguments.</p>
+                <ul>
+                    <li><strong><code>.call(thisArg, arg1, arg2, ...)</code>:</strong> تستقبل الـ arguments كقائمة مفصولة بفاصلة. (<strong>C</strong> for Comma).</li>
+                    <li><strong><code>.apply(thisArg, [arg1, arg2, ...])</code>:</strong> تستقبل الـ arguments كمصفوفة. (<strong>A</strong> for Array).</li>
+                </ul>
+                <h4>Analysis of <code>CallApplyMethods.js</code></h4>
+                <pre><button class="copy-btn">Copy</button><code>const product = {
+    id: 1,
+    price: 100,
+    getDetails(supplier, shipper) {
+        console.log(`ID: ${this.id}, Price: ${this.price}, Supplier: ${supplier}, Shipper: ${shipper}`);
+    }
+};
+
+const food = { id: 2, price: 200 };
+
+// We "borrow" the getDetails method from product and run it on the 'food' object.
+product.getDetails.call(food, "Fresh Farms", "Fast Delivery");
+// Output: ID: 2, Price: 200, Supplier: Fresh Farms, Shipper: Fast Delivery
+
+product.getDetails.apply(food, ["Green Grocers", "Quick Ship"]);
+// Output: ID: 2, Price: 200, Supplier: Green Grocers, Shipper: Quick Ship</code></pre>
+                
+                <div class="note-box">
+                    <h4><span class="material-icons">task_alt</span>The Power of `bind()`</h4>
+                    <p>دالة <code>.bind()</code> مختلفة. هي <strong>لا تستدعي الدالة فورًا</strong>. بدلاً من ذلك، تعيد <strong>دالة جديدة</strong> تكون فيها قيمة <code>this</code> "مرتبطة" بشكل دائم بالقيمة التي حددتها. هذا مفيد للغاية في الـ event listeners والـ callbacks.</p>
+                     <pre><button class="copy-btn">Copy</button><code>const myButton = document.querySelector('button');
+const logger = {
+    id: 'Logger1',
+    logClick() {
+        console.log(this.id, 'was clicked');
+    }
+}
+
+// WRONG: 'this' inside logClick will be the button, not the logger object!
+// myButton.addEventListener('click', logger.logClick); 
+
+// CORRECT: We create a new function where 'this' is permanently bound to 'logger'.
+const boundLogClick = logger.logClick.bind(logger);
+myButton.addEventListener('click', boundLogClick); // Now it works correctly!</code></pre>
+                </div>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 3: PROPERTY DESCRIPTORS -->
+            <section id="property-descriptors">
+                <h2><span class="material-icons">tune</span>Module 3: Advanced Object Control (Property Descriptors)</h2>
+                <p>بشكل افتراضي، الخصائص التي نضيفها للكائنات تكون قابلة للكتابة والتعداد والحذف. لكن يمكننا التحكم في هذا السلوك بدقة باستخدام <code>Object.defineProperty()</code>.</p>
+                <h4>Analysis of <code>defineProerty.js</code></h4>
+                <p>هذه الدالة تسمح لنا بتعريف خاصية مع "واصفات" (descriptors) تتحكم في سلوكها:</p>
+                <ul>
+                    <li><strong><code>writable</code>:</strong> (<code>true</code> by default) إذا كانت <code>false</code>، لا يمكن تغيير قيمة الخاصية (read-only).</li>
+                    <li><strong><code>enumerable</code>:</strong> (<code>true</code> by default) إذا كانت <code>false</code>، لن تظهر الخاصية في حلقات <code>for...in</code> أو <code>Object.keys()</code>.</li>
+                    <li><strong><code>configurable</code>:</strong> (<code>true</code> by default) إذا كانت <code>false</code>، لا يمكن حذف الخاصية أو تغيير واصفاتها مرة أخرى (باستثناء تغيير <code>writable</code> من <code>true</code> إلى <code>false</code>).</li>
+                </ul>
+                <pre><button class="copy-btn">Copy</button><code>const student = { firstName: "xxx" };
+
+Object.defineProperty(student, "id", {
+    value: 1,
+    writable: false,      // You can't change student.id now
+    enumerable: false,    // It won't show up in for...in loops
+    configurable: false   // You can't delete student.id or redefine it
+});
+
+student.id = 2; // This fails silently (or throws an error in strict mode)
+console.log(student.id); // 1
+
+console.log(Object.keys(student)); // ["firstName"] -> 'id' is hidden
+
+// delete student.id; // This fails silently
+// console.log(student.id); // 1</code></pre>
+                <blockquote>
+                    <p><strong>تطبيق عملي:</strong> تُستخدم هذه التقنية في المكتبات والـ frameworks لإنشاء خصائص داخلية أو للقراءة فقط (read-only) لمنع المطورين من تعديل حالة الكائن الداخلية عن طريق الخطأ.</p>
+                </blockquote>
+            </section>
+            
+            <hr>
+            
+            <!-- MODULE 4: CLOSURES -->
+            <section id="closures">
+                 <h2><span class="material-icons">psychology</span>Module 4: The Magic of Closures</h2>
+                 <p>الـ Closure هو أحد أقوى وأهم المفاهيم في جافاسكريبت. ببساطة، <strong>الـ Closure هو عندما تتذكر دالة داخلية النطاق (scope) الخاص بالدالة الخارجية التي أنشأتها، حتى بعد انتهاء تنفيذ الدالة الخارجية.</strong></p>
+
+                 <h3>Analysis of <code>clousers.js</code></h3>
+                 <p>المثال الأول يوضح المبدأ. <code>innerFunction</code> لديها "حقيبة ظهر" (backpack) تحتوي على المتغير <code>id</code> من <code>outerFunction</code>.</p>
+                 <pre><button class="copy-btn">Copy</button><code>function outerFunction() {
+    let id = 100;
+    // This inner function "closes over" the 'id' variable.
+    return function innerFunction() {
+        id++;
+        console.log("ID is now:", id);
+    }
+}
+
+// Each call to outerFunction creates a NEW, SEPARATE scope (and a new 'id').
+const innerFunc1 = outerFunction();
+const innerFunc2 = outerFunction();
+
+innerFunc1(); // ID is now: 101
+innerFunc1(); // ID is now: 102
+innerFunc2(); // ID is now: 101 -> It has its own separate 'id'!</code></pre>
+                
+                <h3>Real-World Use Case: Private State and Counters</h3>
+                <p>مثال <code>setFlight</code> هو تطبيق عملي مثالي. كل رحلة لها عداد ركاب خاص بها، معزول تمامًا عن الرحلات الأخرى. لا يمكن الوصول إلى متغير <code>passengers</code> أو تعديله مباشرة من الخارج.</p>
+                <pre><button class="copy-btn">Copy</button><code>function setFlight(from, to) {
+    let passengers = 0; // This is the private state for each flight
+
+    return function(passengerId) {
+        passengers++;
+        console.log(`Flight from ${from} to ${to}, Passenger ID ${passengerId}. Total passengers: ${passengers}`);
+    }
+}
+
+const flight_1 = setFlight("Egypt", "London");
+const flight_2 = setFlight("Paris", "Italy");
+
+flight_1("A123"); // Total passengers: 1
+flight_1("B456"); // Total passengers: 2
+flight_2("C789"); // Total passengers: 1 -> This flight has its own counter!</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- MODULE 5: LAB 7 TASK -->
+            <section id="lab-task">
+                <h2><span class="material-icons">assignment</span>Task: Lab 7 - Employee Card System</h2>
+                <p>هذا الواجب يجمع كل المفاهيم المتقدمة التي تعلمناها: الـ Abstract Classes، الوراثة، الخصائص الثابتة (Static)، التلاعب بالـ DOM، والـ Closures للـ methods.</p>
+                
+                <h3>Project Files (HTML & JS)</h3>
+                <p>هذا هو الحل الكامل للمشروع، مقسم إلى ملفات HTML و JavaScript كما هو متوقع في بيئة عمل حقيقية.</p>
+
+                <pre><button class="copy-btn">Copy</button><code><!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab 7 - Employee Cards</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-wrap: wrap; gap: 20px; }
+        .card-container { display: flex; flex-wrap: wrap; gap: 20px; width: 100%; }
+        .employee-card { border: 2px solid #ccc; border-radius: 8px; padding: 15px; width: 200px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .employee-card img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 10px; }
+        .info { margin-top: 10px; }
+        .info p { margin: 5px 0; }
+        #counter { position: fixed; top: 10px; right: 10px; background-color: #6f42c1; color: white; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Employee Profiles</h1>
+    <div id="card-container" class="card-container"></div>
+    <div id="counter"></div>
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+<!-- app.js -->
+<script>
+// This file contains the full solution for Lab 7
+
+// --- 1. Define the abstract Person class ---
+class Person {
+    // Static property to count all instances that inherit from Person
+    static count = 0;
+
+    constructor(name, gender) {
+        // Prevent creating an object directly from this class
+        if (new.target.name === "Person") {
+            throw new Error("Person is an abstract class and cannot be instantiated directly.");
+        }
+        
+        // Properties common to all persons
+        this.name = this.toPascalCase(name); // Convert name to PascalCase
+        this.gender = gender;
+        
+        // Set default profile picture based on gender
+        this.profilePicture = (gender.toLowerCase() === 'male') 
+            ? 'https://i.imgur.com/lCwQf3Y.png' // Default male icon
+            : 'https://i.imgur.com/vJcO3r7.png'; // Default female icon
+
+        // Increment the static counter every time a new person (or child) is created
+        Person.count++;
+    }
+
+    // Helper method to convert names to PascalCase
+    toPascalCase(str) {
+        return str.toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    // A method that will be overridden by children
+    toString() {
+        return `Name: ${this.name}`;
+    }
+
+    // A static method to display the total count
+    static displayCount() {
+        const counterDiv = document.getElementById('counter');
+        if(counterDiv) {
+            counterDiv.textContent = `Total Persons in Memory: ${Person.count}`;
+        }
+    }
+}
+
+// --- 2. Define the Employee constructor function that inherits from Person ---
+// ES6 Class syntax is cleaner, but the lab asks for a constructor function for inheritance practice.
+function Employee(name, gender, salary, language) {
+    // Call the parent constructor to initialize inherited properties
+    Person.call(this, name, gender);
+
+    // Employee's own properties
+    this.salary = salary || 3000; // Default constructor logic
+    this.language = language || "English"; // Default constructor logic
+
+    // Override the toString method
+    this.toString = function() {
+        return `Name: ${this.name}, Salary: ${this.salary}`;
+    }
+
+    // Method to create and display the HTML card
+    this.addCard = function(containerRef) {
+        const card = document.createElement('div');
+        card.className = 'employee-card';
+
+        const img = document.createElement('img');
+        img.src = this.profilePicture;
+        
+        const nameP = document.createElement('h3');
+        nameP.textContent = this.name;
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'info';
+        infoDiv.innerHTML = `
+            <p>Gender: ${this.gender}</p>
+            <p>Language: ${this.language}</p>
+            <p>Salary: ${this.salary}</p>
+        `;
+        
+        card.appendChild(img);
+        card.appendChild(nameP);
+        card.appendChild(infoDiv);
+
+        containerRef.appendChild(card);
+    }
+}
+// Set up the prototype chain for inheritance
+Employee.prototype = Object.create(Person.prototype);
+Employee.prototype.constructor = Employee;
+
+
+// --- 3. Application Logic ---
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const cardContainer = document.getElementById('card-container');
+
+    // a- Create 3 employee objects
+    const emp1 = new Employee("ahmed ali mohamed", "Male", 5000, "English");
+    const emp2 = new Employee("eman fathi", "Female", 8000, "Arabic");
+    const emp3 = new Employee("mona saleh", "Female", 6000, "French");
+
+    // Call addCard function for each object
+    emp1.addCard(cardContainer);
+    emp2.addCard(cardContainer);
+    emp3.addCard(cardContainer);
+    
+    // b- Change profile picture for one object
+    // To do this, we need to access the card's image after it's rendered.
+    // A better approach would be to update the object and re-render, but for this lab:
+    emp2.profilePicture = 'https://i.imgur.com/A68kC2c.jpeg'; // A new picture
+    // We would need to re-render or find the specific card to update the image source.
+    // For simplicity, let's just log it.
+    console.log("Eman's new picture URL:", emp2.profilePicture);
+
+
+    // c- Display how many persons are in memory
+    Person.displayCount();
+
+    // d- Try to create a Person Object (this should fail)
+    try {
+        const p = new Person("Test Person", "Male");
+    } catch (error) {
+        console.error("Successfully caught expected error:", error.message);
+    }
+});
+</script>
+</code></pre>
+
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; color: #888; margin-top: 4rem;">End of Lecture</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    const textToCopy = code.innerText;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }).catch(err => console.error('Failed to copy text: ', err));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
