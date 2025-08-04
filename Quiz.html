@@ -110,9 +110,20 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        .feedback-icon {
+        .feedback-icon, .feedback-controls .material-icons {
             vertical-align: middle;
             margin-right: 0.25rem;
+        }
+        .feedback-controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            border-radius: 50%;
+        }
+        .feedback-controls button:hover {
+            background-color: rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -123,7 +134,6 @@
         <div class="text-gray-600 mb-6 text-left border-l-4 border-blue-500 pl-4 py-2">
             <h2 class="font-bold text-lg mb-2">Exam Instructions:</h2>
             <ul class="list-disc list-inside">
-                <!-- This will be updated dynamically -->
                 <li>Total Questions: <strong id="total-questions-start"></strong></li>
                 <li>The exam will advance to the next question automatically.</li>
                 <li>Your session will be recorded when you start the exam.</li>
@@ -148,7 +158,6 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div class="mb-4 md:mb-0">
                     <h1 class="text-2xl font-bold text-gray-800">JavaScript Fundamentals Exam</h1>
-                     <!-- This will be updated dynamically -->
                     <p class="text-gray-600">Question <span id="question-counter">1</span> of <span id="total-questions-header"></span></p>
                 </div>
                 <div id="timer" class="text-xl timer bg-gray-200 px-4 py-2 rounded-lg">
@@ -203,7 +212,6 @@
                     totalQuestions: quizData.length
                 };
                 const newRecordRef = await database.ref('quizResults').push(initialData);
-                console.log("Quiz session started with ID:", newRecordRef.key);
                 return newRecordRef.key;
             } catch (error) {
                 console.error("Error creating quiz session in Firebase:", error);
@@ -228,7 +236,6 @@
                 };
                 await database.ref('quizResults').child(quizSessionId).update(finalData);
                 submissionStatusEl.textContent = 'Your results have been saved successfully.';
-                console.log("Quiz results updated successfully in Firebase!");
             } catch (error) {
                 console.error("Error updating results in Firebase:", error);
                 submissionStatusEl.textContent = 'Could not submit final results. Please check your connection.';
@@ -236,7 +243,7 @@
         }
         // --- END OF FIREBASE INTEGRATION ---
         
-        const quizData = [
+        const quizData = [ /* All 250 questions go here. Omitted for brevity, but they exist in the full code block. */ 
             // --- EASY QUESTIONS (70) ---
             { question: "Which keyword is used to declare a variable that can be reassigned?", options: ["let", "const", "var", "static"], answer: "let", difficulty: "Easy" },
             { question: "What is the result of `\"5\" + 3` in JavaScript?", options: ["8", "53", "Error", "NaN"], answer: "53", difficulty: "Easy" },
@@ -469,6 +476,7 @@
             { question: "What does `Object.keys(obj)` return?", options: ["An array of the object's values", "An array of the object's enumerable property names", "The number of properties in the object", "A boolean indicating if the object has keys"], answer: "An array of the object's enumerable property names", difficulty: "Easy" },
         ];
 
+        // --- GLOBAL VARIABLES ---
         const startScreen = document.getElementById('start-screen');
         const startBtn = document.getElementById('start-btn');
         const quizContainer = document.getElementById('quiz-container');
@@ -481,19 +489,25 @@
         const progressBar = document.getElementById('progressBar');
         const totalQuestionsStartEl = document.getElementById('total-questions-start');
         const totalQuestionsHeaderEl = document.getElementById('total-questions-header');
+        
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let timerInterval; // For the main question timer
+        
+        // --- NEW VARIABLES FOR FEEDBACK TIMER ---
+        let feedbackTimeLeft;
+        let feedbackTimerInterval;
+        let isFeedbackPaused = false;
 
-        // Dynamically set the total question count
+        // --- DYNAMICALLY SET TOTAL QUESTIONS ON PAGE LOAD ---
         const totalQuestions = quizData.length;
         totalQuestionsStartEl.textContent = totalQuestions;
         totalQuestionsHeaderEl.textContent = totalQuestions;
         
-        let score = 0;
-        let currentQuestionIndex = 0;
-        let timeLeft;
-        let timerInterval;
-
+        // --- CORE QUIZ LOGIC ---
         function startQuestionTimer() {
             clearInterval(timerInterval);
+            let timeLeft;
             const difficulty = quizData[currentQuestionIndex].difficulty;
             if (difficulty === 'Easy') timeLeft = 25;
             else if (difficulty === 'Hard') timeLeft = 40;
@@ -503,7 +517,7 @@
                 timeLeft--;
                 timerEl.textContent = timeLeft;
                 if (timeLeft <= 0) {
-                    handleTimeout();
+                    handleIncorrectAnswer("Time's up!");
                 }
             }, 1000);
         }
@@ -522,7 +536,6 @@
             const difficultyClass = `difficulty-${quizItem.difficulty.toLowerCase()}`;
             const difficultyIcon = quizItem.difficulty === 'Easy' ? 'signal_cellular_alt_1_bar' : quizItem.difficulty === 'Medium' ? 'signal_cellular_alt_2_bar' : 'signal_cellular_alt';
             
-            // Function to escape HTML special characters for safe rendering
             const escapeHTML = (str) => str.replace(/</g, "<").replace(/>/g, ">");
 
             questionCard.innerHTML = `
@@ -552,36 +565,89 @@
             const quizItem = quizData[currentQuestionIndex];
             const isCorrect = selectedOption === quizItem.answer;
             const feedbackContainer = document.getElementById(`q-feedback`);
+            
             if (isCorrect) {
                 score++;
                 selectedButton.classList.add('correct');
                 feedbackContainer.innerHTML = `<span class="text-green-600 flex items-center"><i class="material-icons feedback-icon">check_circle</i>Correct!</span>`;
+                // Correct answer gets a short delay
+                setTimeout(nextQuestion, 1500);
             } else {
                 selectedButton.classList.add('incorrect');
-                feedbackContainer.innerHTML = `<span class="text-red-600 flex items-center"><i class="material-icons feedback-icon">cancel</i>Incorrect. The correct answer was highlighted.</span>`;
+                handleIncorrectAnswer("Incorrect. The correct answer is highlighted.");
             }
-            const buttons = document.getElementById(`q-options`).getElementsByTagName('button');
-            for (let button of buttons) {
-                // To compare correctly, we need to compare the unescaped text content
-                if (button.textContent === quizItem.answer) button.classList.add('correct');
-                button.disabled = true;
-            }
-            setTimeout(nextQuestion, 1500);
         }
 
-        function handleTimeout() {
+        function handleIncorrectAnswer(message) {
             clearInterval(timerInterval);
-            document.getElementById(`q-feedback`).innerHTML = `<span class="text-yellow-600 flex items-center"><i class="material-icons feedback-icon">hourglass_empty</i>Time's up!</span>`;
             const quizItem = quizData[currentQuestionIndex];
             const buttons = document.getElementById(`q-options`).getElementsByTagName('button');
             for (let button of buttons) {
                 if (button.textContent === quizItem.answer) button.classList.add('correct');
                 button.disabled = true;
             }
-            setTimeout(nextQuestion, 1500);
+            startFeedbackTimer(message);
         }
 
+        // --- FEEDBACK TIMER LOGIC ---
+        function startFeedbackTimer(message) {
+            feedbackTimeLeft = 7;
+            isFeedbackPaused = false;
+            clearInterval(feedbackTimerInterval);
+            
+            updateFeedbackUI(message); // Initial UI render
+
+            feedbackTimerInterval = setInterval(() => {
+                feedbackTimeLeft--;
+                updateFeedbackUI(message);
+                if (feedbackTimeLeft <= 0) {
+                    clearInterval(feedbackTimerInterval);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function pauseFeedbackTimer() {
+            if (isFeedbackPaused) return;
+            isFeedbackPaused = true;
+            clearInterval(feedbackTimerInterval);
+            updateFeedbackUI("Incorrect. The correct answer is highlighted.");
+        }
+
+        function resumeFeedbackTimer() {
+            if (!isFeedbackPaused) return;
+            isFeedbackPaused = false;
+            startFeedbackTimer("Incorrect. The correct answer is highlighted.");
+        }
+
+        function updateFeedbackUI(message) {
+            const feedbackContainer = document.getElementById(`q-feedback`);
+            if (!feedbackContainer) return;
+            
+            const colorClass = message.startsWith("Time's up") ? "text-yellow-600" : "text-red-600";
+            const icon = message.startsWith("Time's up") ? "hourglass_empty" : "cancel";
+            
+            let buttonHtml = '';
+            if (isFeedbackPaused) {
+                buttonHtml = `<button onclick="resumeFeedbackTimer()" title="Resume"><i class="material-icons">play_circle_outline</i></button>`;
+            } else {
+                buttonHtml = `<button onclick="pauseFeedbackTimer()" title="Pause"><i class="material-icons">pause_circle_outline</i></button>`;
+            }
+
+            feedbackContainer.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="${colorClass} flex items-center"><i class="material-icons feedback-icon">${icon}</i>${message}</span>
+                    <div class="feedback-controls flex items-center">
+                        <span class="text-gray-500">Next question in ${feedbackTimeLeft}s...</span>
+                        ${buttonHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- UTILITY AND NAVIGATION ---
         function nextQuestion() {
+            clearInterval(feedbackTimerInterval); // Ensure feedback timer is stopped
             currentQuestionIndex++;
             renderCurrentQuestion();
         }
@@ -593,6 +659,7 @@
 
         function endQuiz() {
             clearInterval(timerInterval);
+            clearInterval(feedbackTimerInterval);
             quizBody.innerHTML = '';
             document.querySelector('.quiz-header').style.display = 'none';
             const finalScore = score;
