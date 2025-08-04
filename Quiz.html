@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Fundamentals MCQ Exam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .quiz-container, .start-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .quiz-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: rgba(249, 250, 251, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .question-card {
+            padding: 1.5rem 2rem;
+            min-height: 300px;
+        }
+        .option {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .option:hover:not(:disabled) {
+            background-color: #f3f4f6;
+            border-color: #6b7280;
+        }
+        .option:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .option.correct {
+            background-color: #10b981 !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+        .option.incorrect {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+        }
+        .timer {
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+        }
+        .timer .material-icons {
+            margin-right: 0.5rem;
+            color: #6b7280;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 8px;
+        }
+        .progress-bar {
+            background-color: #3b82f6;
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s ease-in-out;
+        }
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .difficulty-badge .material-icons {
+            font-size: 1rem;
+            margin-right: 0.25rem;
+        }
+        .difficulty-easy { background-color: #d1fae5; color: #065f46; }
+        .difficulty-medium { background-color: #fef3c7; color: #92400e; }
+        .difficulty-hard { background-color: #fee2e2; color: #991b1b; }
+        
+        pre {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .feedback-icon {
+            vertical-align: middle;
+            margin-right: 0.25rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="start-screen" class="start-container p-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">JavaScript Fundamentals Exam</h1>
+        <div class="text-gray-600 mb-6 text-left border-l-4 border-blue-500 pl-4 py-2">
+            <h2 class="font-bold text-lg mb-2">Exam Instructions:</h2>
+            <ul class="list-disc list-inside">
+                <!-- This will be updated dynamically -->
+                <li>Total Questions: <strong id="total-questions-start"></strong></li>
+                <li>The exam will advance to the next question automatically.</li>
+                <li>Your session will be recorded when you start the exam.</li>
+                <li class="font-bold mt-2">Time per Question:</li>
+                <ul class="list-disc list-inside ml-5">
+                    <li><span class="font-semibold text-green-700">Easy:</span> 25 seconds</li>
+                    <li><span class="font-semibold text-yellow-700">Medium:</span> 30 seconds</li>
+                    <li><span class="font-semibold text-red-700">Hard:</span> 40 seconds</li>
+                </ul>
+            </ul>
+        </div>
+        <button id="start-btn" class="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-transform transform hover:scale-105 disabled:opacity-75 disabled:cursor-not-allowed">
+            <span class="flex items-center justify-center">
+                <i class="material-icons mr-2">play_circle_filled</i>
+                Start Exam
+            </span>
+        </button>
+    </div>
+
+    <div id="quiz-container" class="quiz-container hidden">
+        <div class="quiz-header p-6 border-b border-gray-200">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="mb-4 md:mb-0">
+                    <h1 class="text-2xl font-bold text-gray-800">JavaScript Fundamentals Exam</h1>
+                     <!-- This will be updated dynamically -->
+                    <p class="text-gray-600">Question <span id="question-counter">1</span> of <span id="total-questions-header"></span></p>
+                </div>
+                <div id="timer" class="text-xl timer bg-gray-200 px-4 py-2 rounded-lg">
+                    <i class="material-icons">timer</i>
+                    <span>30</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-body"></div>
+
+        <div id="results-container" class="hidden p-8 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Exam Completed!</h2>
+            <p class="text-xl text-gray-600 mb-2">Your final score is:</p>
+            <p id="score" class="text-5xl font-extrabold text-blue-600 mb-6"></p>
+            <p id="feedback" class="text-lg text-gray-700"></p>
+            <p id="submission-status" class="text-sm text-gray-500 mt-4"></p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Software Development Kit) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // --- START OF FIREBASE INTEGRATION ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyAPcc5-enkHB4Qt5ZMB0KtxoVMQ8dMicuU", // WARNING: Replace with your REGENERATED API key.
+          databaseURL: "https://wechat-9694d-default-rtdb.firebaseio.com/",
+          projectId: "wechat-9694d"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        let quizSessionId = null;
+
+        async function createQuizSessionInFirebase() {
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                if (!ipResponse.ok) throw new Error('Could not fetch IP address.');
+                const ipData = await ipResponse.json();
+                const initialData = {
+                    ipAddress: ipData.ip,
+                    deviceName: navigator.userAgent,
+                    startTime: new Date().toISOString(),
+                    status: 'in-progress',
+                    score: 0,
+                    totalQuestions: quizData.length
+                };
+                const newRecordRef = await database.ref('quizResults').push(initialData);
+                console.log("Quiz session started with ID:", newRecordRef.key);
+                return newRecordRef.key;
+            } catch (error) {
+                console.error("Error creating quiz session in Firebase:", error);
+                return null;
+            }
+        }
+
+        async function updateFinalResultsInFirebase(finalScore) {
+            if (!quizSessionId) {
+                console.error("No quiz session ID found. Cannot update final results.");
+                document.getElementById('submission-status').textContent = 'Error: Could not find quiz session to update.';
+                return;
+            }
+            const submissionStatusEl = document.getElementById('submission-status');
+            submissionStatusEl.textContent = 'Submitting final results...';
+            try {
+                const finalData = {
+                    score: finalScore,
+                    percentage: ((finalScore / quizData.length) * 100).toFixed(1),
+                    status: 'completed',
+                    endTime: new Date().toISOString()
+                };
+                await database.ref('quizResults').child(quizSessionId).update(finalData);
+                submissionStatusEl.textContent = 'Your results have been saved successfully.';
+                console.log("Quiz results updated successfully in Firebase!");
+            } catch (error) {
+                console.error("Error updating results in Firebase:", error);
+                submissionStatusEl.textContent = 'Could not submit final results. Please check your connection.';
+            }
+        }
+        // --- END OF FIREBASE INTEGRATION ---
+        
+        const quizData = [
+            // --- EASY QUESTIONS (70) ---
+            { question: "Which keyword is used to declare a variable that can be reassigned?", options: ["let", "const", "var", "static"], answer: "let", difficulty: "Easy" },
+            { question: "What is the result of `\"5\" + 3` in JavaScript?", options: ["8", "53", "Error", "NaN"], answer: "53", difficulty: "Easy" },
+            { question: "Which operator is used for strict equality (checks both value and type)?", options: ["==", "===", "=", "!="], answer: "===", difficulty: "Easy" },
+            { question: "How do you write a single-line comment in JavaScript?", options: ["// comment", "<!-- comment -->", "/* comment */", "# comment"], answer: "// comment", difficulty: "Easy" },
+            { question: "Which method is used to add an element to the end of an array?", options: ["push()", "pop()", "shift()", "unshift()"], answer: "push()", difficulty: "Easy" },
+            { question: "What is the result of `Boolean(0)`?", options: ["true", "false", "undefined", "Error"], answer: "false", difficulty: "Easy" },
+            { question: "How can you get the number of elements in an array `arr`?", options: ["arr.size", "arr.length", "arr.count", "arr.elements"], answer: "arr.length", difficulty: "Easy" },
+            { question: "What does DOM stand for?", options: ["Document Object Model", "Data Object Model", "Document Order Model", "Dynamic Object Manipulation"], answer: "Document Object Model", difficulty: "Easy" },
+            { question: "Which method is used to select an HTML element by its ID?", options: ["getElementByName()", "querySelector()", "getElementsByClassName()", "getElementById()"], answer: "getElementById()", difficulty: "Easy" },
+            { question: "Which event is triggered when a user clicks on an HTML element?", options: ["onmouseover", "onchange", "onclick", "onkeydown"], answer: "onclick", difficulty: "Easy" },
+            { question: "What is the property for the mathematical constant Pi in the Math object?", options: ["Math.PI", "Math.pi", "Math.E", "Math.PHI"], answer: "Math.PI", difficulty: "Easy" },
+            { question: "Which function is used to display a dialog box with a message to the user?", options: ["alert()", "confirm()", "prompt()", "log()"], answer: "alert()", difficulty: "Easy" },
+            { question: "What does `Math.random()` return?", options: ["A number between 0 and 100", "A number between 0 and 1 (inclusive of 0, exclusive of 1)", "An integer", "A number between -1 and 1"], answer: "A number between 0 and 1 (inclusive of 0, exclusive of 1)", difficulty: "Easy" },
+            { question: "How do you create a new Date object?", options: ["`Date.now()`", "`new Date()`", "`createDate()`", "`Date()`"], answer: "`new Date()`", difficulty: "Easy" },
+            { question: "Which `String` method returns the character at a specified index?", options: ["`charAt()`", "`at()`", "`characterAt()`", "`getChar()`"], answer: "`charAt()`", difficulty: "Easy" },
+            { question: "What does `parseInt('2.9')` return?", options: ["3", "2.9", "2", "NaN"], answer: "2", difficulty: "Easy" },
+            { question: "Which operator is used to create a new instance of an object?", options: ["`new`", "`create`", "`instanceof`", "`this`"], answer: "`new`", difficulty: "Easy" },
+            { question: "What does the `%` (modulus) operator do?", options: ["Calculates percentage", "Returns the remainder of a division", "Performs multiplication", "Compares two numbers"], answer: "Returns the remainder of a division", difficulty: "Easy" },
+            { question: "Which loop is guaranteed to execute at least once?", options: ["`for` loop", "`while` loop", "`do...while` loop", "`forEach` loop"], answer: "`do...while` loop", difficulty: "Easy" },
+            { question: "What will `[10, 20, 30].indexOf(20)` return?", options: ["20", "2", "1", "-1"], answer: "1", difficulty: "Easy" },
+            { question: "What is the primary purpose of a function in programming?", options: ["To store data collections", "To group reusable code that performs a specific task", "To style HTML elements", "To declare global variables"], answer: "To group reusable code that performs a specific task", difficulty: "Easy" },
+            { question: "Which method is used to get the length of a string `str`?", options: ["`str.size`", "`str.count()`", "`str.length`", "`str.len`"], answer: "`str.length`", difficulty: "Easy" },
+            { question: "What does the `Array.map()` method do?", options: ["Filters an array based on a condition", "Checks if any element passes a test", "Executes a function for each element and returns a new array with the results", "Reduces an array to a single value"], answer: "Executes a function for each element and returns a new array with the results", difficulty: "Easy" },
+            { question: "How do you call a function named `myFunction`?", options: ["`call myFunction;`", "`myFunction;`", "`myFunction()`", "`run myFunction()`"], answer: "`myFunction()`", difficulty: "Easy" },
+            { question: "What keyword is used to send a value back from a function?", options: ["`send`", "`output`", "`return`", "`give`"], answer: "`return`", difficulty: "Easy" },
+            { question: "Which method converts a string to all uppercase letters?", options: ["`toUpperCase()`", "`upper()`", "`toUpper()`", "`allCaps()`"], answer: "`toUpperCase()`", difficulty: "Easy" },
+            { question: "What does the `Array.filter()` method do?", options: ["Creates a new array with all elements that pass a test implemented by a function", "Modifies the original array", "Returns the first element that passes a test", "Returns a boolean indicating if any element passed"], answer: "Creates a new array with all elements that pass a test implemented by a function", difficulty: "Easy" },
+            { question: "Which of the following is a 'mutating' array method (changes the original array)?", options: ["`slice()`", "`map()`", "`filter()`", "`splice()`"], answer: "`splice()`", difficulty: "Easy" },
+            { question: "How do you access the `arguments` object inside a regular function?", options: ["`this.arguments`", "`Function.arguments`", "`arguments`", "It's not possible"], answer: "`arguments`", difficulty: "Easy" },
+            { question: "What is the modern alternative to the `arguments` object in ES6?", options: ["The `params` array", "Rest Parameters (`...`)", "The `args` object", "Spread Syntax (`...`)"], answer: "Rest Parameters (`...`)", difficulty: "Easy" },
+            { question: "What does the `confirm()` function return?", options: ["A string", "A number", "A boolean (true for OK, false for Cancel)", "Nothing"], answer: "A boolean (true for OK, false for Cancel)", difficulty: "Easy" },
+            { question: "Which method returns the largest of zero or more numbers?", options: ["`Math.ceil()`", "`Math.max()`", "`Math.round()`", "`Math.pow()`"], answer: "`Math.max()`", difficulty: "Easy" },
+            { question: "What is an 'argument' in the context of a function?", options: ["A value returned by the function", "A variable declared inside the function", "A value passed to the function when it is called", "The name of the function"], answer: "A value passed to the function when it is called", difficulty: "Easy" },
+            { question: "Which of these are valid ways to create an empty object?", options: ["`let obj = [];`", "`let obj = new Object();`", "`let obj = {};`", "Both b and c"], answer: "Both b and c", difficulty: "Easy" },
+            { question: "What does `true && false` evaluate to?", options: ["`true`", "`false`", "`null`", "`undefined`"], answer: "`false`", difficulty: "Easy" },
+            { question: "Which method is used to remove the first element of an array?", options: ["`pop()`", "`shift()`", "`slice()`", "`removeFirst()`"], answer: "`shift()`", difficulty: "Easy" },
+            { question: "What is the result of `10 % 3`?", options: ["1", "3", "0.333", "30"], answer: "1", difficulty: "Easy" },
+            { question: "Which method combines two or more arrays?", options: ["`join()`", "`merge()`", "`concat()`", "`combine()`"], answer: "`concat()`", difficulty: "Easy" },
+            { question: "What is a major risk of using `document.write()` after a page has loaded?", options: ["It is very slow", "It can overwrite the entire document", "It only works in older browsers", "It cannot write HTML tags"], answer: "It can overwrite the entire document", difficulty: "Easy" },
+            { question: "What is the top-level object in the Browser Object Model (BOM)?", options: ["`document`", "`screen`", "`navigator`", "`window`"], answer: "`window`", difficulty: "Easy" },
+            { question: "Which property of the `location` object holds the entire URL?", options: ["`location.url`", "`location.href`", "`location.pathname`", "`location.full`"], answer: "`location.href`", difficulty: "Easy" },
+            { question: "Which method is used to execute a function repeatedly at a fixed time interval?", options: ["`setTimeout()`", "`repeat()`", "`setInterval()`", "`execute()`"], answer: "`setInterval()`", difficulty: "Easy" },
+            { question: "How can you navigate to the previous page in the browser's history?", options: ["`history.back()`", "`history.previous()`", "`history.go(-1)`", "Both a and c"], answer: "Both a and c", difficulty: "Easy" },
+            { question: "Which object provides information about the user's screen, like width and height?", options: ["`display`", "`monitor`", "`screen`", "`viewport`"], answer: "`screen`", difficulty: "Easy" },
+            { question: "What does `window.open()` do?", options: ["Opens a file dialog", "Opens a new browser window or tab", "Opens a print dialog", "Opens the browser's history"], answer: "Opens a new browser window or tab", difficulty: "Easy" },
+            { question: "Which method returns a live `HTMLCollection` of elements matching a class name?", options: ["`getElementsByClassName()`", "`querySelectorAll('.class')`", "`getElementsByClass()`", "`findElementsByClass()`"], answer: "`getElementsByClassName()`", difficulty: "Easy" },
+            { question: "Which property is safer for inserting plain text into an element to prevent XSS attacks?", options: ["`innerHTML`", "`outerHTML`", "`textContent`", "`text`"], answer: "`textContent`", difficulty: "Easy" },
+            { question: "Which method is the modern, standard way to attach an event handler to an element?", options: ["`element.onclick = func`", "`element.attachEvent('onclick', func)`", "`element.addEventListener()`", "`on('click', func)`"], answer: "`element.addEventListener()`", difficulty: "Easy" },
+            { question: "How do you change the background color of an element with `id=\"box\"` to blue?", options: ["`box.style.backgroundColor = 'blue';`", "`box.style.background = 'blue';`", "`box.css('background-color', 'blue');`", "`box.backgroundColor = 'blue';`"], answer: "`box.style.backgroundColor = 'blue';`", difficulty: "Easy" },
+            { question: "What does `document.createElement('div')` do?", options: ["It adds a new `<div>` to the page", "It creates a new `<div>` element in memory", "It finds an existing `<div>`", "It returns a string '<div>'"], answer: "It creates a new `<div>` element in memory", difficulty: "Easy" },
+            { question: "What does `document.querySelector('p')` select?", options: ["All `<p>` elements on the page", "The first `<p>` element on the page", "The last `<p>` element on the page", "A random `<p>` element on the page"], answer: "The first `<p>` element on the page", difficulty: "Easy" },
+            { question: "What event fires when a user moves the mouse pointer over an element?", options: ["`onmove`", "`onhover`", "`onmouseover`", "`onpoint`"], answer: "`onmouseover`", difficulty: "Easy" },
+            { question: "How do you add a new element (`newElem`) inside another element (`parentElem`) as the last child?", options: ["`parentElem.add(newElem)`", "`parentElem.insert(newElem)`", "`parentElem.appendChild(newElem)`", "`parentElem.attach(newElem)`"], answer: "`parentElem.appendChild(newElem)`", difficulty: "Easy" },
+            { question: "Which property holds a reference to an element's parent node?", options: ["`parentNode`", "`parent`", "`parentElement`", "Both a and c"], answer: "Both a and c", difficulty: "Easy" },
+            { question: "What is DHTML a combination of?", options: ["JavaScript and HTML only", "HTML, CSS, and Java", "HTML, CSS, and a scripting language like JavaScript", "A new language called DHTML"], answer: "HTML, CSS, and a scripting language like JavaScript", difficulty: "Easy" },
+            { question: "What is the most common way to create a single object in JavaScript?", options: ["Using a constructor function", "Using an object literal `{}`", "Using a factory function", "Using `Object.create()`"], answer: "Using an object literal `{}`", difficulty: "Easy" },
+            { question: "In a constructor function, what does the `this` keyword refer to?", options: ["The global `window` object", "The function itself", "The new object being created", "The object's prototype"], answer: "The new object being created", difficulty: "Easy" },
+            { question: "Which keyword is essential for creating an object from a constructor function?", options: ["`create`", "`instance`", "`new`", "`this`"], answer: "`new`", difficulty: "Easy" },
+            { question: "What is a method in an object?", options: ["A property that is a string", "A property that is a number", "A property that is a function", "A private variable"], answer: "A property that is a function", difficulty: "Easy" },
+            { question: "How do you access a property named 'model' on an object named 'car'?", options: ["`car('model')`", "`car.model` or `car['model']`", "`car->model`", "`get.car.model`"], answer: "`car.model` or `car['model']`", difficulty: "Easy" },
+            { question: "Which keyword is used for a variable that cannot be reassigned?", options: ["`let`", "`var`", "`static`", "`const`"], answer: "`const`", difficulty: "Easy" },
+            { question: "What characters are used to create a template literal string?", options: ["Single quotes (`' '`)", "Double quotes (`\" \"`)", "Backticks (`` ` ``)", "Parentheses (`( )`)"], answer: "Backticks (`` ` ``)", difficulty: "Easy" },
+            { question: "What is the basic syntax for an arrow function?", options: ["`function => {}`", "`() => {}`", "`=> function {}`", "`arrow {}`"], answer: "`() => {}`", difficulty: "Easy" },
+            { question: "Which operator is used to expand an iterable (like an array) into individual elements?", options: ["Rest (`...`)", "Spread (`...`)", "Expand (`>>>`)", "Array (`[]`)"], answer: "Spread (`...`)", difficulty: "Easy" },
+            { question: "In ES6, if a variable `name` exists, what is the shorthand for `{ name: name }`?", options: ["`{ name }`", "`{ ...name }`", "`{ :name }`", "`{ val(name) }`"], answer: "`{ name }`", difficulty: "Easy" },
+            
+            // --- MEDIUM QUESTIONS (85) ---
+            { question: "What is the output of `console.log(typeof null)`?", code: "console.log(typeof null);", options: ["'null'", "'undefined'", "'object'", "'null-object'"], answer: "'object'", difficulty: "Medium" },
+            { question: "What will be logged to the console?", code: "let x = 10;\nif (true) {\n  let x = 20;\n  console.log(x);\n}\nconsole.log(x);", options: ["20, 10", "10, 20", "20, 20", "10, 10"], answer: "20, 10", difficulty: "Medium" },
+            { question: "What is 'hoisting' in the context of `var` declarations?", options: ["Variable declarations are moved to the top of their scope before code execution.", "Functions are executed before variables.", "A type of error when a variable is used before declaration.", "It only applies to `let` and `const`."], answer: "Variable declarations are moved to the top of their scope before code execution.", difficulty: "Medium" },
+            { question: "Which of the following is NOT a primitive data type in JavaScript?", options: ["string", "number", "Symbol", "object"], answer: "object", difficulty: "Medium" },
+            { question: "What does the `...` operator do in this context: `const arr2 = [...arr1];`?", options: ["It's a rest parameter", "It's the spread syntax, creating a shallow copy", "It's a conditional operator", "It's an illegal comment"], answer: "It's the spread syntax, creating a shallow copy", difficulty: "Medium" },
+            { question: "What does `JSON.parse()` do?", options: ["Converts a JavaScript object to a JSON string", "Parses a JSON string, constructing the JavaScript value or object", "Creates a new JSON object", "Validates a JSON string"], answer: "Parses a JSON string, constructing the JavaScript value or object", difficulty: "Medium" },
+            { question: "What is the output of `console.log(typeof NaN)`?", options: ["'nan'", "'number'", "'undefined'", "'object'"], answer: "'number'", difficulty: "Medium" },
+            { question: "Which ES6 feature allows for more readable and concise syntax for simple functions?", options: ["let/const", "Template Literals", "Arrow Functions", "Classes"], answer: "Arrow Functions", difficulty: "Medium" },
+            { question: "What does the `continue` statement do inside a loop?", options: ["Exits the loop entirely", "Skips the rest of the current iteration and proceeds to the next one", "Stops the entire script execution", "Calls a function"], answer: "Skips the rest of the current iteration and proceeds to the next one", difficulty: "Medium" },
+            { question: "Which method removes the last element from an array and returns that element?", options: ["shift()", "unshift()", "push()", "pop()"], answer: "pop()", difficulty: "Medium" },
+            { question: "Which object is at the top of the scope chain in a browser environment?", options: ["document", "console", "window", "Math"], answer: "window", difficulty: "Medium" },
+            { question: "What does `Math.ceil(7.04)` return?", options: ["7", "8", "7.0", "7.1"], answer: "8", difficulty: "Medium" },
+            { question: "Which dialog box returns the text entered by the user as a string?", options: ["`alert()`", "`confirm()`", "`prompt()`", "`input()`"], answer: "`prompt()`", difficulty: "Medium" },
+            { question: "What is the `this` keyword in the global scope of a browser?", options: ["The `document` object", "The `window` object", "`null`", "`undefined`"], answer: "The `window` object", difficulty: "Medium" },
+            { question: "Which `String` method is used to split a string into an array of substrings?", options: ["`slice()`", "`substring()`", "`split()`", "`splice()`"], answer: "`split()`", difficulty: "Medium" },
+            { question: "What is the purpose of the `Array.join()` method?", options: ["To merge two arrays", "To join all elements of an array into a string", "To add an element to an array", "To check if an array contains a value"], answer: "To join all elements of an array into a string", difficulty: "Medium" },
+            { question: "What does the `delete` operator do when used on an object property?", options: ["Sets the property value to `null`", "Sets the property value to `undefined`", "Removes the property from the object", "Throws an error"], answer: "Removes the property from the object", difficulty: "Medium" },
+            { question: "Which method tests whether at least one element in the array passes the test implemented by the provided function?", options: ["`every()`", "`some()`", "`filter()`", "`find()`"], answer: "`some()`", difficulty: "Medium" },
+            { question: "How do you get the current year as a 4-digit number from a Date object `d`?", options: ["`d.getYear()`", "`d.getFullYear()`", "`d.year()`", "`d.fullYear()`"], answer: "`d.getFullYear()`", difficulty: "Medium" },
+            { question: "What is the value of `x` after this code? `let x = 'hello'; x[0] = 'H';`", options: ["'Hello'", "'hello'", "Error", "undefined"], answer: "'hello'", difficulty: "Medium" },
+            { question: "Which of these values is NOT 'falsy'?", options: ["`0`", "`''` (empty string)", "`'false'`", "`NaN`"], answer: "`'false'`", difficulty: "Medium" },
+            { question: "What is the correct way to get a random integer between 1 and 10 (inclusive)?", options: ["`Math.floor(Math.random() * 10) + 1`", "`Math.ceil(Math.random() * 10)`", "`Math.random() * 10`", "`Math.floor(Math.random() * 11)`"], answer: "`Math.floor(Math.random() * 10) + 1`", difficulty: "Medium" },
+            { question: "What does `Array.isArray([])` return?", options: ["`true`", "`false`", "`undefined`", "`object`"], answer: "`true`", difficulty: "Medium" },
+            { question: "What is the primary purpose of a constructor function?", options: ["To destroy objects", "To serve as a blueprint for creating objects of a certain type", "To perform mathematical calculations", "To handle browser events"], answer: "To serve as a blueprint for creating objects of a certain type", difficulty: "Medium" },
+            { question: "Which method reverses the order of the elements in an array in-place?", options: ["`sort()`", "`reorder()`", "`flip()`", "`reverse()`"], answer: "`reverse()`", difficulty: "Medium" },
+            { question: "What will `new Date(2025, 0, 1).getMonth()` return? (Months are 0-indexed)", options: ["1", "12", "0", "2025"], answer: "0", difficulty: "Medium" },
+            { question: "Which method tests if all elements in an array pass the test implemented by the provided function?", options: ["`every()`", "`some()`", "`all()`", "`check()`"], answer: "`every()`", difficulty: "Medium" },
+            { question: "What is the main difference between a mutating and a non-mutating array method?", options: ["Mutating methods are faster", "Non-mutating methods change the original array", "Mutating methods change the original array; non-mutating methods return a new one", "There is no difference"], answer: "Mutating methods change the original array; non-mutating methods return a new one", difficulty: "Medium" },
+            { question: "What does `Array.reduce()` do?", options: ["Filters an array based on a condition", "Executes a reducer function on each element, resulting in a single output value", "Creates a new array with modified elements", "Sorts the array"], answer: "Executes a reducer function on each element, resulting in a single output value", difficulty: "Medium" },
+            { question: "In a function `sumAll(...numbers)`, what is `numbers`?", options: ["An array-like object", "A true Array", "A String", "The first argument only"], answer: "A true Array", difficulty: "Medium" },
+            { question: "Which of these is a non-mutating method?", options: ["`pop()`", "`push()`", "`sort()`", "`slice()`"], answer: "`slice()`", difficulty: "Medium" },
+            { question: "What is the initial value in this `reduce` call?", code: "`[1, 2].reduce((acc, val) => acc + val, 10)`", options: ["`1`", "`2`", "`10`", "`0`"], answer: "`10`", difficulty: "Medium" },
+            { question: "To sort an array of objects by a `price` property (lowest to highest), what should the compare function `(a, b)` return?", options: ["`a.price - b.price`", "`b.price - a.price`", "`a.price > b.price`", "`a - b`"], answer: "`a.price - b.price`", difficulty: "Medium" },
+            { question: "What is the purpose of `Array.splice(1, 0, 'new')`?", options: ["Remove one element at index 0", "Add 'new' at index 1 without removing any elements", "Replace the element at index 1 with 'new'", "Add 'new' at index 0"], answer: "Add 'new' at index 1 without removing any elements", difficulty: "Medium" },
+            { question: "What does `localeCompare()` do when sorting strings?", options: ["Compares numbers only", "Sorts strings alphabetically in a language-sensitive manner", "Converts strings to lowercase", "Reverses the string order"], answer: "Sorts strings alphabetically in a language-sensitive manner", difficulty: "Medium" },
+            { question: "The `arguments` object is not available in which type of function?", options: ["Named functions", "Anonymous functions", "Arrow functions", "Constructor functions"], answer: "Arrow functions", difficulty: "Medium" },
+            { question: "Which method would be best to transform an array of user objects into an array of just their email addresses?", options: ["`filter()`", "`forEach()`", "`map()`", "`reduce()`"], answer: "`map()`", difficulty: "Medium" },
+            { question: "What is 'method chaining'?", options: ["A type of loop", "Calling multiple methods consecutively on the result of the previous one", "A way to link CSS files", "An old JavaScript feature"], answer: "Calling multiple methods consecutively on the result of the previous one", difficulty: "Medium" },
+            { question: "What is a 'callback' function?", options: ["A function that calls another function", "A function passed into another function as an argument, to be executed later", "A function that returns another function", "A recursive function"], answer: "A function passed into another function as an argument, to be executed later", difficulty: "Medium" },
+            { question: "Which `location` property would you use to redirect the user to a new page?", options: ["`location.pathname = '/new'`", "`location.href = 'https://new.page'`", "`location.host = 'new.host'`", "`location.search = '?q=new'`"], answer: "`location.href = 'https://new.page'`", difficulty: "Medium" },
+            { question: "What does `clearTimeout()` do?", options: ["Resets a timer to 0", "Stops the execution of a function specified in `setTimeout()`", "Returns the remaining time", "Pauses a timer"], answer: "Stops the execution of a function specified in `setTimeout()`", difficulty: "Medium" },
+            { question: "What is the difference between `window.innerWidth` and `screen.width`?", options: ["They are the same", "`innerWidth` is the browser viewport width; `screen.width` is the total monitor screen width", "`screen.width` includes browser toolbars", "`innerWidth` is always smaller"], answer: "`innerWidth` is the browser viewport width; `screen.width` is the total monitor screen width", difficulty: "Medium" },
+            { question: "What does `history.length` represent?", options: ["The number of open tabs", "The length of the current URL", "The number of URLs in the session history stack", "The browser's age in years"], answer: "The number of URLs in the session history stack", difficulty: "Medium" },
+            { question: "If a popup blocker is active, what will `window.open()` likely return?", options: ["An empty window object", "`true`", "`false`", "`null` or `undefined`"], answer: "`null` or `undefined`", difficulty: "Medium" },
+            { question: "Which `location` method reloads the current page from the server, ignoring the cache?", options: ["`location.reload()`", "`location.reload(false)`", "`location.reload(true)`", "`location.refresh()`"], answer: "`location.reload(true)`", difficulty: "Medium" },
+            { question: "What is the purpose of `window.opener`?", options: ["It refers to the `window` object itself", "It refers to the window that opened the current window", "It is always `null`", "It contains the URL of the parent page"], answer: "It refers to the window that opened the current window", difficulty: "Medium" },
+            { question: "Which property contains the query string part of a URL (e.g., `?id=123`)?", options: ["`location.query`", "`location.pathname`", "`location.hash`", "`location.search`"], answer: "`location.search`", difficulty: "Medium" },
+            { question: "What happens if you call `setTimeout` with a delay of 0?", options: ["The function runs instantly before any other code", "The function is placed in the event queue to run after the current code block finishes", "It causes an error", "The function is ignored"], answer: "The function is placed in the event queue to run after the current code block finishes", difficulty: "Medium" },
+            { question: "What is the correct order of operations to create a new paragraph and add it to a div with `id=\"container\"`?", options: ["`appendChild` then `createElement`", "`createElement` then `appendChild`", "`innerHTML` then `createElement`", "`createTextNode` then `innerHTML`"], answer: "`createElement` then `appendChild`", difficulty: "Medium" },
+            { question: "Inside an event listener, what does `event.target` refer to?", options: ["The element the listener was attached to", "The `window` object", "The element that originally triggered the event", "The parent of the clicked element"], answer: "The element that originally triggered the event", difficulty: "Medium" },
+            { question: "What is the difference between `childNodes` and `children` properties?", options: ["There is no difference", "`childNodes` includes only element nodes", "`children` includes only element nodes, while `childNodes` includes text and comment nodes", "`children` is an array, `childNodes` is not"], answer: "`children` includes only element nodes, while `childNodes` includes text and comment nodes", difficulty: "Medium" },
+            { question: "How do you completely hide an element with `id=\"notice\"` so it doesn't take up any layout space?", options: ["`notice.style.visibility = 'hidden';`", "`notice.style.display = 'none';`", "`notice.style.opacity = '0';`", "`notice.hidden = true;`"], answer: "`notice.style.display = 'none';`", difficulty: "Medium" },
+            { question: "What does `event.preventDefault()` do in a form's `submit` event handler?", options: ["It reloads the page", "It validates the form fields", "It stops the default browser action, like submitting the form", "It submits the form asynchronously"], answer: "It stops the default browser action, like submitting the form", difficulty: "Medium" },
+            { question: "Which method is used to get the value of an element's attribute (e.g., `href`) as a string?", options: ["`element.property`", "`element.getAttribute()`", "`element.attr()`", "`element.value()`"], answer: "`element.getAttribute()`", difficulty: "Medium" },
+            { question: "What does `document.querySelector('#nav .active')` select?", options: ["All active elements in the nav", "The first element with class 'active' inside the element with id 'nav'", "The element with id 'nav' and class 'active'", "All elements with id 'nav' or class 'active'"], answer: "The first element with class 'active' inside the element with id 'nav'", difficulty: "Medium" },
+            { question: "Which property is used to programmatically add, remove, or toggle CSS classes on an element?", options: ["`className`", "`class`", "`classes`", "`classList`"], answer: "`classList`", difficulty: "Medium" },
+            { question: "What is the `nodeType` for an Element node?", options: ["1", "2", "3", "9"], answer: "1", difficulty: "Medium" },
+            { question: "Which method inserts a new node before a specified existing child node?", options: ["`appendChild()`", "`prepend()`", "`insertBefore()`", "`addBefore()`"], answer: "`insertBefore()`", difficulty: "Medium" },
+            { question: "What does `document.getElementsByTagName('div')` return?", options: ["A static `NodeList`", "A live `HTMLCollection`", "A single `div` element", "An array"], answer: "A live `HTMLCollection`", difficulty: "Medium" },
+            { question: "Which CSS property name in JavaScript corresponds to `font-family`?", options: ["`font-family`", "`fontFamily`", "`fontfamily`", "`font_family`"], answer: "`fontFamily`", difficulty: "Medium" },
+            { question: "What is the difference between `event.target` and `event.currentTarget`?", options: ["They are always the same", "`target` is the element that triggered the event; `currentTarget` is where the listener is attached", "`currentTarget` is the parent of `target`", "`target` is for mouse events; `currentTarget` is for keyboard events"], answer: "`target` is the element that triggered the event; `currentTarget` is where the listener is attached", difficulty: "Medium" },
+            { question: "How can you remove an event listener from an element?", options: ["`element.removeEventListener()`", "`element.deleteListener()`", "`element.onclick = null`", "Both a and c can work"], answer: "Both a and c can work", difficulty: "Medium" },
+            { question: "What does `element.classList.toggle('active')` do?", options: ["Always adds the 'active' class", "Always removes the 'active' class", "Adds 'active' if not present, removes it if present", "Checks if 'active' class exists"], answer: "Adds 'active' if not present, removes it if present", difficulty: "Medium" },
+            { question: "How can you simulate a 'private' variable in a constructor function using closures?", options: ["Using the `private` keyword", "By declaring it with `var` or `let` inside the constructor and not attaching it to `this`", "By prefixing the property with an underscore `_`", "It is not possible"], answer: "By declaring it with `var` or `let` inside the constructor and not attaching it to `this`", difficulty: "Medium" },
+            { question: "What is a 'Factory Function'?", options: ["A function that builds HTML elements", "A function that is a property of an object", "A regular function that creates and returns an object, without using `new`", "A synonym for a constructor function"], answer: "A regular function that creates and returns an object, without using `new`", difficulty: "Medium" },
+            { question: "When is it necessary to use Bracket Notation (`obj['prop']`) to access an object property?", options: ["Never, Dot Notation always works", "When the property name is stored in a variable or contains special characters (like spaces or hyphens)", "Only for methods", "Only for private properties"], answer: "When the property name is stored in a variable or contains special characters (like spaces or hyphens)", difficulty: "Medium" },
+            { question: "What is the `nodeName` for a `<p>` element?", options: ["`p`", "`P`", "`paragraph`", "`#paragraph`"], answer: "`P`", difficulty: "Medium" },
+            { question: "What is the `nodeType` for a text node?", options: ["1", "2", "3", "8"], answer: "3", difficulty: "Medium" },
+            { question: "What is the main advantage of `let` over `var`?", options: ["It is function-scoped", "It is block-scoped", "It can be redeclared", "It is hoisted with a default value of `undefined`"], answer: "It is block-scoped", difficulty: "Medium" },
+            { question: "How do you embed a variable `name` inside a template literal?", options: ["`'Hello ' + name`", "`\"Hello %s\", name`", "`` `Hello ${name}` ``", "`` `Hello #{name}` ``"], answer: "`` `Hello ${name}` ``", difficulty: "Medium" },
+            { question: "What is a key difference in `this` handling between arrow functions and regular functions?", options: ["Arrow functions have no `this`", "Arrow functions lexically bind `this` from their parent scope", "Regular functions always have `this` as the window object", "There is no difference"], answer: "Arrow functions lexically bind `this` from their parent scope", difficulty: "Medium" },
+            { question: "What does the Rest Operator (`...`) do in a function definition?", options: ["Spreads an array into arguments", "Collects multiple arguments into a single array", "Defines a default parameter", "Creates a copy of the function"], answer: "Collects multiple arguments into a single array", difficulty: "Medium" },
+            { question: "What is the concise method syntax in an ES6 object literal?", options: ["`myMethod: function() {}`", "`function myMethod() {}`", "`myMethod() {}`", "`myMethod => {}`"], answer: "`myMethod() {}`", difficulty: "Medium" },
+            
+            // --- HARD QUESTIONS (55) ---
+            { question: "What will be logged to the console from this code?", code: "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 10);\n}", options: ["0, 1, 2", "3, 3, 3", "1, 2, 3", "undefined, undefined, undefined"], answer: "3, 3, 3", difficulty: "Hard" },
+            { question: "What is a 'closure' in JavaScript?", options: ["A syntax error", "A function that has access to its outer function's scope, even after the outer function has returned.", "A way to close a web socket connection.", "The process of converting a string to an object."], answer: "A function that has access to its outer function's scope, even after the outer function has returned.", difficulty: "Hard" },
+            { question: "What is the value of `this` inside an arrow function used as an object method?", options: ["It refers to the object itself.", "It is always the `window` object in non-strict mode.", "It is inherited from the enclosing (lexical) scope.", "It is always `undefined` in strict mode."], answer: "It is inherited from the enclosing (lexical) scope.", difficulty: "Hard" },
+            { question: "What will the following code output?", code: "setTimeout(() => console.log(1), 0);\nconsole.log(2);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);", options: ["1, 2, 3, 4", "2, 4, 1, 3", "2, 4, 3, 1", "1, 3, 2, 4"], answer: "2, 4, 3, 1", difficulty: "Hard" },
+            { question: "How do you create a truly private class field in a modern JavaScript class?", options: ["Using the `private` keyword.", "By declaring a variable with `var` inside the constructor.", "By using an underscore prefix like `this._privateVar`.", "Using a hash `#` prefix (e.g., `#myPrivateField`)."], answer: "Using a hash `#` prefix (e.g., `#myPrivateField`).", difficulty: "Hard" },
+            { question: "What is the practical difference between `null` and `undefined`?", options: ["They are identical.", "`null` is an intentional absence of value, while `undefined` means a variable has not been assigned a value.", "`undefined` is an object, `null` is a primitive.", "They can always be used interchangeably."], answer: "`null` is an intentional absence of value, while `undefined` means a variable has not been assigned a value.", difficulty: "Hard" },
+            { question: "What does `Function.prototype.bind()` do?", options: ["Immediately invokes the function.", "Creates a new function that, when called, has its `this` keyword set to the provided value.", "Binds two functions together.", "Converts a function to a string."], answer: "Creates a new function that, when called, has its `this` keyword set to the provided value.", difficulty: "Hard" },
+            { question: "What is a major effect of 'Strict Mode' (`'use strict';`)?", options: ["It makes the browser run faster.", "It changes some previously silent errors into thrown errors.", "It allows the use of newer JavaScript features.", "It's a comment with no effect."], answer: "It changes some previously silent errors into thrown errors.", difficulty: "Hard" },
+            { question: "What will be the result of this code?", code: "const arr = [10, 20, 30];\nconst [a, , c] = arr;\nconsole.log(c);", options: ["10", "20", "30", "undefined"], answer: "30", difficulty: "Hard" },
+            { question: "What does 'immutability' mean for primitive types in JavaScript?", options: ["Primitives cannot be reassigned to new values.", "The value of a primitive type cannot be altered in-place once it's created.", "Primitives can only be numbers.", "Primitives are always passed by reference."], answer: "The value of a primitive type cannot be altered in-place once it's created.", difficulty: "Hard" },
+            { question: "What does the `arguments` object in a regular function contain?", options: ["A true array of the arguments passed to the function.", "An array-like object of the arguments passed to the function.", "The first argument only.", "It's only available in arrow functions."], answer: "An array-like object of the arguments passed to the function.", difficulty: "Hard" },
+            { question: "How do you correctly create a Date object for Christmas Day 2025?", options: ["`new Date('2025-12-25')`", "`new Date(2025, 11, 25)`", "`new Date(2025, 12, 25)`", "Both a and b are correct"], answer: "Both a and b are correct", difficulty: "Hard" },
+            { question: "What is the Event Loop in JavaScript?", options: ["A `for` loop that never ends.", "A mechanism that allows JavaScript to perform non-blocking operations by offloading tasks and processing them via a queue.", "An array of all user-triggered events.", "A browser security feature."], answer: "A mechanism that allows JavaScript to perform non-blocking operations by offloading tasks and processing them via a queue.", difficulty: "Hard" },
+            { question: "What is the output of this code?", code: "const a = [1, 2, 3];\nconst b = a;\nb.push(4);\nconsole.log(a);", options: ["[1, 2, 3]", "[1, 2, 3, 4]", "Error", "[4]"], answer: "[1, 2, 3, 4]", difficulty: "Hard" },
+            { question: "In an array `sort()` method, what should the compare function `(a, b)` return to sort numbers in ascending order?", options: ["`b - a`", "`a - b`", "`a > b`", "`a.compareTo(b)`"], answer: "`a - b`", difficulty: "Hard" },
+            { question: "What does the `Array.prototype.slice()` method do?", options: ["Modifies the original array", "Extracts a section of an array and returns a new shallow copy", "Adds elements to an array", "Sorts the array"], answer: "Extracts a section of an array and returns a new shallow copy", difficulty: "Hard" },
+            { question: "What is the result of `('b' + 'a' + + 'a' + 'a').toLowerCase()`?", options: ["`'banana'`", "`'baaa'`", "`'bannaa'`", "`'banan'`"], answer: "`'banana'`", difficulty: "Hard" },
+            { question: "What is the key difference between a function declaration and a function expression?", options: ["Function expressions are not hoisted, while declarations are.", "Function declarations can't have names.", "They are exactly the same.", "Function expressions must be arrow functions."], answer: "Function expressions are not hoisted, while declarations are.", difficulty: "Hard" },
+            { question: "What is the output of the following code?", code: "const data = [{v: 1}, {v: 2}];\nconst result = data.reduce((acc, item) => acc + item.v, 0);\nconsole.log(result);", options: ["`[{v: 1}, {v: 2}]`", "`3`", "`NaN`", "Error"], answer: "`3`", difficulty: "Hard" },
+            { question: "Which method is best for finding the first element in an array that matches a condition?", options: ["`filter()`", "`find()`", "`some()`", "`map()`"], answer: "`find()`", difficulty: "Hard" },
+            { question: "What is the difference between `slice()` and `splice()`?", options: ["They are identical", "`slice()` is mutating, `splice()` is not", "`splice()` is mutating, `slice()` is not", "`splice()` returns a single element, `slice()` returns an array"], answer: "`splice()` is mutating, `slice()` is not", difficulty: "Hard" },
+            { question: "Consider `const votes = ['Yes', 'No', 'Yes'];`. What is the correct `reduce` function to count the votes?", options: ["`votes.reduce((t, v) => { t[v]++; return t; }, {})`", "`votes.reduce((t, v) => { t[v] = (t[v] || 0) + 1; return t; }, {})`", "`votes.map(v => ({ [v]: 1 }))`", "`votes.filter()`"], answer: "`votes.reduce((t, v) => { t[v] = (t[v] || 0) + 1; return t; }, {})`", difficulty: "Hard" },
+            { question: "What does it mean for a function to be a 'first-class citizen'?", options: ["It's the most important part of the code", "It can be treated like any other variable: passed as an argument, returned from a function, etc.", "It must be declared at the top of the file", "It has special browser privileges"], answer: "It can be treated like any other variable: passed as an argument, returned from a function, etc.", difficulty: "Hard" },
+            { question: "What is the result of this chained operation?", code: "`[1, 2, 3, 4].map(n => n * 2).filter(n => n > 5).reduce((a, b) => a + b);`", options: ["6", "8", "14", "30"], answer: "14", difficulty: "Hard" },
+            { question: "Why is it generally safer to use non-mutating array methods in functional programming?", options: ["They are faster", "They prevent unexpected side effects by not altering the original data source", "They use less memory", "They are supported by older browsers"], answer: "They prevent unexpected side effects by not altering the original data source", difficulty: "Hard" },
+            { question: "What is the output of this code?", code: "`function findMax() { return Math.max(...arguments); } console.log(findMax(10, 50, 20));`", options: ["10", "NaN", "50", "Error: `arguments` is not an array"], answer: "50", difficulty: "Hard" },
+            { question: "How does `Array.sort()` handle an array of numbers by default, without a compare function?", options: ["It sorts them numerically", "It converts elements to strings and sorts them lexicographically (alphabetically)", "It throws an error", "It sorts them in reverse numerical order"], answer: "It converts elements to strings and sorts them lexicographically (alphabetically)", difficulty: "Hard" },
+            { question: "What is the purpose of the initial value in `reduce(callback, initialValue)`?", options: ["It's the value to return if the array is empty", "It's the first value of the accumulator", "It's a limit for the number of iterations", "Both A and B are correct"], answer: "Both A and B are correct", difficulty: "Hard" },
+            { question: "What will this code log?", code: "`let arr = ['a', 'b']; let copy = arr.slice(); copy.push('c'); console.log(arr);`", options: ["`['a', 'b', 'c']`", "`['a', 'b']`", "`['c']`", "Error"], answer: "`['a', 'b']`", difficulty: "Hard" },
+            { question: "What is the output of `[1, 2, 3].map(parseInt)`?", options: ["`[1, 2, 3]`", "`[1, NaN, NaN]`", "`[1, 0, 1]`", "Error"], answer: "`[1, NaN, NaN]`", difficulty: "Hard" },
+            { question: "What does `!!' '` (a string with a space) evaluate to?", options: ["`true`", "`false`", "`undefined`", "`' '`"], answer: "`true`", difficulty: "Hard" },
+            { question: "If `a = {x: 1}` and `b = {x: 1}`, what is `a === b`?", options: ["`true`", "`false`", "Error", "`undefined`"], answer: "`false`", difficulty: "Hard" },
+            { question: "What is the difference between `for...in` and `for...of` loops?", options: ["`for...in` iterates over values; `for...of` iterates over keys", "`for...in` iterates over enumerable property keys; `for...of` iterates over the values of an iterable", "They are the same", "`for...of` is for objects only"], answer: "`for...in` iterates over enumerable property keys; `for...of` iterates over the values of an iterable", difficulty: "Hard" },
+            { question: "What will `console.log(0.1 + 0.2 === 0.3)` output, and why?", options: ["`true`", "`false`, due to floating-point precision issues", "Error", "`undefined`"], answer: "`false`, due to floating-point precision issues", difficulty: "Hard" },
+            { question: "What is prototypal inheritance?", options: ["A way to create private variables", "A mechanism where objects can inherit properties and methods directly from other objects", "A design pattern for creating functions", "An old, deprecated feature"], answer: "A mechanism where objects can inherit properties and methods directly from other objects", difficulty: "Hard" },
+            { question: "What is the output of `typeof (function(){})`?", options: ["`'object'`", "`'function'`", "`'undefined'`", "`'array'`"], answer: "`'function'`", difficulty: "Hard" },
+            { question: "What is the value of `x` after this IIFE (Immediately Invoked Function Expression)?", code: "let x = 1;\n(function() {\n  let x = 2;\n})();", options: ["1", "2", "`undefined`", "Error"], answer: "1", difficulty: "Hard" },
+            { question: "What is the purpose of `Object.freeze()`?", options: ["To prevent adding new properties to an object", "To prevent modifying existing properties", "To prevent deleting properties", "All of the above"], answer: "All of the above", difficulty: "Hard" },
+            { question: "What is a `NodeList` returned by `querySelectorAll()`?", options: ["A live collection that updates automatically", "A static collection that does not update automatically", "A true JavaScript Array", "An object containing a single node"], answer: "A static collection that does not update automatically", difficulty: "Hard" },
+            { question: "What is Event Delegation?", options: ["Assigning an event to a different element", "Attaching a single event listener to a parent to manage events for all its children", "Delaying an event with `setTimeout`", "Creating a custom event"], answer: "Attaching a single event listener to a parent to manage events for all its children", difficulty: "Hard" },
+            { question: "What is the difference between `visibility: 'hidden'` and `display: 'none'`?", options: ["They are identical", "`display: 'none'` hides the element, but it still occupies space", "`visibility: 'hidden'` hides the element, but it still occupies layout space", "They both remove the element from the DOM"], answer: "`visibility: 'hidden'` hides the element, but it still occupies layout space", difficulty: "Hard" },
+            { question: "In `addEventListener('click', handler, useCapture)`, what does setting `useCapture` to `true` do?", options: ["It prevents the event from bubbling", "It makes the event fire during the capturing phase instead of the bubbling phase", "It ensures the event only fires once", "It is an obsolete parameter"], answer: "It makes the event fire during the capturing phase instead of the bubbling phase", difficulty: "Hard" },
+            { question: "What is the difference between `innerHTML` and `outerHTML`?", options: ["There is no difference", "`innerHTML` gets or sets the HTML content, including the element itself", "`outerHTML` gets or sets the HTML content, including the element itself", "`outerHTML` only gets the content"], answer: "`outerHTML` gets or sets the HTML content, including the element itself", difficulty: "Hard" },
+            { question: "What is the Temporal Dead Zone (TDZ) for `let` and `const` variables?", options: ["A zone where variables are `undefined`", "The period from the start of the block until the declaration is reached, where the variable cannot be accessed", "A type of memory leak", "An old feature replaced by hoisting"], answer: "The period from the start of the block until the declaration is reached, where the variable cannot be accessed", difficulty: "Hard" },
+            { question: "What will this code log?", code: "`const name = 'App'; const obj = { name, logName() { console.log(this.name); } }; obj.logName();`", options: ["`App`", "`undefined`", "Error", "`window`"], answer: "`App`", difficulty: "Hard" },
+            
+            // --- Questions Based on Provided Lectures (OOP, Async, Closures, APIs) (40) ---
+            { question: "In ES5, how do you call a parent constructor from a child constructor function?", options: ["`super()`", "`Parent.call(this, ...)`", "`this.inherit(Parent)`", "`Object.create(Parent)`"], answer: "`Parent.call(this, ...)`", difficulty: "Medium" },
+            { question: "What is the correct way to set up the prototype chain for inheritance in ES5?", options: ["`Child.prototype = Parent.prototype`", "`Child.prototype = new Parent()`", "`Child.prototype = Object.create(Parent.prototype)`", "`Child.prototype.inherits(Parent.prototype)`"], answer: "`Child.prototype = Object.create(Parent.prototype)`", difficulty: "Medium" },
+            { question: "After setting up the prototype chain, why is it a good practice to set `Child.prototype.constructor = Child`?", options: ["To make inheritance faster", "To prevent the parent from being modified", "To ensure the `constructor` property points to the correct child function, not the parent", "It is not necessary"], answer: "To ensure the `constructor` property points to the correct child function, not the parent", difficulty: "Hard" },
+            { question: "In the provided Lab 7, how was the `Person` class prevented from being instantiated directly?", options: ["Using the `abstract` keyword", "By checking `if (new.target.name === 'Person')` and throwing an error", "Making the constructor private", "Returning `null` from the constructor"], answer: "By checking `if (new.target.name === 'Person')` and throwing an error", difficulty: "Hard" },
+            { question: "What is the purpose of a `static` property or method on a class?", options: ["It is a property that cannot be changed (is static)", "It belongs to the class itself, not to any instance of the class", "It is a method that can only be called from inside the class", "It automatically makes the property private"], answer: "It belongs to the class itself, not to any instance of the class", difficulty: "Medium" },
+            { question: "What is the main difference between the `.call()` and `.apply()` methods?", options: ["`.call()` is faster than `.apply()`", "`.call()` works with objects, `.apply()` with arrays", "They are identical", "`.call()` accepts a list of arguments, while `.apply()` accepts an array of arguments"], answer: "`.call()` accepts a list of arguments, while `.apply()` accepts an array of arguments", difficulty: "Medium" },
+            { question: "What does the `.bind()` method return?", options: ["The result of the function call", "The value of `this`", "A new function with a permanently bound `this` context", "`undefined`"], answer: "A new function with a permanently bound `this` context", difficulty: "Medium" },
+            { question: "Why is `.bind()` often necessary when using object methods as event listeners?", options: ["To make the event fire faster", "To prevent the default event action", "Because `this` inside the listener would otherwise refer to the HTML element, not the object", "To pass arguments to the event listener"], answer: "Because `this` inside the listener would otherwise refer to the HTML element, not the object", difficulty: "Hard" },
+            { question: "Which property descriptor in `Object.defineProperty` prevents the value of a property from being changed?", options: ["`configurable: false`", "`enumerable: false`", "`sealed: true`", "`writable: false`"], answer: "`writable: false`", difficulty: "Medium" },
+            { question: "If a property is defined with `enumerable: false`, what is the effect?", options: ["The property cannot be deleted", "The property will not appear in `for...in` loops or `Object.keys()`", "The property's value cannot be changed", "An error will be thrown"], answer: "The property will not appear in `for...in` loops or `Object.keys()`", difficulty: "Medium" },
+            { question: "If a property is defined with `configurable: false`, what can you NOT do?", options: ["Change its value", "Read its value", "Delete the property or change its other descriptors (except `writable`)", "Use it in a `for...in` loop"], answer: "Delete the property or change its other descriptors (except `writable`)", difficulty: "Hard" },
+            { question: "What is a closure in JavaScript?", options: ["A function that has no access to its outer scope", "A way to close a memory leak", "A function that remembers and has access to its lexical scope, even when executed outside that scope", "A special type of object"], answer: "A function that remembers and has access to its lexical scope, even when executed outside that scope", difficulty: "Medium" },
+            { question: "In the `setFlight` example from the lecture, why does each flight have a separate passenger count?", options: ["Because `passengers` is a static variable", "Because each call to `setFlight` creates a new, separate closure with its own `passengers` variable", "Because `passengers` is a global variable", "It's a mistake in the code; they share the same count"], answer: "Because each call to `setFlight` creates a new, separate closure with its own `passengers` variable", difficulty: "Hard" },
+            { question: "How does using `let` instead of `var` in a `for` loop with a `setTimeout` change the output?", options: ["The output remains the same", "It throws an error", "It creates a block-scoped binding for each iteration, logging the correct values", "The output becomes undefined"], answer: "It creates a block-scoped binding for each iteration, logging the correct values", difficulty: "Hard" },
+            { question: "What is 'Callback Hell' (The Pyramid of Doom)?", options: ["A function that calls itself recursively", "A design pattern for efficient code", "Deeply nested callbacks that are hard to read and maintain", "An error that crashes the application"], answer: "Deeply nested callbacks that are hard to read and maintain", difficulty: "Easy" },
+            { question: "What are the three states of a Promise?", options: ["`pending`, `resolved`, `failed`", "`waiting`, `complete`, `error`", "`pending`, `fulfilled`, `rejected`", "`async`, `sync`, `done`"], answer: "`pending`, `fulfilled`, `rejected`", difficulty: "Medium" },
+            { question: "In a Promise chain, what does `.then()` handle?", options: ["Only the `pending` state", "The `rejected` (failed) state", "The `fulfilled` (successful) state", "Both `fulfilled` and `rejected` states"], answer: "The `fulfilled` (successful) state", difficulty: "Easy" },
+            { question: "How do you handle errors in a Promise chain?", options: ["With a `try...catch` block around the chain", "With an `.error()` method", "With a single `.catch()` at the end of the chain", "Errors cannot be handled"], answer: "With a single `.catch()` at the end of the chain", difficulty: "Medium" },
+            { question: "To enable promise chaining, what must a `.then()` block return?", options: ["A boolean value", "The original data", "A new value or another Promise", "Nothing, it should just execute code"], answer: "A new value or another Promise", difficulty: "Hard" },
+            { question: "What keyword must you add to a function definition to use the `await` keyword inside it?", options: ["`promise`", "`async`", "`wait`", "`sync`"], answer: "`async`", difficulty: "Easy" },
+            { question: "What does the `await` keyword do?", options: ["It immediately resolves the Promise", "It creates a new Promise", "It pauses the execution of an `async` function until a Promise is settled", "It marks a function for deletion"], answer: "It pauses the execution of an `async` function until a Promise is settled", difficulty: "Medium" },
+            { question: "How do you handle errors when using `async/await`?", options: ["With a `.catch()` block on the function call", "It handles errors automatically", "With a `try...catch` block", "By checking `if (error)` after each `await`"], answer: "With a `try...catch` block", difficulty: "Medium" },
+            { question: "An `async` function always implicitly returns what?", options: ["The value from the `return` statement", "A Promise", "`undefined`", "A boolean"], answer: "A Promise", difficulty: "Medium" },
+            { question: "Is `await` a blocking operation for the entire JavaScript engine?", options: ["Yes, it freezes the entire browser until the operation is complete", "No, it only blocks the execution within the `async` function, allowing other scripts to run", "Yes, but only for `fetch` calls", "No, `await` is just an alias for `.then()`"], answer: "No, it only blocks the execution within the `async` function, allowing other scripts to run", difficulty: "Hard" },
+            { question: "What does the `fetch()` function return?", options: ["The JSON data directly", "An XML object", "A Promise that resolves to a `Response` object", "A string containing the HTML"], answer: "A Promise that resolves to a `Response` object", difficulty: "Medium" },
+            { question: "After a successful `fetch`, what method do you call on the `Response` object to parse its body as JSON?", options: ["`.parseJSON()`", "`.json()`", "`.getBody()`", "`.data()`"], answer: "`.json()`", difficulty: "Medium" },
+            { question: "What does the `.json()` method itself return?", options: ["The final data object", "A string", "A Promise that resolves with the parsed JSON data", "`null`"], answer: "A Promise that resolves with the parsed JSON data", difficulty: "Hard" },
+            { question: "To send data in a POST request with `fetch`, what properties would you typically set in the options object?", options: ["`type: 'POST'`, `data: {...}`", "`method: 'POST'`, `body: JSON.stringify({...})`, `headers: {'Content-Type': 'application/json'}`", "`request: 'POST'`, `payload: {...}`", "`action: 'POST'`, `send: {...}`"], answer: "`method: 'POST'`, `body: JSON.stringify({...})`, `headers: {'Content-Type': 'application/json'}`", difficulty: "Medium" },
+            { question: "In the Rest Countries API lab, how was the neighbor country's data fetched?", options: ["By searching for its name in a global list", "By using the border country code from the first API response to make a second `fetch` call", "By guessing the neighbor's name", "The first API call included all neighbor data"], answer: "By using the border country code from the first API response to make a second `fetch` call", difficulty: "Medium" },
+            { question: "What is an IIFE (Immediately Invoked Function Expression)?", options: ["A function that is defined but never called", "A function that is executed right after it is defined", "A function that returns another function", "An ES6 class feature"], answer: "A function that is executed right after it is defined", difficulty: "Medium" },
+            { question: "What is the primary benefit of using `async/await` over standard Promise chains?", options: ["It is faster and uses less memory", "It allows writing asynchronous code that looks and reads like synchronous code", "It works in older browsers that don't support Promises", "It automatically handles all errors without a `try...catch`"], answer: "It allows writing asynchronous code that looks and reads like synchronous code", difficulty: "Medium" },
+            { question: "A static method on a `Person` class can be called via:", options: ["`let p = new Person(); p.staticMethod()`", "`Person.staticMethod()`", "`this.staticMethod()` from a regular method", "It cannot be called"], answer: "`Person.staticMethod()`", difficulty: "Easy" },
+            { question: "To create a shallow copy of an array `arr`, which ES6 syntax is commonly used?", options: ["`let copy = new Array(arr)`", "`let copy = arr`", "`let copy = Object.create(arr)`", "`let copy = [...arr]`"], answer: "`let copy = [...arr]`", difficulty: "Easy" },
+            { question: "When using `fetch` to get data from a public API, what is a common error to check for in the `Response` object?", options: ["`response.ok` (to check for HTTP statuses like 404 or 500)", "`response.error`", "`response.isJSON`", "`response.valid`"], answer: "`response.ok` (to check for HTTP statuses like 404 or 500)", difficulty: "Medium" },
+            { question: "The concept of a function 'remembering' its variables from its birthplace is called:", options: ["Inheritance", "The `this` keyword", "A Prototype", "A Closure"], answer: "A Closure", difficulty: "Easy" },
+            { question: "Which is the modern API for making network requests, built into browsers and based on Promises?", options: ["`XMLHttpRequest`", "jQuery `.ajax()`", "`fetch()`", "`request()`"], answer: "`fetch()`", difficulty: "Easy" },
+            { question: "What is the purpose of `JSON.stringify()`?", options: ["To parse a JSON string into a JavaScript object", "To make a JSON object more readable", "To convert a JavaScript object into a JSON string", "To check if a string is valid JSON"], answer: "To convert a JavaScript object into a JSON string", difficulty: "Easy" },
+            { question: "What does `defer` in a `<script>` tag do?", options: ["Prevents the script from loading", "Executes the script after the HTML document has been fully parsed", "Loads the script asynchronously but executes it in order", "Executes the script immediately"], answer: "Executes the script after the HTML document has been fully parsed", difficulty: "Medium" },
+            { question: "What is the `prototype` property in JavaScript?", options: ["A property on an instance that links to its class", "A property on a constructor function that is shared by all instances", "A method for creating private variables", "A new feature in ES2022"], answer: "A property on a constructor function that is shared by all instances", difficulty: "Medium" },
+            { question: "What does `Object.keys(obj)` return?", options: ["An array of the object's values", "An array of the object's enumerable property names", "The number of properties in the object", "A boolean indicating if the object has keys"], answer: "An array of the object's enumerable property names", difficulty: "Easy" },
+        ];
+
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const quizBody = document.getElementById('quiz-body');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreEl = document.getElementById('score');
+        const feedbackEl = document.getElementById('feedback');
+        const timerEl = document.querySelector('#timer span');
+        const questionCounterEl = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progressBar');
+        const totalQuestionsStartEl = document.getElementById('total-questions-start');
+        const totalQuestionsHeaderEl = document.getElementById('total-questions-header');
+
+        // Dynamically set the total question count
+        const totalQuestions = quizData.length;
+        totalQuestionsStartEl.textContent = totalQuestions;
+        totalQuestionsHeaderEl.textContent = totalQuestions;
+        
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let timeLeft;
+        let timerInterval;
+
+        function startQuestionTimer() {
+            clearInterval(timerInterval);
+            const difficulty = quizData[currentQuestionIndex].difficulty;
+            if (difficulty === 'Easy') timeLeft = 25;
+            else if (difficulty === 'Hard') timeLeft = 40;
+            else timeLeft = 30; // Medium
+            timerEl.textContent = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+        
+        function renderCurrentQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                endQuiz();
+                return;
+            }
+            updateProgressBar();
+            questionCounterEl.textContent = currentQuestionIndex + 1;
+            const quizItem = quizData[currentQuestionIndex];
+            quizBody.innerHTML = '';
+            const questionCard = document.createElement('div');
+            questionCard.className = 'question-card';
+            const difficultyClass = `difficulty-${quizItem.difficulty.toLowerCase()}`;
+            const difficultyIcon = quizItem.difficulty === 'Easy' ? 'signal_cellular_alt_1_bar' : quizItem.difficulty === 'Medium' ? 'signal_cellular_alt_2_bar' : 'signal_cellular_alt';
+            
+            // Function to escape HTML special characters for safe rendering
+            const escapeHTML = (str) => str.replace(/</g, "<").replace(/>/g, ">");
+
+            questionCard.innerHTML = `
+                <div class="difficulty-badge ${difficultyClass}">
+                    <i class="material-icons">${difficultyIcon}</i>
+                    <span>${quizItem.difficulty}</span>
+                </div>
+                <p class="text-lg font-semibold text-gray-800 mb-4">${quizItem.question}</p>
+                ${quizItem.code ? `<pre><code>${escapeHTML(quizItem.code)}</code></pre>` : ''}
+                <div id="q-options"></div>
+                <div id="q-feedback" class="mt-3 text-sm font-semibold"></div>
+            `;
+            quizBody.appendChild(questionCard);
+            const optionsContainer = questionCard.querySelector(`#q-options`);
+            quizItem.options.forEach(option => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'option';
+                optionButton.innerHTML = `<code>${escapeHTML(option)}</code>`;
+                optionButton.onclick = () => selectAnswer(option, optionButton);
+                optionsContainer.appendChild(optionButton);
+            });
+            startQuestionTimer();
+        }
+
+        function selectAnswer(selectedOption, selectedButton) {
+            clearInterval(timerInterval);
+            const quizItem = quizData[currentQuestionIndex];
+            const isCorrect = selectedOption === quizItem.answer;
+            const feedbackContainer = document.getElementById(`q-feedback`);
+            if (isCorrect) {
+                score++;
+                selectedButton.classList.add('correct');
+                feedbackContainer.innerHTML = `<span class="text-green-600 flex items-center"><i class="material-icons feedback-icon">check_circle</i>Correct!</span>`;
+            } else {
+                selectedButton.classList.add('incorrect');
+                feedbackContainer.innerHTML = `<span class="text-red-600 flex items-center"><i class="material-icons feedback-icon">cancel</i>Incorrect. The correct answer was highlighted.</span>`;
+            }
+            const buttons = document.getElementById(`q-options`).getElementsByTagName('button');
+            for (let button of buttons) {
+                // To compare correctly, we need to compare the unescaped text content
+                if (button.textContent === quizItem.answer) button.classList.add('correct');
+                button.disabled = true;
+            }
+            setTimeout(nextQuestion, 1500);
+        }
+
+        function handleTimeout() {
+            clearInterval(timerInterval);
+            document.getElementById(`q-feedback`).innerHTML = `<span class="text-yellow-600 flex items-center"><i class="material-icons feedback-icon">hourglass_empty</i>Time's up!</span>`;
+            const quizItem = quizData[currentQuestionIndex];
+            const buttons = document.getElementById(`q-options`).getElementsByTagName('button');
+            for (let button of buttons) {
+                if (button.textContent === quizItem.answer) button.classList.add('correct');
+                button.disabled = true;
+            }
+            setTimeout(nextQuestion, 1500);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            renderCurrentQuestion();
+        }
+
+        function updateProgressBar() {
+            const percentage = (currentQuestionIndex / totalQuestions) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizBody.innerHTML = '';
+            document.querySelector('.quiz-header').style.display = 'none';
+            const finalScore = score;
+            const percentage = (finalScore / totalQuestions) * 100;
+            scoreEl.textContent = `${finalScore} / ${totalQuestions} (${percentage.toFixed(1)}%)`;
+            if (percentage >= 85) {
+                feedbackEl.textContent = "Excellent! You have a strong grasp of JavaScript fundamentals.";
+                scoreEl.className = "text-5xl font-extrabold text-green-600 mb-6";
+            } else if (percentage >= 60) {
+                feedbackEl.textContent = "Good job! A little more review will make you a master.";
+                scoreEl.className = "text-5xl font-extrabold text-yellow-500 mb-6";
+            } else {
+                feedbackEl.textContent = "Keep practicing! Review the concepts and try again.";
+                scoreEl.className = "text-5xl font-extrabold text-red-600 mb-6";
+            }
+            resultsContainer.classList.remove('hidden');
+            updateFinalResultsInFirebase(finalScore);
+        }
+
+        startBtn.addEventListener('click', async () => {
+            startBtn.disabled = true;
+            startBtn.innerHTML = `
+                <span class="flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Starting...
+                </span>`;
+            try {
+                quizSessionId = await createQuizSessionInFirebase();
+                if (quizSessionId) {
+                    startScreen.classList.add('hidden');
+                    quizContainer.classList.remove('hidden');
+                    renderCurrentQuestion();
+                } else {
+                    alert("Could not start the quiz. Please check your connection and try again.");
+                    startBtn.disabled = false;
+                    startBtn.innerHTML = `<span class="flex items-center justify-center"><i class="material-icons mr-2">play_circle_filled</i>Start Exam</span>`;
+                }
+            } catch (error) {
+                console.error("Failed to initiate quiz:", error);
+                alert("An error occurred. Please try again.");
+                startBtn.disabled = false;
+                startBtn.innerHTML = `<span class="flex items-center justify-center"><i class="material-icons mr-2">play_circle_filled</i>Start Exam</span>`;
+            }
+        });
+    </script>
+</body>
+</html>
