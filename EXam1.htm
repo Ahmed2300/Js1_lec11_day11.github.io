@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS, Networks & Testing Exam - Interactive Quiz</title>
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* --- Enhanced CSS Styling --- */
+        :root {
+            --primary-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --heading-color: #003049;
+            --accent-color: #0077b6;
+            --correct-bg: #d4edda;
+            --correct-border: #c3e6cb;
+            --correct-text: #155724;
+            --incorrect-bg: #f8d7da;
+            --incorrect-border: #f5c6cb;
+            --incorrect-text: #721c24;
+            --explanation-bg: #e2e3e5;
+            --explanation-border: #adb5bd;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.07);
+            --border-radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            background-image: radial-gradient(circle at top left, #caf0f8 0%, var(--primary-bg) 40%);
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container, .start-container, #results-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* --- Enhanced Intro Screen Styles --- */
+        .start-container {
+            padding: 3rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .intro-icon-wrapper {
+            background-color: #eaf7ff;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 4px 10px rgba(0, 119, 182, 0.1);
+        }
+
+        .intro-icon {
+            font-size: 3.5rem;
+            color: var(--accent-color);
+        }
+
+        .intro-description {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .instructions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem 0;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .instruction-item .material-icons {
+            color: var(--accent-color);
+        }
+        /* --- End Enhanced Intro Screen Styles --- */
+
+
+        .quiz-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .quiz-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--heading-color);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .question-card {
+            padding: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--heading-color);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            font-size: 1rem;
+            background-color: #fff;
+            font-weight: 500;
+        }
+
+        .option:hover:not(:disabled) {
+            border-color: var(--accent-color);
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+        }
+
+        .option.correct {
+            background-color: var(--correct-bg) !important;
+            color: var(--correct-text) !important;
+            border-color: var(--correct-border) !important;
+            font-weight: 700;
+        }
+
+        .option.incorrect {
+            background-color: var(--incorrect-bg) !important;
+            color: var(--incorrect-text) !important;
+            border-color: var(--incorrect-border) !important;
+            font-weight: 700;
+        }
+
+        .timer {
+            font-weight: 600;
+            color: var(--heading-color);
+            display: flex;
+            align-items: center;
+            background-color: #e9ecef;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+
+        .timer .material-icons {
+            margin-right: 0.5rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 9999px;
+            height: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #0077b6, #00b4d8);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.4s ease-in-out;
+        }
+        
+        .explanation {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--explanation-border);
+            background-color: var(--explanation-bg);
+            border-radius: 0 8px 8px 0;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--heading-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .explanation p, .explanation ul {
+            margin: 0;
+            padding-left: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        #feedback-area {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 48px; /* Reserve space to prevent layout shift */
+        }
+
+        #feedback-text {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        #next-btn {
+            display: none; /* Hidden by default */
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #next-btn:hover {
+            background-color: #005f8d;
+            transform: translateY(-2px);
+        }
+
+        #start-btn, #restart-btn {
+            padding: 1rem 2rem;
+            border: none;
+            background: linear-gradient(90deg, #0077b6, #00b4d8);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+        }
+
+        #start-btn:hover, #restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
+        }
+
+        #results-container {
+            padding: 3rem;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="start-container">
+        <div class="intro-icon-wrapper">
+            <span class="material-icons intro-icon">science</span>
+        </div>
+        <h1 class="quiz-title">OS, Networks & Testing Fundamentals</h1>
+        <p class="intro-description">Test your knowledge with this interactive quiz. Let's see how well you know the core concepts!</p>
+        <div class="instructions-container">
+            <div class="instruction-item">
+                <i class="material-icons">list_alt</i>
+                <span><strong id="total-questions-start-label"></strong> Multiple Choice Questions</span>
+            </div>
+            <div class="instruction-item">
+                <i class="material-icons">timer</i>
+                <span><strong>45 seconds</strong> per question</span>
+            </div>
+            <div class="instruction-item">
+                <i class="material-icons">lightbulb</i>
+                <span>Instant feedback with explanations</span>
+            </div>
+        </div>
+        <button id="start-btn">
+            <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="material-icons">play_circle_filled</i>
+                Start Exam
+            </span>
+        </button>
+    </div>
+
+    <div id="quiz-container" class="container" style="display: none;">
+        <div class="quiz-header">
+            <div class="header-top">
+                <h1 class="quiz-title" style="font-size: 1.5rem;">OS & Testing Exam</h1>
+                <div id="timer" class="timer">
+                    <i class="material-icons">timer</i>
+                    <span>45</span>
+                </div>
+            </div>
+            <p class="text-gray-600 mt-2">Question <span id="question-counter">1</span> of <span id="total-questions-header"></span></p>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <div id="quiz-body"></div>
+
+    </div>
+    
+    <div id="results-container" style="display: none;">
+        <h2 class="quiz-title mb-4">Exam Completed!</h2>
+        <p class="text-xl text-gray-600 mb-2">Your final score is:</p>
+        <p id="score" class="text-5xl font-extrabold mb-6"></p>
+        <p id="feedback" class="text-lg text-gray-700 mb-8"></p>
+        <button id="restart-btn">
+             <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="material-icons">refresh</i>
+                Try Again
+            </span>
+        </button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "The Main Memory consists of RAM (Random Access Memory) and ROM (Read Only Memory).",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Main memory, also known as primary memory, is the computer's primary storage. It includes both RAM, which is volatile and used for active data and machine code, and ROM, which is non-volatile and holds firmware or software instructions that are rarely changed."
+            },
+            {
+                question: "All of the secondary storages used as Output devices only for permeant storage.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Secondary storage devices, like hard drives and SSDs, are used for both input and output operations. You can read data from them (input) and write data to them (output) for permanent storage. They are not solely output devices."
+            },
+            {
+                question: "Bootstrap is a framework stored in ROM contains some instructions called basic input output instructions (BIOS).",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "The bootstrap program, often part of the BIOS or UEFI firmware, is stored in ROM. It initializes the computer hardware and starts the process of loading the operating system when the computer is turned on."
+            },
+            {
+                question: "Windows server 2008 and Novell Netware are batching operating systems.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Windows Server 2008 and Novell NetWare are network operating systems, designed to support servers, and they handle multiple user requests interactively. Batch operating systems process jobs in groups without direct user interaction."
+            },
+            {
+                question: "The purpose of the operating system is to ensure that it abstracts the HW and facilitates the seamless execution of users' applications using the system.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A primary role of an operating system is to provide an abstraction layer. This hides the complex details of the hardware from the user and applications, making the computer easier to use and program."
+            },
+            {
+                question: "The application itself is responsible for accessing the memory variable storage and performing calculations based on values in memory.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "This is false. While an application's logic dictates calculations, the Operating System is responsible for managing memory. Applications run in a virtual address space and cannot access physical memory directly. The OS handles memory allocation and ensures that one process cannot access another's memory, providing protection and stability."
+            },
+            {
+                question: "Threads help in performing parallelism within the same process.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Threads are units of execution within a process. Multiple threads within the same process can run concurrently or in parallel (on multi-core systems), allowing a single process to perform multiple tasks at once and improving performance."
+            },
+            {
+                question: "Interrupt vector contains the addresses for all Interrupt Service Routines (ISR) for all I/O devices that connected to the computer system.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "An interrupt vector is a table in memory that stores the memory addresses of the Interrupt Service Routines. When a device generates an interrupt, the system uses this table to find and execute the correct routine to handle it."
+            },
+            {
+                question: "The process which running in user-mode services would be able to access the hardware directly.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "To protect the system, processes in user mode cannot access hardware directly. They must make system calls to the operating system (which runs in kernel mode) to perform hardware-related operations. This prevents user applications from interfering with system stability."
+            },
+            {
+                question: "A Virtual Machine has its own guest OS, which may be the same as or different from the underlying host OS.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Virtualization allows a host operating system to run one or more guest operating systems. For example, you can run a Linux guest OS on a Windows host OS, or even run a different version of Windows as a guest on a Windows host."
+            },
+            {
+                question: "Which of the following is an Output Device?",
+                options: ["Microphone", "Scanner", "Data Projectors", "All of the above"],
+                answer: "Data Projectors",
+                explanation: "Output devices present data from the computer to the user. Data Projectors, Speakers, and Printers are output devices. A microphone and scanner are input devices."
+            },
+            {
+                question: "The ________ is a program that controls the execution of other programs running on the system. It acts as a facilitator and intermediate layer between the different software components and the computer hardware.",
+                options: ["Compiler", "Operating System", "Application Software", "Hardware"],
+                answer: "Operating System",
+                explanation: "This is the fundamental definition of an operating system. It manages hardware and software resources and provides a stable, consistent environment for applications to run."
+            },
+            {
+                question: "Which is a main objective of an operating system?",
+                options: ["Efficiency and responsiveness", "To control data flow in the local network", "To compile source code", "To design hardware"],
+                answer: "Efficiency and responsiveness",
+                explanation: "The primary goals of an OS are to be efficient (perform well), convenient (easy to use), and able to evolve (abstract and extend). While an OS is involved in networking, controlling network data flow is not its primary objective compared to core functions like efficiency."
+            },
+            {
+                question: "Which of the following is a standard usage type categorization for operating systems?",
+                options: ["Standalone Operating Systems", "Time-Sharing Operating Systems", "Compiler Operating Systems", "Desktop Operating Systems"],
+                answer: "Time-Sharing Operating Systems",
+                explanation: "Operating systems can be categorized by how they are used. Batch, Time-Sharing, Network, and Real-Time are all standard classifications. 'Standalone' is a broader category, not a specific usage type in the same vein."
+            },
+            {
+                question: "Which statement describes an advantage of virtualization?",
+                options: ["You can run more physical machines than you have virtual hardware", "It is perfect for running new legacy systems", "You can't suspend a running virtual machine", "It allows you to run multiple virtual machines on a single physical machine"],
+                answer: "It allows you to run multiple virtual machines on a single physical machine",
+                explanation: "Virtualization allows for the consolidation of servers by running multiple virtual machines on one physical server. This is efficient and cost-effective. It is also excellent for running older (legacy) systems and you can suspend/resume VMs."
+            },
+            {
+                question: "Which of the following is a core responsibility of an operating system?",
+                options: ["Writing application source code", "Memory management", "Web browsing", "Database administration"],
+                answer: "Memory management",
+                explanation: "Core responsibilities of an OS include: Memory management, process scheduling, file systems, I/O and resource management, and providing security and protection."
+            },
+            {
+                question: "Which of the following is a type of memory addressing used by the operating system?",
+                options: ["MAC Address", "IP Address", "Physical Address", "Port Address"],
+                answer: "Physical Address",
+                explanation: "The OS manages memory using two main types of addresses: Logical Addresses (generated by the CPU) and Physical Addresses (the real location in memory). MAC and IP addresses are for networking."
+            },
+            {
+                question: "The way of management when two processes need to save in the shared memory at the same time is called...",
+                options: ["Deadlock", "Scheduling", "Synchronization", "Paging"],
+                answer: "Synchronization",
+                explanation: "Synchronization is the mechanism used to control access to a shared resource (like a section of memory) by multiple processes or threads. It ensures data consistency and avoids race conditions."
+            },
+            {
+                question: "When a set of processes become blocked because each process is holding a resource and waiting for another resource acquired by some other process. This is called ______",
+                options: ["Starvation", "Deadlock", "Race Condition", "Synchronization"],
+                answer: "Deadlock",
+                explanation: "This is the classic definition of a deadlock. It's a circular dependency where two or more processes are stuck in a waiting state, each holding a resource the other needs, and thus none can proceed."
+            },
+            {
+                question: "The OS needs to be able to periodically clear temporarily created files. This is typically done using a ________ on the system.",
+                options: ["Garbage Collector", "Disk Defragmenter", "Compiler", "Linker"],
+                answer: "Garbage Collector",
+                explanation: "Garbage collection is the process of identifying and freeing up resources (like memory or temporary files) that are no longer in use. While often associated with programming languages, the concept applies to OS-level resource management as well."
+            },
+            {
+                question: "Which command can be used to find your IP address on a MS Windows based computer?",
+                options: ["netstat", "ping", "ipconfig", "tracert"],
+                answer: "ipconfig",
+                explanation: "You can find your IP address in Windows in multiple ways, including navigating the Control Panel, or using the command-line tools `ipconfig` and `ipconfig /all`."
+            },
+            {
+                question: "We are using _______ protocol to read our mails when internet connection is NOT available all the time.",
+                options: ["POP3", "IMAP", "SMTP", "HTTP"],
+                answer: "POP3",
+                explanation: "POP3 (Post Office Protocol 3) downloads emails from the server to your local device, allowing you to read them offline. IMAP, in contrast, synchronizes with the server and generally requires an active internet connection."
+            },
+            {
+                question: "What is the name of the attack method that can be used to crack passwords by trying all possible combinations?",
+                options: ["Phishing", "Brute force attack", "DoS Attack", "Man-in-the-middle"],
+                answer: "Brute force attack",
+                explanation: "A brute-force attack is a trial-and-error method that involves systematically checking all possible passwords and passphrases until the correct one is found."
+            },
+            {
+                question: "To communicate with hosts on the same LAN, we must use a ______",
+                options: ["DNS", "Router", "Switch", "DHCP"],
+                answer: "Switch",
+                explanation: "A Switch is a networking device that connects devices on a Local Area Network (LAN). It uses MAC addresses to forward data packets to the correct destination device within the same network. A router is used to connect different networks together."
+            },
+            {
+                question: "You must have an IP address to connect to the internet, you can get your IP address automatically from:",
+                options: ["Router", "DHCP", "DNS", "Switch"],
+                answer: "DHCP",
+                explanation: "DHCP (Dynamic Host Configuration Protocol) is a network management protocol used to automatically assign IP addresses to devices on a network. When a device is set to 'obtain automatically,' it sends a request to a DHCP server."
+            },
+            {
+                question: "Which of the following is a benefit of Networking?",
+                options: ["File Sharing", "Easier access to Resources", "Easier Backups", "All of the Above"],
+                answer: "All of the Above",
+                explanation: "Computer networking enables all of the listed benefits: sharing files between computers, sharing resources like printers and scanners, and centralizing data storage for easier and more reliable backups."
+            },
+            {
+                question: "Which of the following is not a Networking Device?",
+                options: ["Switch", "Linux", "Routers", "Firewalls"],
+                answer: "Linux",
+                explanation: "Switches, Routers, and Firewalls are all physical hardware devices used in networking. Linux is a powerful operating system (software) which can be used to build a router or firewall, but it is not a networking device itself."
+            },
+            {
+                question: "A collection of computers and devices connected together via communication devices and transmission media is called a:",
+                options: ["Workgroup", "Server", "Mainframe", "Network"],
+                answer: "Network",
+                explanation: "This is the standard definition of a computer network. It connects various independent computers and devices so they can share information and resources."
+            },
+            {
+                question: "Which of the following devices is dedicated to connect several computers wirelessly?",
+                options: ["Hub", "Switch", "Access Point", "Router"],
+                answer: "Access Point",
+                explanation: "A Wireless Access Point (WAP) is the dedicated hardware device that allows Wi-Fi enabled devices to connect to a wired network. While many modern routers have a built-in access point, the specific device for this function is the access point."
+            },
+            {
+                question: "An intrusion detection system (IDS) is primarily designed to perform what function?",
+                options: ["prevents system failures", "Rate system performance", "Test a system for vulnerabilities", "Detect abnormal activity"],
+                answer: "Detect abnormal activity",
+                explanation: "The primary role of an Intrusion Detection System (IDS) is to monitor network or system activities for malicious actions or policy violations and to report them. It is a detection tool, not a prevention tool."
+            },
+            {
+                question: ".................... is ensuring that information is not revealed to unauthorized persons.",
+                options: ["Confidentiality", "Integrity", "Security", "Authorization"],
+                answer: "Confidentiality",
+                explanation: "This is the definition of Confidentiality, a core principle of information security (part of the CIA triad: Confidentiality, Integrity, Availability). It is focused on preventing the unauthorized disclosure of information."
+            },
+            {
+                question: "Which of The Following Malicious Program Replicates Automatically?",
+                options: ["Antivirus", "backdoor", "Worm", "Zombie"],
+                answer: "Worm",
+                explanation: "A computer Worm is a type of malware that replicates itself to spread to other computers, often using a network to do so. A virus attaches to files, while a worm is a standalone program."
+            },
+            {
+                question: "The modern 5-layer TCP/IP Protocol Suite model consists of how many layers?",
+                options: ["4 layers", "5 layers", "6 layers", "7 layers"],
+                answer: "5 layers",
+                explanation: "While the original TCP/IP model (RFC 1122) has 4 layers, a newer 5-layer model (Physical, Data Link, Network, Transport, Application) is commonly used in modern textbooks to better align with the 7-layer OSI model."
+            },
+            {
+                question: "In which class does the IP address 70.70.70.70 exist?",
+                options: ["Class A", "Class B", "Class C", "Class D"],
+                answer: "Class A",
+                explanation: "IP address classes are defined by the range of the first octet. Class A is 1-126, Class B is 128-191, Class C is 192-223. Since the first octet is 70, this IP address falls into the Class A range."
+            },
+            {
+                question: "If one site fails in a distributed system, then _________",
+                options: ["the remaining sites can continue operating", "all the sites will stop working", "directly connected sites will stop working", "none of the mentioned"],
+                answer: "the remaining sites can continue operating",
+                explanation: "A key advantage of a distributed system is fault tolerance. The system is designed so that the failure of one component (or site) does not cause the failure of the entire system. The remaining sites can continue to operate."
+            },
+            {
+                question: "Which testing phase tests individual software modules combined together as a group?",
+                options: ["Unit testing", "Integration testing", "System testing", "Acceptance testing"],
+                answer: "Integration testing",
+                explanation: "Integration testing is the phase in which individual software modules are combined and tested as a group. It follows unit testing and precedes system testing. The goal is to expose faults in the interaction between integrated units."
+            },
+            {
+                question: "The main focus of acceptance testing is:",
+                options: ["Finding faults in the system", "Ensuring that the system is ready for release", "Testing a particular component of the system", "Testing for a business perspective"],
+                answer: "Testing for a business perspective",
+                explanation: "Acceptance testing's primary purpose is to evaluate the system's compliance with the business requirements and assess whether it is acceptable for delivery. It's about ensuring the software meets the business needs of the customer."
+            },
+            {
+                question: "Which is NOT true about the black box tester?",
+                options: ["They should have a good understanding of the requirements", "They should be able to understand the source code", "They are not concerned with the internal behavior of the system", "They focus on the input and output behavior"],
+                answer: "They should be able to understand the source code",
+                explanation: "Black-box testing examines the functionality of an application without peering into its internal structures or workings. The tester does not need to know the programming language or understand the source code; that is the domain of white-box testing."
+            },
+            {
+                question: "Beta testing is:",
+                options: ["Performed by customers at their own site", "Performed by developers at the developer's site", "Performed by an independent test team", "Performed by a machine"],
+                answer: "Performed by customers at their own site",
+                explanation: "Beta testing is the final round of testing before releasing a product to a wide audience. The objective is to get feedback from real users in their real environment."
+            },
+            {
+                question: "Verification is:",
+                options: ["Checking that we are building the right system", "Checking that we are building the system right", "Performed by the customer", "A very difficult and complex process"],
+                answer: "Checking that we are building the system right",
+                explanation: "A simple way to remember is: Verification: Are we building the product RIGHT? (Does it meet the specifications?). Validation: Are we building the RIGHT product? (Does it meet the user's needs?)."
+            },
+            {
+                question: "The difference between re-testing and regression testing is:",
+                options: ["Re-testing is running a test again; regression testing looks for unexpected side effects", "Re-testing and regression testing are the same", "Regression testing is running a test again; re-testing looks for unexpected side effects", "Re-testing is done by developers and regression testing is done by testers"],
+                answer: "Re-testing is running a test again; regression testing looks for unexpected side effects",
+                explanation: "Re-testing is done after a defect has been fixed to ensure the original defect is gone. Regression Testing is done after a change to ensure that the change has not introduced new bugs in previously working code."
+            },
+            {
+                question: "Before launching a software, which testing is to be done in-house?",
+                options: ["Regression Testing", "Beta Testing", "Alpha Testing", "System Testing"],
+                answer: "Alpha Testing",
+                explanation: "Alpha testing is a type of acceptance testing performed by the in-house software test team before releasing the product to external users. Beta testing is done by real users in their own environment."
+            },
+            {
+                question: "Software testing activities should start:",
+                options: ["During the design stage", "During the execution stage", "After the code is complete", "As soon as possible in the development life cycle"],
+                answer: "As soon as possible in the development life cycle",
+                explanation: "Modern software development methodologies emphasize starting testing activities as early as possible ('shifting left'). Finding and fixing defects is much cheaper and easier in the early stages than after the code has been written."
+            },
+            {
+                question: "Faults found by users are due to:",
+                options: ["The user's fault", "Poor software and poor testing", "Insufficient time for testing", "Bad luck"],
+                answer: "Poor software and poor testing",
+                explanation: "If users are finding faults, it means two things have happened: 1) The faults exist in the software (poor quality software), and 2) The testing process did not find them before release (poor testing)."
+            },
+            {
+                question: "In which order should tests be run?",
+                options: ["The most important tests first", "The easiest tests first", "The tests that are most likely to fail", "In the order they are written in the test plan"],
+                answer: "The most important tests first",
+                explanation: "When time is limited, it is most effective to use a risk-based approach and run the tests that cover the most critical functionalities of the application first. This provides the most value and confidence in the limited time available."
+            },
+            {
+                question: "What does POP stand for?",
+                options: ["Pre Office Protocol", "Post Office Protocol", "Protocol of Post", "None"],
+                answer: "Post Office Protocol",
+                explanation: "POP (most commonly POP3) stands for Post Office Protocol. It's an application-layer protocol used by email clients to retrieve email from a mail server."
+            },
+            {
+                question: "What is the port number of POP?",
+                options: ["35", "43", "110", "25"],
+                answer: "110",
+                explanation: "The well-known port number for POP3 (Post Office Protocol version 3) is TCP port 110. Port 25 is for SMTP."
+            },
+            {
+                question: "What is the number of layers in the OSI model?",
+                options: ["2 layers", "4 layers", "7 layers", "9 layers"],
+                answer: "7 layers",
+                explanation: "The OSI (Open Systems Interconnection) model is a conceptual framework that has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, and Application."
+            },
+            {
+                question: "The full form of OSI is?",
+                options: ["Operating System interface", "Optical System interconnection", "Operating System Internet", "Open system interconnection"],
+                answer: "Open system interconnection",
+                explanation: "OSI stands for Open Systems Interconnection. It was developed by the International Organization for Standardization (ISO)."
+            },
+            {
+                question: "Identify the layer which provides service to the user.",
+                options: ["Session layer", "Application layer", "Presentation error", "Physical layer"],
+                answer: "Application layer",
+                explanation: "The Application Layer (Layer 7) is the highest layer of the OSI model. It directly interacts with software applications to provide network services to the end-user, such as web browsing (HTTP) and email (SMTP)."
+            },
+            {
+                question: "What is a HUB?",
+                options: ["Software", "Computing device", "Network device", "Calculating device"],
+                answer: "Network device",
+                explanation: "A Hub is a basic networking device that operates at the Physical Layer (Layer 1). It connects multiple devices in a network and broadcasts any incoming data to all other connected devices."
+            },
+            {
+                question: "What does a set of rules define?",
+                options: ["SMTP", "FTP", "IMAP", "Protocol"],
+                answer: "Protocol",
+                explanation: "A protocol is the standard definition for a set of rules that governs how data is formatted, transmitted, and received in a network. SMTP, FTP, and IMAP are all examples of specific protocols."
+            },
+            {
+                question: "Identify among the following which is mainly used to host web site.",
+                options: ["Mail server", "Webserver", "Database server", "None"],
+                answer: "Webserver",
+                explanation: "A Web Server is a computer system that stores, processes, and delivers website files (like HTML, CSS, images) to web browsers upon request using the HTTP protocol."
+            },
+            {
+                question: "Identify the full form of HTTP?",
+                options: ["HyperText Transfer Protocol", "HyperText Transfer Package", "Hyper Transfer Text Package", "Hyper Transfer Text Practice"],
+                answer: "HyperText Transfer Protocol",
+                explanation: "HTTP stands for HyperText Transfer Protocol. It is the foundation of data communication for the World Wide Web."
+            },
+            {
+                question: "Identify the protocol primarily used for browsing data.",
+                options: ["FTP", "TCP", "TFTP", "HTTP"],
+                answer: "HTTP",
+                explanation: "HTTP (HyperText Transfer Protocol) is the primary protocol used by web browsers to request and display web pages from web servers."
+            },
+            {
+                question: "Identify the total versions of IP.",
+                options: ["1", "2", "3", "4"],
+                answer: "2",
+                explanation: "There are two main versions of the Internet Protocol (IP) in use today: IPv4 (Version 4) and IPv6 (Version 6)."
+            },
+            {
+                question: "Identify the first network which was based on TCP/IP protocol.",
+                options: ["ARPANET", "HUB", "Ethernet Card", "Router"],
+                answer: "ARPANET",
+                explanation: "ARPANET (Advanced Research Projects Agency Network) was the precursor to the modern internet and was the first network to implement the TCP/IP protocol suite."
+            },
+            {
+                question: "Which of the following layer isn't present in the TCP/IP model but is included in the OSI model?",
+                options: ["Network layer", "Session layer", "Application layer", "Transport layer"],
+                answer: "Session layer",
+                explanation: "The TCP/IP model combines the functions of the OSI's top three layers (Application, Presentation, Session) into a single Application layer. Therefore, the Session and Presentation layers are not explicitly present in the TCP/IP model."
+            },
+
+
+            {
+                question: "Windows server 2008 and Novell Netware are batching operating systems.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Windows Server 2008 and Novell NetWare are Network Operating Systems (NOS), designed for managing network resources and serving multiple users interactively, not for processing jobs in batches without user interaction."
+            },
+            {
+                question: "The application itself is the responsible for accessing the memory variable storage and perform the calculations based on values in memory.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "While an application's logic dictates calculations, it cannot access memory directly. It must make requests to the Operating System, which manages memory allocation and access. The OS provides a layer of abstraction between the application and the physical memory."
+            },
+            {
+                question: "Which of the following is an Output Device?",
+                options: ["Data Projectors", "Microphone", "Scanner (2D and 3D)", "All of the above"],
+                answer: "Data Projectors",
+                explanation: "Output devices present data from a computer to a user. Projectors, Speakers, and Printers are all output devices. Microphones and Scanners are input devices."
+            },
+            {
+                question: "The ................. is a program that controls the execution of other programs running on the system. It acts as a facilitator and intermediate layer between the different software components and the computer hardware.",
+                options: ["Bootstrap", "Operating System", "Database Management System", "Embedded System"],
+                answer: "Operating System",
+                explanation: "This is the fundamental definition of an Operating System (OS). It manages all hardware and software, acting as an intermediary to provide a stable environment for applications."
+            },
+            {
+                question: "Which of the following is a primary type of operating system based on its usage?",
+                options: ["Batch Operating Systems", "Firewall Operating Systems", "Gaming Operating Systems", "Standalone Operating Systems"],
+                answer: "Batch Operating Systems",
+                explanation: "Batch, Time-Sharing, Distributed, Network, and Real-Time are all recognized categorizations for operating systems based on their core usage and architecture."
+            },
+            {
+                question: "When a set of processes become blocked because each process is holding a resource and waiting for another resource acquired by some other process. This is called ......",
+                options: ["Synchronization.", "Deadlock.", "Acceleration.", "Process Status."],
+                answer: "Deadlock.",
+                explanation: "This is the classic definition of a Deadlock. It's a state where two or more processes are stuck, each waiting for the other to release a resource, creating a circular dependency that prevents any of them from proceeding."
+            },
+            {
+                question: "The OS needs to be able to periodically clear temporarily created files that may no longer be required for the functioning of the system. This is typically done using a ...................... on the system.",
+                options: ["Garbage Collector.", "Anti-Virus.", "Data Collector.", "None of the above."],
+                answer: "Garbage Collector.",
+                explanation: "Garbage collection is the process of identifying and reclaiming resources (like memory or disk space from temp files) that are no longer in use. Many operating systems and programming environments have built-in garbage collection mechanisms."
+            },
+            {
+                question: "Which of the following can be used to find your IP address on a MS Windows based computer?",
+                options: ["Control Panel", "ipconfig Command", "ipconfig /all Command", "All of the above"],
+                answer: "All of the above",
+                explanation: "All three methods are valid ways to find an IP address in Windows. Both the graphical user interface (Control Panel) and the command-line tools (ipconfig, ipconfig /all) will display this information."
+            },
+            {
+                question: "We are using ............ protocol to read our mails when internet connection is NOT available all the time.",
+                options: ["POP3", "IMAP4", "UDP", "FTP"],
+                answer: "POP3",
+                explanation: "POP3 (Post Office Protocol 3) is designed to download emails from a server to a local device and then (usually) delete them from the server. This allows for offline reading. IMAP, in contrast, synchronizes folders with the server and requires a more persistent connection."
+            },
+            {
+                question: "Which of the following devices is dedicated to connect several computers wirelessly?",
+                options: ["Hub", "Switch", "Access Point", "Router"],
+                answer: "Access Point",
+                explanation: "A Wireless Access Point (WAP) is the hardware device specifically designed to create a wireless local area network (WLAN). It allows Wi-Fi devices to connect to a wired network. While a router often includes an access point, the 'dedicated' device for this function is the AP."
+            },
+            {
+                question: ".................... is ensuring that information is not revealed to unauthorized persons.",
+                options: ["Confidentiality", "Integrity", "Security", "Authorization"],
+                answer: "Confidentiality",
+                explanation: "This is the definition of Confidentiality, a key pillar of information security (the 'C' in the CIA Triad: Confidentiality, Integrity, Availability). It's about protecting data from unauthorized access or disclosure."
+            },
+            {
+                question: "In which class the IP address 70.70.70.70 exists?",
+                options: ["Class A", "Class B", "Class C", "Class D"],
+                answer: "Class A",
+                explanation: "IP address classes are determined by the first octet. The range for Class A is 1-126. Since the first number is 70, it falls within the Class A range."
+            },
+            {
+                question: "The Main Memory consists of RAM (Random Access Memory) and ROM (Read Only Memory).",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Main memory, also known as primary memory, is the computer's primary storage. It includes both RAM, which is volatile and used for active data and machine code, and ROM, which is non-volatile and holds firmware or software instructions that are rarely changed."
+            },
+            {
+                question: "All of the secondary storages used as Output devices only for permeant storage.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Secondary storage devices, like hard drives and SSDs, are used for both input and output operations. You can read data from them (input) and write data to them (output) for permanent storage. They are not solely output devices."
+            },
+            {
+                question: "Bootstrap is a framework stored in ROM contains some instructions called basic input output instructions (BIOS).",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "The bootstrap program, often part of the BIOS or UEFI firmware, is stored in ROM. It initializes the computer hardware and starts the process of loading the operating system when the computer is turned on."
+            },
+            {
+                question: "Windows server 2008 and Novell Netware are batching operating systems.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Windows Server 2008 and Novell NetWare are network operating systems, designed to support servers, and they handle multiple user requests interactively. Batch operating systems process jobs in groups without direct user interaction."
+            },
+            {
+                question: "The purpose of the operating system is to ensure that it abstracts the HW and facilitates the seamless execution of users' applications using the system.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A primary role of an operating system is to provide an abstraction layer. This hides the complex details of the hardware from the user and applications, making the computer easier to use and program."
+            },
+            {
+                question: "The application itself is responsible for accessing the memory variable storage and performing calculations based on values in memory.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "This is false. While an application's logic dictates calculations, the Operating System is responsible for managing memory. Applications run in a virtual address space and cannot access physical memory directly. The OS handles memory allocation and ensures that one process cannot access another's memory, providing protection and stability."
+            },
+            {
+                question: "Threads help in performing parallelism within the same process.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Threads are units of execution within a process. Multiple threads within the same process can run concurrently or in parallel (on multi-core systems), allowing a single process to perform multiple tasks at once and improving performance."
+            },
+            {
+                question: "Interrupt vector contains the addresses for all Interrupt Service Routines (ISR) for all I/O devices that connected to the computer system.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "An interrupt vector is a table in memory that stores the memory addresses of the Interrupt Service Routines. When a device generates an interrupt, the system uses this table to find and execute the correct routine to handle it."
+            },
+            {
+                question: "The process which running in user-mode services would be able to access the hardware directly.",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "To protect the system, processes in user mode cannot access hardware directly. They must make system calls to the operating system (which runs in kernel mode) to perform hardware-related operations. This prevents user applications from interfering with system stability."
+            },
+            {
+                question: "A Virtual Machine has its own guest OS, which may be the same as or different from the underlying host OS.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Virtualization allows a host operating system to run one or more guest operating systems. For example, you can run a Linux guest OS on a Windows host OS, or even run a different version of Windows as a guest on a Windows host."
+            },
+            {
+                question: "Which of the following is an Output Device?",
+                options: ["Microphone", "Scanner", "Data Projectors", "All of the above"],
+                answer: "Data Projectors",
+                explanation: "Output devices present data from the computer to the user. Data Projectors, Speakers, and Printers are output devices. A microphone and scanner are input devices."
+            },
+            {
+                question: "The ________ is a program that controls the execution of other programs running on the system. It acts as a facilitator and intermediate layer between the different software components and the computer hardware.",
+                options: ["Compiler", "Operating System", "Application Software", "Hardware"],
+                answer: "Operating System",
+                explanation: "This is the fundamental definition of an operating system. It manages hardware and software resources and provides a stable, consistent environment for applications to run."
+            },
+            {
+                question: "Which is a main objective of an operating system?",
+                options: ["Efficiency and responsiveness", "To control data flow in the local network", "To compile source code", "To design hardware"],
+                answer: "Efficiency and responsiveness",
+                explanation: "The primary goals of an OS are to be efficient (perform well), convenient (easy to use), and able to evolve (abstract and extend). While an OS is involved in networking, controlling network data flow is not its primary objective compared to core functions like efficiency."
+            },
+            {
+                question: "Which of the following is a standard usage type categorization for operating systems?",
+                options: ["Standalone Operating Systems", "Time-Sharing Operating Systems", "Compiler Operating Systems", "Desktop Operating Systems"],
+                answer: "Time-Sharing Operating Systems",
+                explanation: "Operating systems can be categorized by how they are used. Batch, Time-Sharing, Network, and Real-Time are all standard classifications. 'Standalone' is a broader category, not a specific usage type in the same vein."
+            },
+            {
+                question: "Which statement describes an advantage of virtualization?",
+                options: ["You can run more physical machines than you have virtual hardware", "It is perfect for running new legacy systems", "You can't suspend a running virtual machine", "It allows you to run multiple virtual machines on a single physical machine"],
+                answer: "It allows you to run multiple virtual machines on a single physical machine",
+                explanation: "Virtualization allows for the consolidation of servers by running multiple virtual machines on one physical server. This is efficient and cost-effective. It is also excellent for running older (legacy) systems and you can suspend/resume VMs."
+            },
+            {
+                question: "Which of the following is a core responsibility of an operating system?",
+                options: ["Writing application source code", "Memory management", "Web browsing", "Database administration"],
+                answer: "Memory management",
+                explanation: "Core responsibilities of an OS include: Memory management, process scheduling, file systems, I/O and resource management, and providing security and protection."
+            },
+            {
+                question: "Which of the following is a type of memory addressing used by the operating system?",
+                options: ["MAC Address", "IP Address", "Physical Address", "Port Address"],
+                answer: "Physical Address",
+                explanation: "The OS manages memory using two main types of addresses: Logical Addresses (generated by the CPU) and Physical Addresses (the real location in memory). MAC and IP addresses are for networking."
+            },
+            {
+                question: "The way of management when two processes need to save in the shared memory at the same time is called...",
+                options: ["Deadlock", "Scheduling", "Synchronization", "Paging"],
+                answer: "Synchronization",
+                explanation: "Synchronization is the mechanism used to control access to a shared resource (like a section of memory) by multiple processes or threads. It ensures data consistency and avoids race conditions."
+            },
+            {
+                question: "When a set of processes become blocked because each process is holding a resource and waiting for another resource acquired by some other process. This is called ______",
+                options: ["Starvation", "Deadlock", "Race Condition", "Synchronization"],
+                answer: "Deadlock",
+                explanation: "This is the classic definition of a deadlock. It's a circular dependency where two or more processes are stuck in a waiting state, each holding a resource the other needs, and thus none can proceed."
+            },
+            {
+                question: "The OS needs to be able to periodically clear temporarily created files. This is typically done using a ________ on the system.",
+                options: ["Garbage Collector", "Disk Defragmenter", "Compiler", "Linker"],
+                answer: "Garbage Collector",
+                explanation: "Garbage collection is the process of identifying and freeing up resources (like memory or temporary files) that are no longer in use. While often associated with programming languages, the concept applies to OS-level resource management as well."
+            },
+            {
+                question: "Which command can be used to find your IP address on a MS Windows based computer?",
+                options: ["netstat", "ping", "ipconfig", "tracert"],
+                answer: "ipconfig",
+                explanation: "You can find your IP address in Windows in multiple ways, including navigating the Control Panel, or using the command-line tools `ipconfig` and `ipconfig /all`."
+            },
+            {
+                question: "We are using _______ protocol to read our mails when internet connection is NOT available all the time.",
+                options: ["POP3", "IMAP", "SMTP", "HTTP"],
+                answer: "POP3",
+                explanation: "POP3 (Post Office Protocol 3) downloads emails from the server to your local device, allowing you to read them offline. IMAP, in contrast, synchronizes with the server and generally requires an active internet connection."
+            },
+            {
+                question: "What is the name of the attack method that can be used to crack passwords by trying all possible combinations?",
+                options: ["Phishing", "Brute force attack", "DoS Attack", "Man-in-the-middle"],
+                answer: "Brute force attack",
+                explanation: "A brute-force attack is a trial-and-error method that involves systematically checking all possible passwords and passphrases until the correct one is found."
+            },
+            {
+                question: "To communicate with hosts on the same LAN, we must use a ______",
+                options: ["DNS", "Router", "Switch", "DHCP"],
+                answer: "Switch",
+                explanation: "A Switch is a networking device that connects devices on a Local Area Network (LAN). It uses MAC addresses to forward data packets to the correct destination device within the same network. A router is used to connect different networks together."
+            },
+            {
+                question: "You must have an IP address to connect to the internet, you can get your IP address automatically from:",
+                options: ["Router", "DHCP", "DNS", "Switch"],
+                answer: "DHCP",
+                explanation: "DHCP (Dynamic Host Configuration Protocol) is a network management protocol used to automatically assign IP addresses to devices on a network. When a device is set to 'obtain automatically,' it sends a request to a DHCP server."
+            },
+            {
+                question: "Which of the following is a benefit of Networking?",
+                options: ["File Sharing", "Easier access to Resources", "Easier Backups", "All of the Above"],
+                answer: "All of the Above",
+                explanation: "Computer networking enables all of the listed benefits: sharing files between computers, sharing resources like printers and scanners, and centralizing data storage for easier and more reliable backups."
+            },
+            {
+                question: "Which of the following is not a Networking Device?",
+                options: ["Switch", "Linux", "Routers", "Firewalls"],
+                answer: "Linux",
+                explanation: "Switches, Routers, and Firewalls are all physical hardware devices used in networking. Linux is a powerful operating system (software) which can be used to build a router or firewall, but it is not a networking device itself."
+            },
+            {
+                question: "A collection of computers and devices connected together via communication devices and transmission media is called a:",
+                options: ["Workgroup", "Server", "Mainframe", "Network"],
+                answer: "Network",
+                explanation: "This is the standard definition of a computer network. It connects various independent computers and devices so they can share information and resources."
+            },
+            {
+                question: "Which of the following devices is dedicated to connect several computers wirelessly?",
+                options: ["Hub", "Switch", "Access Point", "Router"],
+                answer: "Access Point",
+                explanation: "A Wireless Access Point (WAP) is the dedicated hardware device that allows Wi-Fi enabled devices to connect to a wired network. While many modern routers have a built-in access point, the specific device for this function is the access point."
+            },
+            {
+                question: "An intrusion detection system (IDS) is primarily designed to perform what function?",
+                options: ["prevents system failures", "Rate system performance", "Test a system for vulnerabilities", "Detect abnormal activity"],
+                answer: "Detect abnormal activity",
+                explanation: "The primary role of an Intrusion Detection System (IDS) is to monitor network or system activities for malicious actions or policy violations and to report them. It is a detection tool, not a prevention tool."
+            },
+            {
+                question: ".................... is ensuring that information is not revealed to unauthorized persons.",
+                options: ["Confidentiality", "Integrity", "Security", "Authorization"],
+                answer: "Confidentiality",
+                explanation: "This is the definition of Confidentiality, a core principle of information security (part of the CIA triad: Confidentiality, Integrity, Availability). It is focused on preventing the unauthorized disclosure of information."
+            },
+            {
+                question: "Which of The Following Malicious Program Replicates Automatically?",
+                options: ["Antivirus", "backdoor", "Worm", "Zombie"],
+                answer: "Worm",
+                explanation: "A computer Worm is a type of malware that replicates itself to spread to other computers, often using a network to do so. A virus attaches to files, while a worm is a standalone program."
+            },
+            {
+                question: "The modern 5-layer TCP/IP Protocol Suite model consists of how many layers?",
+                options: ["4 layers", "5 layers", "6 layers", "7 layers"],
+                answer: "5 layers",
+                explanation: "While the original TCP/IP model (RFC 1122) has 4 layers, a newer 5-layer model (Physical, Data Link, Network, Transport, Application) is commonly used in modern textbooks to better align with the 7-layer OSI model."
+            },
+            {
+                question: "In which class does the IP address 70.70.70.70 exist?",
+                options: ["Class A", "Class B", "Class C", "Class D"],
+                answer: "Class A",
+                explanation: "IP address classes are defined by the range of the first octet. Class A is 1-126, Class B is 128-191, Class C is 192-223. Since the first octet is 70, this IP address falls into the Class A range."
+            },
+            {
+                question: "If one site fails in a distributed system, then _________",
+                options: ["the remaining sites can continue operating", "all the sites will stop working", "directly connected sites will stop working", "none of the mentioned"],
+                answer: "the remaining sites can continue operating",
+                explanation: "A key advantage of a distributed system is fault tolerance. The system is designed so that the failure of one component (or site) does not cause the failure of the entire system. The remaining sites can continue to operate."
+            },
+            {
+                question: "Which testing phase tests individual software modules combined together as a group?",
+                options: ["Unit testing", "Integration testing", "System testing", "Acceptance testing"],
+                answer: "Integration testing",
+                explanation: "Integration testing is the phase in which individual software modules are combined and tested as a group. It follows unit testing and precedes system testing. The goal is to expose faults in the interaction between integrated units."
+            },
+            {
+                question: "The main focus of acceptance testing is:",
+                options: ["Finding faults in the system", "Ensuring that the system is ready for release", "Testing a particular component of the system", "Testing for a business perspective"],
+                answer: "Testing for a business perspective",
+                explanation: "Acceptance testing's primary purpose is to evaluate the system's compliance with the business requirements and assess whether it is acceptable for delivery. It's about ensuring the software meets the business needs of the customer."
+            },
+            {
+                question: "Which is NOT true about the black box tester?",
+                options: ["They should have a good understanding of the requirements", "They should be able to understand the source code", "They are not concerned with the internal behavior of the system", "They focus on the input and output behavior"],
+                answer: "They should be able to understand the source code",
+                explanation: "Black-box testing examines the functionality of an application without peering into its internal structures or workings. The tester does not need to know the programming language or understand the source code; that is the domain of white-box testing."
+            },
+            {
+                question: "Beta testing is:",
+                options: ["Performed by customers at their own site", "Performed by developers at the developer's site", "Performed by an independent test team", "Performed by a machine"],
+                answer: "Performed by customers at their own site",
+                explanation: "Beta testing is the final round of testing before releasing a product to a wide audience. The objective is to get feedback from real users in their real environment."
+            },
+            {
+                question: "Verification is:",
+                options: ["Checking that we are building the right system", "Checking that we are building the system right", "Performed by the customer", "A very difficult and complex process"],
+                answer: "Checking that we are building the system right",
+                explanation: "A simple way to remember is: Verification: Are we building the product RIGHT? (Does it meet the specifications?). Validation: Are we building the RIGHT product? (Does it meet the user's needs?)."
+            },
+            {
+                question: "The difference between re-testing and regression testing is:",
+                options: ["Re-testing is running a test again; regression testing looks for unexpected side effects", "Re-testing and regression testing are the same", "Regression testing is running a test again; re-testing looks for unexpected side effects", "Re-testing is done by developers and regression testing is done by testers"],
+                answer: "Re-testing is running a test again; regression testing looks for unexpected side effects",
+                explanation: "Re-testing is done after a defect has been fixed to ensure the original defect is gone. Regression Testing is done after a change to ensure that the change has not introduced new bugs in previously working code."
+            },
+            {
+                question: "Before launching a software, which testing is to be done in-house?",
+                options: ["Regression Testing", "Beta Testing", "Alpha Testing", "System Testing"],
+                answer: "Alpha Testing",
+                explanation: "Alpha testing is a type of acceptance testing performed by the in-house software test team before releasing the product to external users. Beta testing is done by real users in their own environment."
+            },
+            {
+                question: "Software testing activities should start:",
+                options: ["During the design stage", "During the execution stage", "After the code is complete", "As soon as possible in the development life cycle"],
+                answer: "As soon as possible in the development life cycle",
+                explanation: "Modern software development methodologies emphasize starting testing activities as early as possible ('shifting left'). Finding and fixing defects is much cheaper and easier in the early stages than after the code has been written."
+            },
+            {
+                question: "Faults found by users are due to:",
+                options: ["The user's fault", "Poor software and poor testing", "Insufficient time for testing", "Bad luck"],
+                answer: "Poor software and poor testing",
+                explanation: "If users are finding faults, it means two things have happened: 1) The faults exist in the software (poor quality software), and 2) The testing process did not find them before release (poor testing)."
+            },
+            {
+                question: "In which order should tests be run?",
+                options: ["The most important tests first", "The easiest tests first", "The tests that are most likely to fail", "In the order they are written in the test plan"],
+                answer: "The most important tests first",
+                explanation: "When time is limited, it is most effective to use a risk-based approach and run the tests that cover the most critical functionalities of the application first. This provides the most value and confidence in the limited time available."
+            }
+        ];
+
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const quizBody = document.getElementById('quiz-body');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreEl = document.getElementById('score');
+        const feedbackEl = document.getElementById('feedback');
+        const timerEl = document.querySelector('#timer span');
+        const questionCounterEl = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progressBar');
+        const totalQuestionsStartEl = document.getElementById('total-questions-start-label');
+        const totalQuestionsHeaderEl = document.getElementById('total-questions-header');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        // --- State Variables ---
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let questionTimerInterval;
+        let explanationTimerInterval;
+        
+        const totalQuestions = quizData.length;
+        
+        // --- Initialization ---
+        function init() {
+            totalQuestionsStartEl.textContent = totalQuestions;
+            totalQuestionsHeaderEl.textContent = totalQuestions;
+            startBtn.addEventListener('click', startQuiz);
+            restartBtn.addEventListener('click', restartQuiz);
+        }
+
+        function startQuiz() {
+            score = 0;
+            currentQuestionIndex = 0;
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            renderCurrentQuestion();
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+        
+        // --- Core Quiz Logic ---
+        function startQuestionTimer() {
+            clearInterval(questionTimerInterval);
+            let timeLeft = 45; 
+            timerEl.textContent = timeLeft;
+            questionTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimerInterval);
+                    handleAnswerSelection(null, null); // Time's up
+                }
+            }, 1000);
+        }
+        
+        function renderCurrentQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                endQuiz();
+                return;
+            }
+            updateProgressBar();
+            questionCounterEl.textContent = currentQuestionIndex + 1;
+            const quizItem = quizData[currentQuestionIndex];
+            quizBody.innerHTML = ''; 
+            
+            const questionCard = document.createElement('div');
+            questionCard.className = 'question-card';
+            
+            questionCard.innerHTML = `
+                <p class="question-text">${quizItem.question}</p>
+                <div id="q-options"></div>
+                <div id="feedback-area">
+                    <span id="feedback-text"></span>
+                    <button id="next-btn">
+                        Next <i class="material-icons">arrow_forward</i>
+                    </button>
+                </div>
+                <div class="explanation" id="q-explanation">
+                    <div class="explanation-header">
+                        <span class="material-icons">lightbulb</span>
+                        <strong>Explanation</strong>
+                    </div>
+                    <p>${quizItem.explanation}</p>
+                </div>
+            `;
+            quizBody.appendChild(questionCard);
+            
+            const optionsContainer = questionCard.querySelector('#q-options');
+            quizItem.options.forEach(option => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'option';
+                optionButton.textContent = option;
+                optionButton.onclick = () => handleAnswerSelection(option, optionButton);
+                optionsContainer.appendChild(optionButton);
+            });
+            
+            startQuestionTimer();
+        }
+
+        function handleAnswerSelection(selectedOption, selectedButton) {
+            clearInterval(questionTimerInterval);
+
+            const quizItem = quizData[currentQuestionIndex];
+            const isCorrect = selectedOption === quizItem.answer;
+            
+            const optionButtons = document.querySelectorAll('#q-options .option');
+            optionButtons.forEach(button => {
+                button.disabled = true;
+                if (button.textContent === quizItem.answer) {
+                    button.classList.add('correct');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+            } else if(selectedButton) {
+                selectedButton.classList.add('incorrect');
+            }
+
+            const explanationDiv = document.getElementById('q-explanation');
+            explanationDiv.style.display = 'block';
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.style.display = 'flex';
+            nextBtn.onclick = () => {
+                clearInterval(explanationTimerInterval);
+                nextQuestion();
+            };
+
+            let explanationTimeLeft = 10;
+            const feedbackText = document.getElementById('feedback-text');
+            feedbackText.textContent = `Next question in ${explanationTimeLeft}s...`;
+            
+            explanationTimerInterval = setInterval(() => {
+                explanationTimeLeft--;
+                feedbackText.textContent = `Next question in ${explanationTimeLeft}s...`;
+                if (explanationTimeLeft < 0) { // Use < 0 to ensure it fires once
+                    clearInterval(explanationTimerInterval);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            renderCurrentQuestion();
+        }
+
+        function updateProgressBar() {
+            const percentage = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function endQuiz() {
+            quizContainer.style.display = 'none';
+            const finalScore = score;
+            const percentage = (finalScore / totalQuestions) * 100;
+            
+            scoreEl.textContent = `${finalScore} / ${totalQuestions} (${percentage.toFixed(1)}%)`;
+            
+            let feedbackText = "Keep practicing! Review the concepts and try again.";
+            let scoreColor = 'var(--incorrect-text)';
+            
+            if (percentage >= 85) {
+                feedbackText = "Excellent! You have a strong grasp of these concepts. 🏆";
+                scoreColor = 'var(--correct-text)';
+            } else if (percentage >= 60) {
+                feedbackText = "Good job! A little more review will make you a master. 👍";
+                scoreColor = '#d97706'; // A warm yellow
+            }
+            
+            feedbackEl.textContent = feedbackText;
+            scoreEl.style.color = scoreColor;
+            
+            resultsContainer.style.display = 'block';
+        }
+
+        // --- Start the application ---
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
