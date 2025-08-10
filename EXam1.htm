@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OS, Networks & Testing Exam - Interactive Quiz</title>
+    <title>OS, Networks, DB & Testing Exam - Interactive Quiz</title>
     <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -327,7 +327,7 @@
         <div class="intro-icon-wrapper">
             <span class="material-icons intro-icon">science</span>
         </div>
-        <h1 class="quiz-title">OS, Networks & Testing Fundamentals</h1>
+        <h1 class="quiz-title">OS, Networks, DB & Testing Fundamentals</h1>
         <p class="intro-description">Test your knowledge with this interactive quiz. Let's see how well you know the core concepts!</p>
         <div class="instructions-container">
             <div class="instruction-item">
@@ -732,6 +732,498 @@
                 options: ["Network layer", "Session layer", "Application layer", "Transport layer"],
                 answer: "Session layer",
                 explanation: "The TCP/IP model combines the functions of the OSI's top three layers (Application, Presentation, Session) into a single Application layer. Therefore, the Session and Presentation layers are not explicitly present in the TCP/IP model."
+            },
+            {
+                question: "Choose among the following, which is the most common internet protocol.",
+                options: ["PPP", "FTP", "TCP/IP", "SMTP"],
+                answer: "SMTP",
+                explanation: "While TCP/IP is the foundational suite, SMTP (Simple Mail Transfer Protocol) is an extremely common application-layer protocol for email. The question is ambiguous, but among the choices, SMTP is a valid answer for a 'common protocol'."
+            },
+            {
+                question: "What does TCP/IP stand for?",
+                options: ["Telephone control protocol / Internet Protocol", "Transmission control protocol/Internet protocol", "Transmission control protocol/International protocol", "None"],
+                answer: "Transmission control protocol/Internet protocol",
+                explanation: "TCP/IP stands for Transmission Control Protocol/Internet Protocol. It is the foundational suite of communication protocols used to interconnect network devices on the internet."
+            },
+            {
+                question: "What is the collection of the hyperlinked document on the internet known as?",
+                options: ["HTML", "Email", "WWW", "Internet"],
+                answer: "WWW",
+                explanation: "The WWW (World Wide Web) is the collection of all interconnected documents and other web resources, which are linked by hyperlinks and URLs."
+            },
+            {
+                question: "What is the location of a resource on the internet given by?",
+                options: ["Email", "IP", "Protocol", "URL"],
+                answer: "URL",
+                explanation: "A URL (Uniform Resource Locator) is the unique address used to identify and locate a resource on the internet, such as a webpage, image, or file."
+            },
+            {
+                question: "Identify the incorrect network topology,",
+                options: ["Bus", "Star", "P2P", "Ring"],
+                answer: "P2P",
+                explanation: "Bus, Star, and Ring are standard physical network topologies describing how nodes are arranged. P2P (Peer-to-Peer) describes a network architecture or model, not a physical layout."
+            },
+            {
+                question: "Choose the port number of FTP.",
+                options: ["23", "21", "110", "143"],
+                answer: "21",
+                explanation: "FTP (File Transfer Protocol) uses two main ports: port 21 for the control connection and port 20 for the data connection."
+            },
+            {
+                question: "What is the length of the IPv4 address?",
+                options: ["8 bits", "16 bits", "32 bits", "128 bits"],
+                answer: "32 bits",
+                explanation: "An IPv4 address is a 32-bit number, which allows for approximately 4.3 billion unique addresses."
+            },
+            {
+                question: "What is the length of the IPv6 address?",
+                options: ["8 bits", "16 bits", "32 bits", "128 bits"],
+                answer: "128 bits",
+                explanation: "An IPv6 address is a 128-bit number, providing an astronomically large number of unique addresses to accommodate the growing number of internet-connected devices."
+            },
+            {
+                question: "What is the term used when the main server sends mail to another mail server?",
+                options: ["FTP", "SMTP", "TCP/IP", "MIME"],
+                answer: "SMTP",
+                explanation: "SMTP (Simple Mail Transfer Protocol) is used to send email from a client to a server and also for transferring email between servers."
+            },
+            {
+                question: "What is the port number of SMTP?",
+                options: ["110", "143", "25", "99"],
+                answer: "25",
+                explanation: "The well-known port number for SMTP (Simple Mail Transfer Protocol) is TCP port 25."
+            },
+            {
+                question: "What does MIME stand for?",
+                options: ["Multipurpose Internet Mail Extra", "Multi Internet Mail End", "Multipurpose Internet Mail Email", "Multipurpose Internet Mail Extension"],
+                answer: "Multipurpose Internet Mail Extension",
+                explanation: "MIME stands for Multipurpose Internet Mail Extensions. It extends the format of email to support text in character sets other than ASCII, as well as attachments of audio, video, images, and application programs."
+            },
+            {
+                question: "If I have one to one relationship with partial participation in each side this means I have at least 3 tables",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "A one-to-one relationship, even with partial participation, can typically be mapped using only two tables by placing the foreign key in the table with partial participation. Three tables would be a possible but not minimal solution."
+            },
+            {
+                question: "In the same table u can have many foreign keys and only one primary key.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A table can have only one primary key (which can be simple or composite), but it can have multiple foreign keys, each referencing the primary key of a different (or the same) table."
+            },
+            {
+                question: "If u have a multivalued attribute in the ERD this means u will have a table with composite key after mapping.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "When mapping a multivalued attribute, a new table is created. The primary key of this new table is a composite key, consisting of the primary key of the original entity and the multivalued attribute itself."
+            },
+            {
+                question: "If the primary key is composite this means its foreign key will be composite also",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "When a foreign key references a composite primary key, the foreign key must also be composite, containing all the columns that make up the referenced primary key."
+            },
+            {
+                question: "The tables became in the 3rd normal form after removing partial Functional Dependency",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Removing partial functional dependencies brings a table to the Second Normal Form (2NF). To reach Third Normal Form (3NF), you must also remove transitive dependencies."
+            },
+            {
+                question: "If I have a table with simple primary this means I can find a partial Functional Dependency in this table",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "Partial functional dependency can only occur in tables with a composite primary key. If the primary key is simple (consists of only one attribute), partial dependencies cannot exist."
+            },
+            {
+                question: "Self-join comes only if I have a recursive relationship",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A self-join is a query where a table is joined to itself. This is necessary to query a recursive (or unary) relationship, such as an 'employee manages employee' scenario within a single table."
+            },
+            {
+                question: "Any candidate key should consists of simple attribute",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "A candidate key can be either simple (a single attribute) or composite (multiple attributes combined). Any key that uniquely identifies a record can be a candidate key."
+            },
+            {
+                question: "I can use Joins and sub queries with DML Queries",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "DML statements like <code>UPDATE</code> and <code>DELETE</code> can use joins and subqueries in their <code>WHERE</code> clauses to identify the specific rows to be modified or removed."
+            },
+            {
+                question: "Each Column in the database should have a domain",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A domain is the set of all possible legal values that an attribute (column) can hold. Defining a domain (e.g., through a data type and constraints) is a fundamental part of database design."
+            },
+            {
+                question: "I can have a where condition and having in the same query",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "Yes. The <code>WHERE</code> clause filters rows before they are grouped, and the <code>HAVING</code> clause filters the groups after they have been created by the <code>GROUP BY</code> clause. They can be used together in a single query."
+            },
+            {
+                question: "In SQL Server the size of the Integer data type is 2 Bytes",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "In SQL Server, the standard <code>INT</code> (Integer) data type uses 4 bytes of storage. The <code>SMALLINT</code> data type uses 2 bytes."
+            },
+            {
+                question: "If I have a column with money Data type if means I can write up to 7 decimal values",
+                options: ["True", "False"],
+                answer: "False",
+                explanation: "The <code>MONEY</code> data type in SQL Server is accurate to four decimal places, not seven."
+            },
+            {
+                question: "A default clause supplies a value for a given column during an insert if no value was provided for that column",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "This is the exact purpose of a <code>DEFAULT</code> constraint. It automatically provides a specified value for a column when an <code>INSERT</code> statement does not explicitly supply one."
+            },
+            {
+                question: "Batch is one or more statements that will be executed at the same time.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A batch is a group of one or more SQL statements sent to the server to be executed together as a single unit."
+            },
+            {
+                question: "Which clause returns only one copy of each set of duplicate rows selected?",
+                options: ["Group By", "Distinct", "Unique", "None of the above"],
+                answer: "Distinct",
+                explanation: "The <code>DISTINCT</code> keyword is used in a <code>SELECT</code> statement to eliminate duplicate rows from the result set and return only unique rows."
+            },
+            {
+                question: "With SQL, how can you return the number of records in the 'Persons' table?",
+                options: ["SELECT COLUMNS() FROM Persons", "SELECT COUNT(*) FROM Persons", "SELECT COLUMNS(*) FROM Persons", "SELECT COUNT() FROM Persons"],
+                answer: "SELECT COUNT(*) FROM Persons",
+                explanation: "The <code>COUNT(*)</code> aggregate function is used to count the total number of rows in a table that match the specified criteria (or all rows if no criteria are given)."
+            },
+            {
+                question: "How can you change 'Hansen' into 'Nilsen' in the 'LastName' column in the Persons table?",
+                options: ["MODIFY Persons SET LastName='Hansen' INTO LastName='Nilsen'", "UPDATE Persons SET LastName='Hansen' INTO LastName='Nilsen'", "UPDATE Persons SET LastName='Nilsen' WHERE LastName='Hansen'", "MODIFY Persons SET LastName='Nilsen' WHERE LastName='Hansen'"],
+                answer: "UPDATE Persons SET LastName='Nilsen' WHERE LastName='Hansen'",
+                explanation: "The correct syntax to modify existing records is <code>UPDATE table_name SET column_name = new_value WHERE condition;</code>. The <code>WHERE</code> clause is crucial to specify which record(s) to update."
+            },
+            {
+                question: "What does SQL stand for?",
+                options: ["Structured Query Learning", "Structured Question Language", "Strong Question Language", "None of the above"],
+                answer: "None of the above",
+                explanation: "SQL stands for <strong>Structured Query Language</strong>. Since this option is not available, 'None of the above' is the correct choice."
+            },
+            {
+                question: "Cross Join in SQL Server has the same result like",
+                options: ["Full Outer Join", "Left Outer Join", "Cartesian product", "A and C", "None of the Above"],
+                answer: "Cartesian product",
+                explanation: "A <code>CROSS JOIN</code> produces a result set which is the number of rows in the first table multiplied by the number of rows in the second table. This is also known as a Cartesian Product."
+            },
+            {
+                question: "Which of the following is not a valid aggregate function?",
+                options: ["Count", "Sum", "Distinct", "Min"],
+                answer: "Distinct",
+                explanation: "<code>COUNT</code>, <code>SUM</code>, and <code>MIN</code> are all valid aggregate functions. <code>DISTINCT</code> is a keyword used to remove duplicates and is not an aggregate function itself, although it can be used within one (e.g., <code>COUNT(DISTINCT column)</code>)."
+            },
+            {
+                question: "SELECT name FROM employee WHERE name LIKE '_a%'; Answer Will Be?",
+                options: ["Names starting with 'a'", "Names starting with '_a'", "Names containing 'a' as second char", "none of the above"],
+                answer: "Names containing 'a' as second char",
+                explanation: "The <code>LIKE</code> operator is used for pattern matching. The underscore (<code>_</code>) is a wildcard for a single character, and the percent sign (<code>%</code>) is a wildcard for zero or more characters. Therefore, <code>'_a%'</code> matches any string where 'a' is the second character."
+            },
+            {
+                question: "Removing the WHERE clause from a DELETE statement has which of the following effects?",
+                options: ["The delete statement will fail because there are no records to delete.", "The delete statement will prompt the user to enter criteria for the deletion", "The delete statement will fail because of syntax error.", "The delete statement will remove all records from the table."],
+                answer: "The delete statement will remove all records from the table.",
+                explanation: "A <code>DELETE</code> statement without a <code>WHERE</code> clause will delete all rows from the specified table. It is a valid but potentially destructive command."
+            },
+            {
+                question: "Creating a foreign-key constraint between columns of two tables defined with two different Data types will produce an error.",
+                options: ["True", "False"],
+                answer: "True",
+                explanation: "A foreign key constraint requires that the data types (and often lengths) of the referencing column(s) and the referenced column(s) must match exactly."
+            },
+            {
+                question: "What is Difference between UNION and UNION ALL?",
+                options: ["UNION combine all row of both table, while UNIONALL select only atomic rows of both table", "Both are same", "UNIONALL is faster than UNION", "UNION is faster than UNIONALL"],
+                answer: "UNIONALL is faster than UNION",
+                explanation: "<code>UNION</code> combines the result sets of two queries and removes duplicate rows. <code>UNION ALL</code> combines the result sets but includes all duplicate rows. Because <code>UNION ALL</code> does not perform the extra step of removing duplicates, it is generally faster."
+            },
+            {
+                question: "Which one of the following must be specified in every DELETE statement?",
+                options: ["Table Name", "Database name", "LIMIT clause", "WHERE clause", "Column Names"],
+                answer: "Table Name",
+                explanation: "The basic syntax for deleting records is <code>DELETE FROM table_name;</code>. The table name is mandatory to specify which table to delete from. A <code>WHERE</code> clause is optional but highly recommended."
+            },
+            {
+                question: "Which of the following commands is used to change the structure of table?",
+                options: ["CHANGE TABLE", "MODIFY TABLE", "ALTER TABLE", "UPDATE TABLE"],
+                answer: "ALTER TABLE",
+                explanation: "The <code>ALTER TABLE</code> command is used to add, delete, or modify columns in an existing table, or to add and drop various constraints on an existing table."
+            },
+            {
+                question: "What is the correct SQL statement for returning all the columns from a table named 'Persons' sorted REVERSE alphabetically by 'FirstName'?",
+                options: ["SELECT * FROM Persons WHERE FirstName ORDER BY FirstName DESC", "SELECT * FROM Persons SORT REVERSE 'FirstName'", "SELECT * FROM Persons ORDER BY 'FirstName'", "SELECT * FROM Persons ORDER BY FirstName DESC"],
+                answer: "SELECT * FROM Persons ORDER BY FirstName DESC",
+                explanation: "To sort results, you use the <code>ORDER BY</code> clause. The <code>DESC</code> keyword specifies that the sort order should be descending (Z to A, or reverse alphabetical)."
+            },
+            {
+                question: "Which operator is used in character string comparisons with pattern matching?",
+                options: ["Like", "Between....And", "Set Operator", "Equal Operator"],
+                answer: "Like",
+                explanation: "The <code>LIKE</code> operator is specifically used in a <code>WHERE</code> clause to search for a specified pattern in a column."
+            },
+            {
+                question: "Alter command, can be used for:",
+                options: ["Add or remove columns on a table.", "Change data in a table.", "Change Permission for user"],
+                answer: "Add or remove columns on a table.",
+                explanation: "<code>ALTER TABLE</code> is a Data Definition Language (DDL) command used to change the structure of a table, such as adding, dropping, or modifying columns and constraints. To change data, you use <code>UPDATE</code> (DML)."
+            },
+            {
+                question: "To alter data on a table we use:",
+                options: ["Alter.", "Update.", "Select.", "Modify."],
+                answer: "Update.",
+                explanation: "The <code>UPDATE</code> statement is the DML command used to modify existing records in a table."
+            },
+            {
+                question: "In the select statement the execution of select, where and order by is in which order?",
+                options: ["Order by, where, select", "Select, Where, order by", "Where,select, order by", "None of the above"],
+                answer: "Where,select, order by",
+                explanation: "The logical order of execution is: 1. <code>FROM</code> (and <code>JOIN</code>s), 2. <code>WHERE</code> (filters rows), 3. <code>GROUP BY</code>, 4. <code>HAVING</code>, 5. <code>SELECT</code> (selects the columns), 6. <code>ORDER BY</code> (sorts the final result set)."
+            },
+            {
+                question: "Select * from employee where salary between 2000 and 3000, which result set will be a suitable answer?",
+                options: ["2200,2500,5000", "2000,2500,3000", "2100,3000", "B and C"],
+                answer: "B and C",
+                explanation: "The <code>BETWEEN</code> operator is inclusive. Therefore, it will select salaries greater than or equal to 2000 AND less than or equal to 3000. Both result sets B (2000,2500,3000) and C (2100,3000) contain values that fall within this inclusive range."
+            },
+            {
+                question: "ERD Stands For:",
+                options: ["Entity Relation Diagram", "Entity Related Diagram", "Entity Relationship Diagram", "Entity Ship Diagram"],
+                answer: "Entity Relationship Diagram",
+                explanation: "ERD stands for Entity-Relationship Diagram, which is a visual representation of the entities, attributes, and relationships within a database."
+            },
+            {
+                question: "Which of the following commands is used to delete column from table?",
+                options: ["CHANGE TABLE", "Delete from table", "MODIFY TABLE", "ALTER TABLE", "UPDATE TABLE"],
+                answer: "ALTER TABLE",
+                explanation: "To delete a column, you use the <code>ALTER TABLE</code> command with the <code>DROP COLUMN</code> clause. Example: <code>ALTER TABLE table_name DROP COLUMN column_name;</code>."
+            },
+            {
+                question: "The DML is used for: a) Creating tables b) Retrieving data c) Deleting users d) Inserting data e) Deleting data",
+                options: ["b,d,e.", "b,c,d.", "None of above."],
+                answer: "b,d,e.",
+                explanation: "DML (Data Manipulation Language) consists of commands used to manage data within tables. This includes Retrieving (SELECT), Inserting (INSERT), and Deleting data (DELETE). Creating tables is DDL, and deleting users is DCL."
+            },
+            {
+                question: "Which of the following keywords can be used to have an ordered result set",
+                options: ["Distinct", "Union", "Order by", "All of the above"],
+                answer: "Order by",
+                explanation: "The <code>ORDER BY</code> clause is specifically used to sort the rows in a result set in ascending (default) or descending order based on one or more columns."
+            },
+            {
+                question: "In the EERD the relation between Supertype and Subtype entity is",
+                options: ["One to one", "One to many", "Many to many", "Many to one"],
+                answer: "One to one",
+                explanation: "In an Enhanced Entity-Relationship Diagram (EERD), the relationship between a supertype and its subtypes is always one-to-one. An instance of a subtype is also one and only one instance of its supertype."
+            },
+            {
+                question: "In EERD if I have partial specialization between Supertype and Subtypes this means",
+                options: ["Number of rows in the super entity is greater than or equal sub entity", "Number of rows in the super entity is less than sub entity", "Number of rows in the super entity is less than or equal sub entity"],
+                answer: "Number of rows in the super entity is greater than or equal sub entity",
+                explanation: "Partial specialization means that an instance of a supertype is not required to belong to any subtype. Therefore, the total number of rows in the supertype table will be greater than or equal to the sum of the rows in all its subtype tables."
+            },
+            {
+                question: "Which of the following is true about Identity Column",
+                options: ["I can have more than one identity column in the same table", "I can have only one Identity column Per table", "It should by attached with primary key", "It has only one null value"],
+                answer: "I can have only one Identity column Per table",
+                explanation: "A table can have a maximum of one IDENTITY column. It automatically generates sequential numeric values and is often used as a primary key, but it is not required to be one."
+            },
+            {
+                question: "Select id_number, description from inventory where id_number = (select id_number from inventory where quantity > 500 or price > 5.00) which of the following will cause an error?",
+                options: ["From inventory", "where id_number =", "select id_number,description", "the statement is correct"],
+                answer: "where id_number =",
+                explanation: "This statement will cause a 'subquery returned more than one value' error. The subquery can return multiple <code>id_number</code> values, but the equals (<code>=</code>) operator can only compare to a single value. The <code>IN</code> operator should be used instead: <code>WHERE id_number IN (...)</code>."
+            },
+            {
+                question: "Which value would be displayed? Select id_number from inventory where price in (8.25, 0.25);",
+                options: ["25023, 25027", "25025, 25027", "45025, 25027", "No value would be displayed because the statement will not execute"],
+                answer: "45025, 25027",
+                explanation: "The query selects <code>id_number</code> for rows where the price is exactly 8.25 OR 0.25. Looking at the table, <code>id_number</code> 45025 has a price of 8.25 and <code>id_number</code> 25027 has a price of 0.25. Both will be returned."
+            },
+            {
+                question: "Which value will be displayed from the following statement? Select id_number from inventory where price = (select Max(price) from inventory);",
+                options: ["25027", "25025", "25026", "32081"],
+                answer: "32081",
+                explanation: "The subquery <code>select Max(price) from inventory</code> will find the highest price in the table, which is 27.21. The outer query then finds the <code>id_number</code> for the row with that price, which is 32081."
+            },
+            {
+                question: "Which select statement displays the number of items whose price is greater than 5.00?",
+                options: ["Select sum (*) from inventory where price > 5.00", "Select count (*) from inventory order by price", "Select count (*)from inventory where price > 5.00", "Select sum (*) from inventory group by price > 5.00"],
+                answer: "Select count (*)from inventory where price > 5.00",
+                explanation: "To count the number of rows (items) that meet a condition, you must use the <code>COUNT(*)</code> aggregate function with a <code>WHERE</code> clause to specify the condition."
+            },
+            {
+                question: "Why this command will cause an error? Select id_number, description, sum(price) from inventory where price > 6.00 group by id_number order by id_number desc",
+                options: ["The price column must be included in the group by clause.", "The order by clause should immediately follow the where clause.", "The manufacturer_id column is not included in the select clause.", "The order by clause cannot be used in a select statement with a group by.", "The description column is not included in the group by clause."],
+                answer: "The description column is not included in the group by clause.",
+                explanation: "When using <code>GROUP BY</code>, any non-aggregate column in the <code>SELECT</code> list must also be in the <code>GROUP BY</code> clause. Here, <code>description</code> is in the <code>SELECT</code> list but not in the <code>GROUP BY</code> clause, which will cause an error."
+            },
+            {
+                question: "What does port number 143 refer to?",
+                options: ["SMTP", "FTP", "IMAP", "POP"],
+                answer: "IMAP",
+                explanation: "TCP port 143 is the well-known port for IMAP (Internet Message Access Protocol), which is used for retrieving emails from a server."
+            },
+            {
+                question: "Identify among the following the network device used to connect two dis-similar types of networks.",
+                options: ["Switch", "Hub", "Bridge", "Gateway"],
+                answer: "Gateway",
+                explanation: "A Gateway is a network node that connects two different networks that use different protocols. It acts as a translator between them."
+            },
+            {
+                question: "Identify the device used to boost up a weak signal.",
+                options: ["Modem", "Repeater", "Switch", "Router"],
+                answer: "Repeater",
+                explanation: "A Repeater is a network device that regenerates and retransmits an incoming signal to extend the distance over which the signal can travel."
+            },
+            {
+                question: "What does MAC stand for?",
+                options: ["Media Access Control", "Mass Access Control", "Media Access Carriage", "None"],
+                answer: "Media Access Control",
+                explanation: "MAC stands for Media Access Control. A MAC address is a unique identifier assigned to a network interface controller (NIC) for use as a network address in communications within a network segment."
+            },
+            {
+                question: "What is the length of the MAC address?",
+                options: ["8 bits", "16 bits", "32 bits", "48 bits"],
+                answer: "48 bits",
+                explanation: "A standard MAC address is 48 bits long, typically represented as 12 hexadecimal digits (e.g., 00-1A-2B-3C-4D-5E)."
+            },
+            {
+                question: "Which of the following is used to allocate and manage resources for a network?",
+                options: ["Bluetooth", "Server", "Node", "None of the above"],
+                answer: "Server",
+                explanation: "A Server is a computer program or device that provides a service to another computer program and its user, also known as the client. It allocates and manages network resources."
+            },
+            {
+                question: "The arrangement where all data pass through a central computer is known as",
+                options: ["Ring topology", "Mesh topology", "Star topology", "Bus topology"],
+                answer: "Star topology",
+                explanation: "In a Star topology, all nodes are individually connected to a central connection point, like a hub or a switch. All data must pass through this central device."
+            },
+            {
+                question: "What of the following device is used in the network layer?",
+                options: ["Application gateway", "Switch", "Router", "Repeaters"],
+                answer: "Router",
+                explanation: "A Router operates at the Network Layer (Layer 3) of the OSI model. It forwards data packets between computer networks based on their IP addresses."
+            },
+            {
+                question: "Identify if the following statement is True or False: Network Interface Card(NIC) is an I/O device.",
+                options: ["True", "False", "Depends on usage", "None"],
+                answer: "True",
+                explanation: "A Network Interface Card (NIC) is an Input/Output (I/O) device, as it both sends (output) and receives (input) data for a computer on a network."
+            },
+            {
+                question: "What is required to use a Simple Network Management System?",
+                options: ["Servers", "Protocols", "Rules", "IP"],
+                answer: "Rules",
+                explanation: "SNMP (Simple Network Management Protocol) operates based on a set of rules and definitions stored in a Management Information Base (MIB) to manage devices on a network."
+            },
+            {
+                question: "Identify the major difference between SNMPv3 and SNMPv2.",
+                options: ["Classification", "Integration", "Management", "Enhanced security"],
+                answer: "Enhanced security",
+                explanation: "The primary improvement in SNMPv3 over its predecessors is the addition of robust security features, including authentication, encryption, and access control."
+            },
+            {
+                question: "Identify the network which extends a private network across a public network.",
+                options: ["Storage Area network", "Virtual private network", "Enterprise Private network", "Local area network"],
+                answer: "Virtual private network",
+                explanation: "A VPN (Virtual Private Network) creates a secure, encrypted connection over a less secure network, such as the public internet, to extend a private network."
+            },
+            {
+                question: "Identify the layer which is responsible for data translating.",
+                options: ["Network", "Datalink", "Presentation", "Application"],
+                answer: "Presentation",
+                explanation: "The Presentation Layer (Layer 6) is responsible for translating data between the application layer and the network format. This includes tasks like encryption, compression, and character encoding."
+            },
+            {
+                question: "Identify the layer which determines the interface of the system with the user.",
+                options: ["Network", "Datalink", "Presentation", "Application"],
+                answer: "Application",
+                explanation: "The Application Layer (Layer 7) provides the interface for end-user applications to access network services. It's the layer that the user's software (e.g., a web browser) directly interacts with."
+            },
+            {
+                question: "Which of the following topology arrangements is a point-to-point line configuration?",
+                options: ["Ring", "Mesh", "Star", "All of the above"],
+                answer: "All of the above",
+                explanation: "All these topologies are constructed from point-to-point links. In a Star, each node has a point-to-point link to the hub. In a Ring, each node has a point-to-point link to its two neighbors. In a Mesh, nodes have point-to-point links to multiple other nodes."
+            },
+            {
+                question: "Identify the device which links two homogeneous packed broadcast local networks.",
+                options: ["Hub", "Router", "Bridge", "Gateway"],
+                answer: "Bridge",
+                explanation: "A Bridge operates at the Data Link Layer (Layer 2) and is used to connect two or more similar (homogeneous) network segments, like two Ethernet LANs, filtering traffic based on MAC addresses."
+            },
+            {
+                question: "Why are parity bits used?",
+                options: ["To encrypt data", "To detect error", "To identify user", "None"],
+                answer: "To detect error",
+                explanation: "A parity bit is a simple form of error detection. It is an extra bit added to a block of data to ensure that the total number of 1-bits in the data is either even or odd, which can be checked at the receiving end."
+            },
+            {
+                question: "Identify among the following which belongs to class A.",
+                options: ["121.12.12.248", "128.12.12.248", "129.12.12.248", "130.12.12.248"],
+                answer: "121.12.12.248",
+                explanation: "Class A IP addresses are defined by the first octet having a value between 1 and 126. 121 falls within this range."
+            },
+            {
+                question: "What does LAN stand for?",
+                options: ["Local Array Network", "Local Area Network", "Local Area Net", "None"],
+                answer: "Local Area Network",
+                explanation: "LAN stands for Local Area Network, a computer network that interconnects computers within a limited area such as a residence, school, or office building."
+            },
+            {
+                question: "Who keeps the private key in asymmetric key cryptography?",
+                options: ["Sender", "Receiver", "Both Sender and Receiver", "None"],
+                answer: "Receiver",
+                explanation: "In asymmetric (or public-key) cryptography, the private key must be kept secret by its owner. Data encrypted with the public key can only be decrypted by the corresponding private key, which is held securely by the receiver."
+            },
+            {
+                question: "Calculate the maximum efficiency of pure ALOHA at G = 0.5?",
+                options: ["16%", "1.89%", "18.4%", "18.999%"],
+                answer: "18.4%",
+                explanation: "The maximum efficiency of Pure ALOHA is given by the formula S = G * e^(-2G). For G = 0.5, S = 0.5 * e^(-1) ≈ 0.1839, which is 18.4%."
+            },
+            {
+                question: "Identify the switching method in which the message is divided into small packets.",
+                options: ["Virtual switching", "Packet switching", "Message switching", "None"],
+                answer: "Packet switching",
+                explanation: "Packet switching is a method of grouping data into packets that are transmitted over a digital network. Each packet is routed independently."
+            },
+            {
+                question: "What is a proxy server also known as?",
+                options: ["Application-level gateway", "Proxy tools", "Application proxy", "None"],
+                answer: "Application-level gateway",
+                explanation: "A proxy server acts as an intermediary for requests from clients seeking resources from other servers. Because it operates at the Application Layer, it is also known as an Application-level gateway."
+            },
+            {
+                question: "Identify among the following servers which allow LAN users to share data.",
+                options: ["Communication server", "Point server", "Data server", "File server"],
+                answer: "File server",
+                explanation: "A File Server is a central server in a computer network that provides a location for the shared storage of computer files that can be accessed by the workstations within the network."
+            },
+            {
+                question: "Choose the correct formula for the total vulnerable time value of pure ALOHA.",
+                options: ["½ Tfr", "Tfr", "2*Tfr", "4*Tfr"],
+                answer: "2*Tfr",
+                explanation: "In Pure ALOHA, a collision can occur if another frame is transmitted anytime from the beginning of the desired frame's transmission until the end of its transmission. This means the vulnerable period is twice the frame transmission time (2 * Tfr)."
+            },
+            {
+                question: "Choose among the following which is a bit-oriented protocol.",
+                options: ["SSL", "HDLC", "HTTP", "All of the above"],
+                answer: "HDLC",
+                explanation: "HDLC (High-Level Data Link Control) is a bit-oriented Data Link layer protocol. It treats data as a stream of bits rather than characters, making it more efficient and flexible."
             },
 
 
@@ -1213,7 +1705,7 @@
                 nextQuestion();
             };
 
-            let explanationTimeLeft = 10;
+            let explanationTimeLeft = 20;
             const feedbackText = document.getElementById('feedback-text');
             feedbackText.textContent = `Next question in ${explanationTimeLeft}s...`;
             
